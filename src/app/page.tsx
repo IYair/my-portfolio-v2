@@ -1,67 +1,57 @@
 import { Meteors } from "@/components/ui/meteors";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-sm border-b border-foreground/10 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="font-mono font-semibold text-lg">
-              Yair Chan
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#home" className="hover:text-foreground/70 transition-colors">
-                Inicio
-              </a>
-              <a href="#about" className="hover:text-foreground/70 transition-colors">
-                Acerca
-              </a>
-              <a href="#projects" className="hover:text-foreground/70 transition-colors">
-                Proyectos
-              </a>
-              <a href="#blog" className="hover:text-foreground/70 transition-colors">
-                Blog
-              </a>
-              <a href="#contact" className="hover:text-foreground/70 transition-colors">
-                Contacto
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section id="home" className="relative flex pt-20 min-h-screen w-full flex-col items-center justify-center overflow-hidden">
         <Meteors number={30} maxDuration={10}  />
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-20">
-          <div className="max-w-5xl">
-            <h1 className="text-4xl md:text-8xl font-bold mb-6">
-              Hola, soy{" "}
-              <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-8xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
-                Yair Chan
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-foreground/80 mb-8 leading-relaxed">
-              Desarrollador Full Stack apasionado por crear experiencias digitales
-              increíbles y soluciones innovadoras.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="#projects"
-                className="bg-foreground text-background px-6 py-3 rounded-lg font-medium hover:bg-foreground/90 transition-colors text-center"
-              >
-                Ver Proyectos
-              </a>
-              <a
-                href="#contact"
-                className="border border-foreground/20 px-6 py-3 rounded-lg font-medium hover:bg-foreground/5 transition-colors text-center"
-              >
-                Contáctame
-              </a>
+          <div className="grid md:grid-cols-1 gap-12 items-center">
+            {/* Text Content */}
+            <div className="max-w-3xl relative z-20">
+              <h1 className="text-6xl md:text-6xl font-bold mb-6">
+                Hola, soy{" "}
+                <span className="pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-6xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10">
+                  Yair Chan
+                </span>
+              </h1>
+              <p className="text-2xl md:text-2xl text-foreground/80 mb-8 leading-relaxed">
+                Desarrollador Full Stack apasionado por crear experiencias digitales
+                increíbles y soluciones innovadoras.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="#projects"
+                  className="bg-foreground text-background px-6 py-3 rounded-lg font-medium hover:bg-foreground/90 transition-colors text-center"
+                >
+                  Ver Proyectos
+                </a>
+                <a
+                  href="#contact"
+                  className="border border-foreground/20 px-6 py-3 rounded-lg font-medium hover:bg-foreground/5 transition-colors text-center"
+                >
+                  Contáctame
+                </a>
+              </div>
             </div>
           </div>
         </div>
+            {/* Profile Image */}
+            <div className="flex justify-center md:justify-end md:absolute md:right-6 lg:right-12 xl:right-24 2xl:right-40 md:bottom-0 md:h-full pt-20">
+              <div className="relative h-96 md:h-full brightness-[65%]">
+                <Image
+                  src="/images/me.png"
+                  alt="Yair Chan - Desarrollador Full Stack"
+                  width={400}
+                  height={600}
+                  className="object-contain h-full w-auto relative z-5 neon-glow"
+                  priority
+                />
+              </div>
+            </div>
       </section>
 
       {/* About Preview */}
