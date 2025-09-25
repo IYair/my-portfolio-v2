@@ -2,9 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   env: {
-    // Asegurar que las variables críticas estén disponibles
+    // Variables de NextAuth
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    AUTH_SECRET: process.env.AUTH_SECRET,
+    // Credenciales de admin
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+    // Base de datos
+    DATABASE_URL: process.env.DATABASE_URL,
   },
   images: {
     remotePatterns: [

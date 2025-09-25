@@ -74,26 +74,29 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Verificar credenciales usando las variables locales
-        if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+        // Verificar credenciales usando variables de entorno directamente
+        const adminEmail = process.env.ADMIN_EMAIL
+        const adminPassword = process.env.ADMIN_PASSWORD
+
+        if (!adminEmail || !adminPassword) {
           console.error("Admin credentials not configured")
           return null
         }
 
         // Verificar email
-        if (credentials.email !== ADMIN_EMAIL) {
+        if (credentials.email !== adminEmail) {
           return null
         }
 
         // Verificar password (puedes usar hash más adelante)
-        if (credentials.password !== ADMIN_PASSWORD) {
+        if (credentials.password !== adminPassword) {
           return null
         }
 
         // Retornar usuario admin
         return {
           id: "admin",
-          email: ADMIN_EMAIL,
+          email: adminEmail,
           name: "Admin",
           role: "admin"
         }
