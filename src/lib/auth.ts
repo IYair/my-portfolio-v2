@@ -25,17 +25,30 @@ declare module "next-auth/jwt" {
   }
 }
 
-// Validación de variables de entorno críticas
-if (!process.env.NEXTAUTH_SECRET) {
-  throw new Error(
-    "NEXTAUTH_SECRET is not set. Please add it to your environment variables."
-  )
-}
+// Obtener variables de entorno con fallbacks para Webpack
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
-if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
-  throw new Error(
-    "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables."
-  )
+// Validación de variables de entorno críticas (solo en servidor)
+if (typeof window === "undefined") {
+  if (!NEXTAUTH_SECRET) {
+    console.error("❌ NEXTAUTH_SECRET is not set!")
+    throw new Error(
+      "NEXTAUTH_SECRET is not set. Please add it to your environment variables."
+    )
+  }
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    console.error("❌ Admin credentials not set!")
+    throw new Error(
+      "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables."
+    )
+  }
+
+  console.log("🔐 NextAuth Environment Check:")
+  console.log("NEXTAUTH_SECRET:", NEXTAUTH_SECRET ? "✅ Set" : "❌ Missing")
+  console.log("ADMIN_EMAIL:", ADMIN_EMAIL ? "✅ Set" : "❌ Missing")
 }
 
 export const authOptions: NextAuthOptions = {
@@ -51,29 +64,26 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Verificar credenciales contra variables de entorno
-        const adminEmail = process.env.ADMIN_EMAIL
-        const adminPassword = process.env.ADMIN_PASSWORD
-
-        if (!adminEmail || !adminPassword) {
+        // Verificar credenciales usando las variables locales
+        if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
           console.error("Admin credentials not configured")
           return null
         }
 
         // Verificar email
-        if (credentials.email !== adminEmail) {
+        if (credentials.email !== ADMIN_EMAIL) {
           return null
         }
 
         // Verificar password (puedes usar hash más adelante)
-        if (credentials.password !== adminPassword) {
+        if (credentials.password !== ADMIN_PASSWORD) {
           return null
         }
 
         // Retornar usuario admin
         return {
           id: "admin",
-          email: adminEmail,
+          email: ADMIN_EMAIL,
           name: "Admin",
           role: "admin"
         }
@@ -104,5 +114,5 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/admin/login",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: NEXTAUTH_SECRET,
 }
