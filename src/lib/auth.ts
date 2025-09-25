@@ -32,8 +32,18 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 // Validación de variables de entorno críticas (solo en servidor)
 if (typeof window === "undefined") {
+  // Debug: Mostrar todas las variables disponibles en producción
+  console.log("🔍 Environment Debug:")
+  console.log("process.env.NEXTAUTH_SECRET exists:", !!process.env.NEXTAUTH_SECRET)
+  console.log("process.env.AUTH_SECRET exists:", !!process.env.AUTH_SECRET)
+  console.log("NEXTAUTH_SECRET final value exists:", !!NEXTAUTH_SECRET)
+  console.log("NODE_ENV:", process.env.NODE_ENV)
+
   if (!NEXTAUTH_SECRET) {
     console.error("❌ NEXTAUTH_SECRET is not set!")
+    console.error("Available env vars:", Object.keys(process.env).filter(key =>
+      key.includes('NEXTAUTH') || key.includes('AUTH')
+    ))
     throw new Error(
       "NEXTAUTH_SECRET is not set. Please add it to your environment variables."
     )
@@ -114,5 +124,5 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/admin/login",
   },
-  secret: NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
 }
