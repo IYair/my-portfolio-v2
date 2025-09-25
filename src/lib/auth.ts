@@ -25,14 +25,17 @@ declare module "next-auth/jwt" {
   }
 }
 
-// NextAuth automáticamente lee NEXTAUTH_SECRET de las variables de entorno
-// Solo validamos que estén disponibles en desarrollo
-if (process.env.NODE_ENV === "development") {
-  console.log("🔐 NextAuth Environment Check:")
-  console.log("NEXTAUTH_SECRET:", process.env.NEXTAUTH_SECRET ? "✅ Set" : "❌ Missing")
-  console.log("NEXTAUTH_URL:", process.env.NEXTAUTH_URL ? "✅ Set" : "❌ Missing")
-  console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL ? "✅ Set" : "❌ Missing")
-  console.log("ADMIN_PASSWORD:", process.env.ADMIN_PASSWORD ? "✅ Set" : "❌ Missing")
+// Validación de variables de entorno críticas
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error(
+    "NEXTAUTH_SECRET is not set. Please add it to your environment variables."
+  )
+}
+
+if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+  throw new Error(
+    "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables."
+  )
 }
 
 export const authOptions: NextAuthOptions = {
@@ -101,5 +104,5 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/admin/login",
   },
-  // NextAuth automáticamente lee NEXTAUTH_SECRET de las variables de entorno
+  secret: process.env.NEXTAUTH_SECRET,
 }
