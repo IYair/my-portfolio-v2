@@ -44,7 +44,7 @@ export const useToast = () => {
     }: {
       loading: string
       success: string | ((data: T) => string)
-      error: string | ((error: any) => string)
+      error: string | ((error: Error) => string)
     }
   ) => {
     return toast.promise(promise, {
@@ -54,7 +54,7 @@ export const useToast = () => {
     })
   }
 
-  const custom = (message: string, options?: any) => {
+  const custom = (message: string, options?: Record<string, unknown>) => {
     toast(message, options)
   }
 
@@ -100,7 +100,7 @@ export const showPromiseToast = <T>(
   messages: {
     loading: string
     success: string | ((data: T) => string)
-    error: string | ((error: any) => string)
+    error: string | ((error: Error) => string)
   }
 ) => {
   return toast.promise(promise, messages)

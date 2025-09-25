@@ -53,7 +53,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
         throw new Error(errorData.error || "Failed to send message");
       }
 
-      const result = await response.json();
+      await response.json();
 
       setSubmitStatus({
         type: "success",

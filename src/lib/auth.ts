@@ -1,6 +1,29 @@
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcryptjs"
+
+// Extend NextAuth types
+declare module "next-auth" {
+  interface User {
+    id: string
+    role: string
+  }
+  
+  interface Session {
+    user: {
+      id: string
+      name?: string | null
+      email?: string | null
+      image?: string | null
+      role: string
+    }
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role: string
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -58,7 +81,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user = {
           ...session.user,
-          id: token.sub,
+          id: token.sub || "",
           role: token.role as string,
         }
       }

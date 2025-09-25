@@ -34,7 +34,9 @@ export default function Select({
   multiple = false,
   className = ''
 }: SelectProps) {
-  const [selectedValue, setSelectedValue] = useState(value || defaultValue || (multiple ? [] : ''))
+  const [selectedValue, setSelectedValue] = useState<string | number | (string | number)[]>(
+    value || defaultValue || (multiple ? [] : '')
+  )
 
   const handleChange = (newValue: string | number | (string | number)[]) => {
     setSelectedValue(newValue)

@@ -18,7 +18,7 @@ interface Stats {
 }
 
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
   const [stats, setStats] = useState<Stats>({
     posts: 0,
@@ -48,7 +48,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
           contactsRes.json(),
         ]);
 
-        const unreadContacts = contacts.filter((contact: any) => !contact.read).length;
+        const unreadContacts = contacts.filter((contact: { read: boolean }) => !contact.read).length;
 
         setStats({
           posts: posts.length || 0,

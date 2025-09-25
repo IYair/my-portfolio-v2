@@ -11,7 +11,7 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Redirigir si ya está autenticado
@@ -38,7 +38,7 @@ export default function AdminLogin() {
       } else if (result?.ok) {
         router.push("/admin/dashboard");
       }
-    } catch (error) {
+    } catch {
       setError("Error al iniciar sesión");
     } finally {
       setIsLoading(false);

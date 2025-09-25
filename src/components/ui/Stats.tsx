@@ -42,7 +42,7 @@ export default function Stats({
       )}
 
       <dl className={`grid grid-cols-1 divide-gray-200 dark:divide-white/10 overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/75 ring-1 ring-inset ring-gray-200 dark:ring-white/10 shadow backdrop-blur-sm ${gridCols[columns]} ${columns > 1 ? 'md:divide-x md:divide-y-0' : ''}`}>
-        {stats.map((item, index) => (
+        {stats.map((item) => (
           <div key={item.name} className="px-4 py-5 sm:p-6">
             <dt className="text-base font-normal text-gray-600 dark:text-gray-100 flex items-center">
               {item.icon && (

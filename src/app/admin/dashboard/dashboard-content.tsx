@@ -27,6 +27,27 @@ interface RecentActivity {
   status?: string;
 }
 
+interface PostData {
+  id: string;
+  title: string;
+  published: boolean;
+  createdAt: string;
+}
+
+interface ProjectData {
+  id: string;
+  title: string;
+  featured: boolean;
+  createdAt: string;
+}
+
+interface ContactData {
+  id: string;
+  name: string;
+  read: boolean;
+  createdAt: string;
+}
+
 export default function DashboardContent() {
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
     posts: 0,
@@ -54,9 +75,9 @@ export default function DashboardContent() {
           contactsRes.json(),
         ]);
 
-        const publishedPosts = posts.filter((post: any) => post.published).length;
-        const featuredProjects = projects.filter((project: any) => project.featured).length;
-        const unreadContacts = contacts.filter((contact: any) => !contact.read).length;
+        const publishedPosts = posts.filter((post: PostData) => post.published).length;
+        const featuredProjects = projects.filter((project: ProjectData) => project.featured).length;
+        const unreadContacts = contacts.filter((contact: ContactData) => !contact.read).length;
 
         setDashboardStats({
           posts: posts.length || 0,
@@ -69,7 +90,7 @@ export default function DashboardContent() {
 
         // Generate recent activity
         const activities: RecentActivity[] = [
-          ...posts.slice(0, 3).map((post: any) => ({
+          ...posts.slice(0, 3).map((post: PostData) => ({
             id: `post-${post.id}`,
             type: 'post' as const,
             title: post.title,
@@ -77,7 +98,7 @@ export default function DashboardContent() {
             timestamp: post.createdAt,
             status: post.published ? 'published' : 'draft'
           })),
-          ...projects.slice(0, 2).map((project: any) => ({
+          ...projects.slice(0, 2).map((project: ProjectData) => ({
             id: `project-${project.id}`,
             type: 'project' as const,
             title: project.title,
@@ -85,7 +106,7 @@ export default function DashboardContent() {
             timestamp: project.createdAt,
             status: project.featured ? 'featured' : 'normal'
           })),
-          ...contacts.slice(0, 2).map((contact: any) => ({
+          ...contacts.slice(0, 2).map((contact: ContactData) => ({
             id: `contact-${contact.id}`,
             type: 'contact' as const,
             title: `Mensaje de ${contact.name}`,

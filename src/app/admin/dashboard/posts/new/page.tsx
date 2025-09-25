@@ -6,7 +6,6 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
-import Select from "@/components/ui/Select";
 import FormBuilder from "@/components/ui/FormBuilder";
 import Toggle from "@/components/ui/Toggle";
 import TagSelector from "@/components/ui/TagSelector";
@@ -22,7 +21,7 @@ export default function NewPostPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [useFormBuilder, setUseFormBuilder] = useState(false);
-  const { success, error, promise } = useToast();
+  const { error, promise } = useToast();
 
   // Traditional form state
   const [formData, setFormData] = useState({
@@ -35,15 +34,7 @@ export default function NewPostPage() {
     tags: [] as string[]
   });
 
-  const statusOptions = [
-    { value: 'draft', label: 'Borrador' },
-    { value: 'published', label: 'Publicado' }
-  ];
 
-  const typeOptions = [
-    { value: 'normal', label: 'Post Normal' },
-    { value: 'featured', label: 'Post Destacado' }
-  ];
 
   const availableTags = [
     'JavaScript', 'React', 'Next.js', 'TypeScript', 'Tutorial', 'Tips',
@@ -55,61 +46,70 @@ export default function NewPostPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const submitPromise = fetch("/api/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const submitPromise = fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    promise(submitPromise, {
-      loading: "Creando post...",
-      success: "Post creado exitosamente",
-      error: "Error al crear el post",
-    }).then((response) => {
+      promise(submitPromise, {
+        loading: "Creando post...",
+        success: "Post creado exitosamente",
+        error: "Error al crear el post",
+      });
+
+      const response = await submitPromise;
       if (response.ok) {
         setTimeout(() => router.push("/admin/dashboard/posts"), 1000);
       }
-    }).catch((err) => {
+    } catch (err) {
       console.error("Error creating post:", err);
-    }).finally(() => {
+      error("Error al crear el post");
+    } finally {
       setIsSubmitting(false);
-    });
+    }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleFormBuilderSubmit = async (data: any) => {
     setIsSubmitting(true);
 
     const postData = {
-      title: data.title,
-      content: data.description,
-      published: data.actions.status?.value === 'published',
-      featured: data.actions.type?.value === 'featured',
-      tags: data.actions.tags?.value ? [data.actions.tags.value] : []
+      title: data.title as string,
+      content: data.description as string,
+      published: data.actions?.status?.value === 'published',
+      featured: data.actions?.type?.value === 'featured',
+      tags: data.actions?.tags?.value ? [data.actions.tags.value] : []
     };
 
-    const submitPromise = fetch("/api/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    });
+    try {
+      const submitPromise = fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
 
-    promise(submitPromise, {
-      loading: "Creando post con FormBuilder...",
-      success: "Post creado exitosamente",
-      error: "Error al crear el post",
-    }).then((response) => {
+      promise(submitPromise, {
+        loading: "Creando post con FormBuilder...",
+        success: "Post creado exitosamente",
+        error: "Error al crear el post",
+      });
+
+      const response = await submitPromise;
       if (response.ok) {
         setTimeout(() => router.push("/admin/dashboard/posts"), 1000);
       }
-    }).catch((err) => {
+    } catch (err) {
       console.error("Error creating post:", err);
-    }).finally(() => {
+      error("Error al crear el post");
+    } finally {
       setIsSubmitting(false);
-    });
+    }
   };
 
   const generateSlug = (title: string) => {
@@ -186,7 +186,7 @@ export default function NewPostPage() {
             {
               label: "Tag",
               icon: <TagIcon className="h-4 w-4" />,
-              options: availableTags
+              options: availableTags.map(tag => ({ label: tag, value: tag }))
             }
           ]}
         />

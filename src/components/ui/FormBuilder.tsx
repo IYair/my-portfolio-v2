@@ -1,8 +1,9 @@
 import { useState, ReactNode } from 'react'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Label } from '@headlessui/react'
 import { PaperClipIcon } from '@heroicons/react/20/solid'
+import Image from 'next/image'
 import Button from './Button'
-import { SelectOption } from './Select'
+
 
 export interface FormAction {
   label: string
@@ -25,7 +26,7 @@ export interface FormBuilderProps {
     onChange?: (action: FormAction) => void
     icon?: ReactNode
   }[]
-  onSubmit?: (data: { title: string; description: string; actions: Record<string, any> }) => void
+  onSubmit?: (data: { title: string; description: string; actions: Record<string, FormAction> }) => void
   submitLabel?: string
   className?: string
   showAttachment?: boolean

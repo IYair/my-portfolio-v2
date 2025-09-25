@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const tag = searchParams.get('tag')
     const limit = searchParams.get('limit')
 
-    const where: any = {}
+    const where: Record<string, unknown> = {}
 
     if (published === 'true') {
       where.published = true
@@ -95,10 +95,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear post
-    const { tags: _, ...postData } = validatedData
     const post = await prisma.post.create({
       data: {
-        ...postData,
+        title: validatedData.title,
+        content: validatedData.content,
+        excerpt: validatedData.excerpt,
+        slug: validatedData.slug,
+        published: validatedData.published,
+        featured: validatedData.featured,
         tags: {
           connect: tagConnections,
         },
@@ -118,7 +122,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation failed', details: error.errors },
+        { error: 'Validation failed', details: error.issues },
         { status: 400 }
       )
     }

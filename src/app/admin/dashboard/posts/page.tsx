@@ -5,13 +5,12 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Table, { Column } from "@/components/ui/Table";
 import Modal from "@/components/ui/Modal";
-import { PlusIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon, FunnelIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Select from "@/components/ui/Select";
-import Dropdown from "@/components/ui/Dropdown";
 import Badge, { BadgeGroup } from "@/components/ui/Badge";
 import { useToast } from "@/hooks/useToast";
 
-interface Post {
+interface Post extends Record<string, unknown> {
   id: number;
   title: string;
   slug: string;

@@ -81,23 +81,27 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true);
 
-    const savePromise = fetch("/api/settings", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(settings),
-    });
+    try {
+      const savePromise = fetch("/api/settings", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(settings),
+      });
 
-    promise(savePromise, {
-      loading: "Guardando configuración...",
-      success: "Configuración guardada exitosamente",
-      error: "Error al guardar la configuración",
-    }).catch((err) => {
+      promise(savePromise, {
+        loading: "Guardando configuración...",
+        success: "Configuración guardada exitosamente",
+        error: "Error al guardar la configuración",
+      });
+
+      await savePromise;
+    } catch (err) {
       console.error("Error saving settings:", err);
-    }).finally(() => {
+    } finally {
       setIsSaving(false);
-    });
+    }
   };
 
   const updateSetting = (key: keyof SiteSettings, value: string) => {
