@@ -68,7 +68,7 @@ export default function Dropdown({
     <Menu as="div" className={`relative inline-block ${className}`}>
       <MenuButton
         disabled={disabled}
-        className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]}`}
+        className={`inline-flex w-full justify-center items-center gap-x-1.5 rounded-md font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]}`}
       >
         {icon && (
           <span className="mr-1">
@@ -81,7 +81,8 @@ export default function Dropdown({
 
       <MenuItems
         transition
-        className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-white/10 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10 transition data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+        modal={false}
+        className="absolute right-0 z-[9999] mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-white/10 rounded-md bg-white dark:bg-gray-800 shadow-2xl ring-1 ring-black/5 dark:ring-white/10 transition data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in border border-gray-200 dark:border-gray-700"
       >
         {menuGroups.map((group, groupIndex) => (
           <div key={groupIndex} className="py-1">

@@ -99,9 +99,9 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
         )}
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto bg-gray-50/30 dark:bg-gray-900/30">
-          <div className="py-8">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <main className="flex-1 bg-gray-50/30 dark:bg-gray-900/30 min-h-0">
+          <div className="h-full overflow-x-hidden overflow-y-auto">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 h-full flex flex-col">
               {children}
             </div>
           </div>
