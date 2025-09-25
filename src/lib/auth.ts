@@ -32,48 +32,17 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 // Validación de variables de entorno críticas (solo en servidor)
 if (typeof window === "undefined") {
-  // Debug: Mostrar todas las variables disponibles
-  console.log("🔍 Environment Debug - Auth Config Loading:")
-  console.log("NODE_ENV:", process.env.NODE_ENV)
-  console.log("process.env.NEXTAUTH_SECRET exists:", !!process.env.NEXTAUTH_SECRET)
-  console.log("process.env.AUTH_SECRET exists:", !!process.env.AUTH_SECRET)
-  console.log("process.env.ADMIN_EMAIL exists:", !!process.env.ADMIN_EMAIL)
-  console.log("process.env.ADMIN_PASSWORD exists:", !!process.env.ADMIN_PASSWORD)
-  console.log("NEXTAUTH_SECRET final value exists:", !!NEXTAUTH_SECRET)
-
-  // Lista todas las variables que contienen AUTH
-  const authVars = Object.keys(process.env).filter(key =>
-    key.includes('AUTH') || key.includes('NEXTAUTH')
-  )
-  console.log("Available AUTH-related env vars:", authVars)
-
-  // Validación más flexible para desarrollo vs producción
-  const requiredSecret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET
-  if (!requiredSecret) {
-    console.error("❌ No secret found! Checked NEXTAUTH_SECRET and AUTH_SECRET")
-    // Solo lanzar error en producción
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "NEXTAUTH_SECRET or AUTH_SECRET must be set in production environment variables."
-      )
-    }
+  if (!NEXTAUTH_SECRET) {
+    throw new Error(
+      "NEXTAUTH_SECRET is not set. Please add it to your environment variables."
+    )
   }
 
-  const adminEmail = process.env.ADMIN_EMAIL
-  const adminPassword = process.env.ADMIN_PASSWORD
-  if (!adminEmail || !adminPassword) {
-    console.error("❌ Admin credentials not set!")
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables."
-      )
-    }
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    throw new Error(
+      "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables."
+    )
   }
-
-  console.log("🔐 NextAuth Environment Summary:")
-  console.log("Secret:", requiredSecret ? "✅ Set" : "❌ Missing")
-  console.log("Admin Email:", adminEmail ? "✅ Set" : "❌ Missing")
-  console.log("Admin Password:", adminPassword ? "✅ Set" : "❌ Missing")
 }
 
 export const authOptions: NextAuthOptions = {

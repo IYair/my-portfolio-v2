@@ -2,17 +2,21 @@ import { withAuth } from "next-auth/middleware"
 
 export default withAuth(
   function middleware() {
-    // Aquí puedes agregar lógica adicional si necesitas
+    // Lógica adicional si necesitas
   },
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        // Proteger todas las rutas que empiecen con /admin/dashboard
-        if (req.nextUrl.pathname.startsWith("/admin/dashboard")) {
+        // Permitir acceso a /admin/login sin autenticación
+        if (req.nextUrl.pathname === "/admin/login") {
+          return true
+        }
+
+        // Proteger todas las demás rutas de admin
+        if (req.nextUrl.pathname.startsWith("/admin")) {
           return token?.role === "admin"
         }
 
-        // Permitir acceso a /admin/login sin autenticación
         return true
       },
     },
@@ -20,5 +24,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ["/admin/dashboard/:path*"]
+  matcher: ["/admin/:path*"]
 }
