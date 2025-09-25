@@ -6,6 +6,11 @@ import { usePathname } from "next/navigation";
 export default function Navigation() {
   const pathname = usePathname();
 
+  // No mostrar navegación en rutas de admin
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   const navItems = [
     { href: "/", label: "Inicio" },
     { href: "/about", label: "Acerca" },

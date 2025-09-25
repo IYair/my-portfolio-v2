@@ -1,0 +1,71 @@
+import type { NextAuthOptions } from "next-auth"
+import CredentialsProvider from "next-auth/providers/credentials"
+import bcrypt from "bcryptjs"
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null
+        }
+
+        // Verificar credenciales contra variables de entorno
+        const adminEmail = process.env.ADMIN_EMAIL
+        const adminPassword = process.env.ADMIN_PASSWORD
+
+        if (!adminEmail || !adminPassword) {
+          console.error("Admin credentials not configured")
+          return null
+        }
+
+        // Verificar email
+        if (credentials.email !== adminEmail) {
+          return null
+        }
+
+        // Verificar password (puedes usar hash más adelante)
+        if (credentials.password !== adminPassword) {
+          return null
+        }
+
+        // Retornar usuario admin
+        return {
+          id: "admin",
+          email: adminEmail,
+          name: "Admin",
+          role: "admin"
+        }
+      }
+    })
+  ],
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = "admin"
+      }
+      return token
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          ...session.user,
+          id: token.sub,
+          role: token.role as string,
+        }
+      }
+      return session
+    },
+  },
+  pages: {
+    signIn: "/admin/login",
+  },
+}

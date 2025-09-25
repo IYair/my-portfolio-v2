@@ -1,5 +1,6 @@
 import { Meteors } from "@/components/ui/meteors";
 import Image from "next/image";
+import ContactForm from "@/components/features/ContactForm";
 
 export default function Home() {
   return (
@@ -114,6 +115,20 @@ export default function Home() {
               </a>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-foreground/5 relative z-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Contáctame</h2>
+            <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
+              ¿Tienes un proyecto en mente? ¡Me encantaría conocer más detalles!
+              Envíame un mensaje y conversemos sobre cómo puedo ayudarte.
+            </p>
+          </div>
+          <ContactForm />
         </div>
       </section>
 
