@@ -25,6 +25,15 @@ declare module "next-auth/jwt" {
   }
 }
 
+// Validar que las variables de entorno requeridas estén presentes
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error("NEXTAUTH_SECRET is not defined in environment variables")
+}
+
+if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+  throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD must be defined in environment variables")
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -91,4 +100,5 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/admin/login",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 }
