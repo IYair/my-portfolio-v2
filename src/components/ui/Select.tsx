@@ -77,7 +77,7 @@ export default function Select({
       >
         <div className="relative">
           <ListboxButton
-            className={`relative w-full cursor-default rounded-md py-2 pl-3 pr-10 text-left text-sm transition-colors focus:outline focus:outline-2 focus:-outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`relative w-full cursor-default rounded-md py-2 pl-3 pr-10 text-left text-sm transition-colors focus:outline-2 focus:-outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
               isError
                 ? 'bg-white dark:bg-gray-900 text-red-900 dark:text-red-100 ring-1 ring-inset ring-red-300 dark:ring-red-600 focus:ring-2 focus:ring-inset focus:ring-red-600 dark:focus:ring-red-400'
                 : 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:focus:ring-indigo-400'

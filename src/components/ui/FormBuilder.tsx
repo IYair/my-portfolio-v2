@@ -86,7 +86,7 @@ export default function FormBuilder({
 
   return (
     <form onSubmit={handleSubmit} className={`relative ${className}`}>
-      <div className="rounded-lg bg-white/80 dark:bg-gray-800/50 outline outline-1 -outline-offset-1 outline-gray-300 dark:outline-white/10 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 shadow-sm backdrop-blur-sm">
+      <div className="rounded-lg bg-white/80 dark:bg-gray-800/50 outline-1 -outline-offset-1 outline-gray-300 dark:outline-white/10 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600 shadow-sm backdrop-blur-sm">
         <label htmlFor="title" className="sr-only">
           {titlePlaceholder}
         </label>
@@ -97,7 +97,7 @@ export default function FormBuilder({
           placeholder={titlePlaceholder}
           value={title}
           onChange={handleTitleChange}
-          className="block w-full bg-transparent px-3 pt-2.5 text-lg font-medium text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline focus:outline-0"
+          className="block w-full bg-transparent px-3 pt-2.5 text-lg font-medium text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-0"
         />
 
         <label htmlFor="description" className="sr-only">
@@ -110,7 +110,7 @@ export default function FormBuilder({
           placeholder={descriptionPlaceholder}
           value={description}
           onChange={handleDescriptionChange}
-          className="block w-full bg-transparent resize-none px-3 py-1.5 text-base text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+          className="block w-full bg-transparent resize-none px-3 py-1.5 text-base text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-0 sm:text-sm/6"
         />
 
         {/* Spacer element to match the height of the toolbar */}
@@ -171,7 +171,7 @@ export default function FormBuilder({
 
                     <ListboxOptions
                       transition
-                      className="absolute right-0 z-10 mt-1 max-h-56 w-52 overflow-auto rounded-lg bg-white dark:bg-gray-800 py-3 text-base outline outline-1 -outline-offset-1 outline-gray-200 dark:outline-white/10 shadow-lg data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
+                      className="absolute right-0 z-10 mt-1 max-h-56 w-52 overflow-auto rounded-lg bg-white dark:bg-gray-800 py-3 text-base outline-1 -outline-offset-1 outline-gray-200 dark:outline-white/10 shadow-lg data-[closed]:data-[leave]:opacity-0 data-[leave]:transition data-[leave]:duration-100 data-[leave]:ease-in sm:text-sm"
                     >
                       {action.options.map((option) => (
                         <ListboxOption
@@ -186,7 +186,7 @@ export default function FormBuilder({
                                 src={option.avatar}
                                 width={20}
                                 height={20}
-                                className="size-5 shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 outline outline-1 -outline-offset-1 outline-gray-200 dark:outline-white/10"
+                                className="size-5 shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 outline-1 -outline-offset-1 outline-gray-200 dark:outline-white/10"
                               />
                             ) : option.icon ? (
                               <span className="size-5 shrink-0 text-gray-500 dark:text-gray-400">
