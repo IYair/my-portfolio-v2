@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 import { getAboutProfile } from "@/services/aboutService";
 
+// Revalidate every 60 seconds
+export const revalidate = 60;
+
 // Dynamic components
 import ProfileSection from "@/components/about/ProfileSection";
 import SkillsSection from "@/components/about/SkillsSection";
