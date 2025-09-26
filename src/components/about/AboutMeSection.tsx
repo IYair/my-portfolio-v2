@@ -1,6 +1,6 @@
-import { UserIcon } from "@heroicons/react/24/outline";
 import { getAboutProfile } from "@/services/aboutService";
 import { getPreserveWhitespaceStyle } from "@/utils/textFormatting";
+import { UserIcon } from "@heroicons/react/24/outline";
 
 export default async function AboutMeSection() {
   const profile = await getAboutProfile();
@@ -16,7 +16,7 @@ export default async function AboutMeSection() {
         <h3 className="m-3 text-xl text-blue-900">
           Software Developer | Web Developer | Full Stack Developer
         </h3>
-        <p className="m-3 pr-10 text-justify text-blue-900" style={getPreserveWhitespaceStyle()}>
+        <p className="m-3 pr-10 text-justify text-black" style={getPreserveWhitespaceStyle()}>
           Como profesional en tecnologías web y desarrollo de software, me destaco por mi pasión por
           la innovación y el aprendizaje constante.
         </p>
@@ -31,7 +31,7 @@ export default async function AboutMeSection() {
         SOBRE MI
       </h2>
       <h3 className="m-3 text-xl text-blue-900">{profile.subtitle}</h3>
-      <p className="m-3 pr-10 text-justify text-blue-900" style={getPreserveWhitespaceStyle()}>
+      <p className="m-3 pr-10 text-justify text-black" style={getPreserveWhitespaceStyle()}>
         {profile.bio}
       </p>
     </div>
