@@ -1,10 +1,10 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import ImageUpload from "@/components/ui/ImageUpload";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { UserIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -134,24 +134,17 @@ export default function ProfileSection() {
 
         <div>
           <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-            URL de Imagen de Perfil
+            Imagen de Perfil
           </label>
-          <Input
+          <ImageUpload
             value={profile.profileImage || ""}
-            onChange={e => setProfile({ ...profile, profileImage: e.target.value })}
-            placeholder="ej: /images/profile.jpg"
+            onChange={url => setProfile({ ...profile, profileImage: url })}
+            disabled={saving}
+            placeholder="Sube tu imagen de perfil"
+            maxSize={5}
+            width={200}
+            height={200}
           />
-          {profile.profileImage && (
-            <div className="mt-2">
-              <Image
-                src={profile.profileImage}
-                alt="Vista previa"
-                width={96}
-                height={96}
-                className="rounded-lg border border-gray-200 object-cover dark:border-gray-700"
-              />
-            </div>
-          )}
         </div>
 
         <div>

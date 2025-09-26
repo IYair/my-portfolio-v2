@@ -208,7 +208,7 @@ export default function SkillsSection() {
 
             <div className="flex gap-2">
               <Button type="submit">{editingSkill ? "Actualizar" : "Crear"}</Button>
-              <Button type="button" variant="outline" onClick={resetForm}>
+              <Button type="button" variant="ghost" onClick={resetForm}>
                 Cancelar
               </Button>
             </div>
@@ -240,12 +240,12 @@ export default function SkillsSection() {
                 </div>
               </div>
               <div className="flex space-x-1">
-                <Button size="sm" variant="outline" onClick={() => handleEdit(skill)}>
+                <Button size="sm" variant="ghost" onClick={() => handleEdit(skill)}>
                   <PencilIcon className="h-4 w-4" />
                 </Button>
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant="ghost"
                   onClick={() => handleDelete(skill.id)}
                   className="text-red-600 hover:text-red-700"
                 >

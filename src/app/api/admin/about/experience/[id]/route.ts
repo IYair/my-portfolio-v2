@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession();
     if (!session) {
@@ -10,6 +10,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     }
 
     const { position, company, description, startDate, endDate, order } = await request.json();
+    const params = await context.params;
     const id = parseInt(params.id);
 
     const experience = await prisma.workExperience.update({
@@ -31,13 +32,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession();
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const params = await context.params;
     const id = parseInt(params.id);
 
     await prisma.workExperience.delete({
