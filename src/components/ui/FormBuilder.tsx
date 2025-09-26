@@ -146,7 +146,13 @@ export default function FormBuilder({
                   <div className="relative">
                     <ListboxButton className="relative inline-flex items-center whitespace-nowrap rounded-full bg-white/10 dark:bg-white/5 px-2 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-white/20 dark:hover:bg-white/10 transition-colors sm:px-3">
                       {selectedAction?.avatar ? (
-                        <img alt="" src={selectedAction.avatar} className="size-5 shrink-0 rounded-full" />
+                        <Image
+                          alt=""
+                          src={selectedAction.avatar}
+                          width={20}
+                          height={20}
+                          className="size-5 shrink-0 rounded-full"
+                        />
                       ) : action.icon ? (
                         <span className="size-5 shrink-0 sm:-ml-1">
                           {action.icon}
@@ -175,9 +181,11 @@ export default function FormBuilder({
                         >
                           <div className="flex items-center">
                             {option.avatar ? (
-                              <img
+                              <Image
                                 alt=""
                                 src={option.avatar}
+                                width={20}
+                                height={20}
                                 className="size-5 shrink-0 rounded-full bg-gray-100 dark:bg-gray-800 outline outline-1 -outline-offset-1 outline-gray-200 dark:outline-white/10"
                               />
                             ) : option.icon ? (
