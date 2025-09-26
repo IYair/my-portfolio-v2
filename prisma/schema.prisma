@@ -12,6 +12,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 // Blog posts model
@@ -70,4 +71,85 @@ model Contact {
   createdAt DateTime @default(now())
 
   @@map("contacts")
+}
+
+// About page content models
+model AboutProfile {
+  id          Int    @id @default(autoincrement())
+  name        String
+  title       String
+  subtitle    String
+  bio         String @db.Text
+  profileImage String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("about_profile")
+}
+
+model Skill {
+  id        Int      @id @default(autoincrement())
+  name      String
+  icon      String
+  category  String?  // Frontend, Backend, Tools, etc.
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("skills")
+}
+
+model ContactInfo {
+  id        Int      @id @default(autoincrement())
+  type      String   // email, phone, location, linkedin, github
+  value     String
+  icon      String?
+  isHeroicon Boolean @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("contact_info")
+}
+
+model WorkExperience {
+  id          Int      @id @default(autoincrement())
+  position    String
+  company     String
+  description String   @db.Text
+  startDate   String?  // Format: "2020" or "Jan 2020"
+  endDate     String?  // Format: "2022" or "Present"
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("work_experience")
+}
+
+model Education {
+  id          Int      @id @default(autoincrement())
+  institution String
+  degree      String
+  field       String?
+  startDate   String?
+  endDate     String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("education")
+}
+
+model Course {
+  id           Int      @id @default(autoincrement())
+  title        String
+  provider     String   // Platzi, Udemy, etc.
+  providerIcon String?
+  icon         String?  // Technology icon for the course
+  category     String?  // Optional grouping
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("courses")
 }
