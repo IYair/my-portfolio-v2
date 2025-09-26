@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useAdminStore, { type Project } from "@/stores/adminStore";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import SafeImage from "@/components/ui/SafeImage";
@@ -11,25 +12,12 @@ import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 import Dropdown from "@/components/ui/Dropdown";
 import Badge, { BadgeGroup } from "@/components/ui/Badge";
 
-interface Project extends Record<string, unknown> {
-  id: number;
-  title: string;
-  slug: string;
-  description: string | null;
-  image: string | null;
-  demoUrl: string | null;
-  githubUrl: string | null;
-  technologies: string[];
-  featured: boolean;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
+// Using Project interface from the store
 
 export default function ProjectsPage() {
+  // Use Zustand store instead of local state
+  const { projects: allProjects, projectsLoading: isLoading, fetchProjects } = useAdminStore();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [allProjects, setAllProjects] = useState<Project[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; project: Project | null }>({
     open: false,
     project: null
@@ -39,62 +27,9 @@ export default function ProjectsPage() {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch("/api/projects");
-        if (response.ok) {
-          const data = await response.json();
-          
-          // Si no hay proyectos, agregar datos de prueba
-          if (data.length === 0) {
-            const mockProjects = [
-              {
-                id: 1,
-                title: 'Portfolio Website v2',
-                slug: 'portfolio-v2',
-                description: 'Modern portfolio built with Next.js 15 and Tailwind CSS',
-                image: '/images/portfolio-placeholder.jpg',
-                demoUrl: 'https://portfolio-v2.example.com',
-                githubUrl: 'https://github.com/user/portfolio-v2',
-                technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Prisma', 'PostgreSQL'],
-                featured: true,
-                order: 1,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-              }
-            ];
-            setAllProjects(mockProjects);
-          } else {
-            setAllProjects(data);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-        // En caso de error, también mostrar datos de prueba
-        const mockProjects = [
-          {
-            id: 1,
-            title: 'Portfolio Website v2',
-            slug: 'portfolio-v2',
-            description: 'Modern portfolio built with Next.js 15 and Tailwind CSS',
-            image: '/images/portfolio-placeholder.jpg',
-            demoUrl: 'https://portfolio-v2.example.com',
-            githubUrl: 'https://github.com/user/portfolio-v2',
-            technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Prisma', 'PostgreSQL'],
-            featured: true,
-            order: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
-        ];
-        setAllProjects(mockProjects);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+    // Use Zustand store action to fetch projects
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   // Update paginated data when page or projects change
   useEffect(() => {
@@ -121,15 +56,8 @@ export default function ProjectsPage() {
       });
 
       if (response.ok) {
-        const updatedProjects = allProjects.filter(p => p.id !== deleteModal.project!.id);
-        setAllProjects(updatedProjects);
-        
-        // If current page becomes empty and it's not the first page, go to previous page
-        const totalPages = Math.ceil(updatedProjects.length / itemsPerPage);
-        if (currentPage > totalPages && totalPages > 0) {
-          setCurrentPage(totalPages);
-        }
-        
+        // Refetch projects after deletion
+        fetchProjects();
         setDeleteModal({ open: false, project: null });
       } else {
         console.error("Failed to delete project");
@@ -158,9 +86,8 @@ export default function ProjectsPage() {
       });
 
       if (response.ok) {
-        setAllProjects(allProjects.map(p => 
-          p.id === project.id ? { ...p, featured: !p.featured } : p
-        ));
+        // Refetch projects after update
+        fetchProjects();
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
@@ -336,7 +263,7 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <Table
+      <Table<Project>
         data={projects}
         columns={columns}
         title="Proyectos del Portfolio"

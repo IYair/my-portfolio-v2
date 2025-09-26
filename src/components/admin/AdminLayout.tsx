@@ -2,7 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import useAdminStore from "@/stores/adminStore";
 import AdminSidebar from "./AdminSidebar";
 
 interface AdminLayoutProps {
@@ -10,22 +11,24 @@ interface AdminLayoutProps {
   title?: string;
 }
 
-interface Stats {
-  posts: number;
-  projects: number;
-  contacts: number;
-  unreadContacts: number;
-}
-
 export default function AdminLayout({ children, title }: AdminLayoutProps) {
   const { status } = useSession();
   const router = useRouter();
-  const [stats, setStats] = useState<Stats>({
+
+  // Use Zustand store - automatically triggers fetch on first access
+  const { dashboardData, fetchDashboardData } = useAdminStore();
+
+  console.log("🏗️ AdminLayout rendered - using Zustand global state");
+
+  // Extract stats from Zustand store
+  const stats = dashboardData?.stats || {
     posts: 0,
+    publishedPosts: 0,
     projects: 0,
+    featuredProjects: 0,
     contacts: 0,
     unreadContacts: 0,
-  });
+  };
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -33,38 +36,12 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
     }
   }, [status, router]);
 
+  // Fetch dashboard data when authenticated
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [postsRes, projectsRes, contactsRes] = await Promise.all([
-          fetch("/api/posts"),
-          fetch("/api/projects"),
-          fetch("/api/contacts"),
-        ]);
-
-        const [posts, projects, contacts] = await Promise.all([
-          postsRes.json(),
-          projectsRes.json(),
-          contactsRes.json(),
-        ]);
-
-        const unreadContacts = contacts.filter((contact: { read: boolean }) => !contact.read).length;
-
-        setStats({
-          posts: posts.length || 0,
-          projects: projects.length || 0,
-          contacts: contacts.length || 0,
-          unreadContacts,
-        });
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-      }
-    };
-
     if (status === "authenticated") {
-      fetchStats();
+      fetchDashboardData();
     }
-  }, [status]);
+  }, [status, fetchDashboardData]);
 
   if (status === "loading") {
     return (

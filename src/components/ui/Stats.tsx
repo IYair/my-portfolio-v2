@@ -1,3 +1,4 @@
+import React from 'react'
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 
 export interface StatItem {
@@ -26,6 +27,7 @@ export default function Stats({
   columns = 3,
   className = ""
 }: StatsProps) {
+
   const gridCols = {
     1: 'grid-cols-1',
     2: 'md:grid-cols-2',
@@ -36,56 +38,52 @@ export default function Stats({
   return (
     <div className={className}>
       {title && (
-        <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-5">
+        <h3 className="text-base font-semibold text-white">
           {title}
         </h3>
       )}
 
-      <dl className={`grid grid-cols-1 divide-gray-200 dark:divide-white/10 overflow-hidden rounded-lg bg-white/80 dark:bg-gray-800/75 ring-1 ring-inset ring-gray-200 dark:ring-white/10 shadow backdrop-blur-sm ${gridCols[columns]} ${columns > 1 ? 'md:divide-x md:divide-y-0' : ''}`}>
+      <dl className={`mt-5 grid grid-cols-1 gap-5 ${gridCols[columns]}`}>
         {stats.map((item) => (
-          <div key={item.name} className="px-4 py-5 sm:p-6">
-            <dt className="text-base font-normal text-gray-600 dark:text-gray-100 flex items-center">
+          <div
+            key={item.name}
+            className="relative overflow-hidden rounded-lg bg-gray-800/75 px-4 pb-12 pt-5 shadow ring-1 ring-inset ring-white/10 sm:px-6 sm:pt-6"
+          >
+            <dt>
               {item.icon && (
-                <span className="mr-2 text-gray-500 dark:text-gray-400">
-                  {item.icon}
-                </span>
-              )}
-              {item.name}
-            </dt>
-            <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
-              <div className="flex items-baseline text-2xl font-semibold text-indigo-600 dark:text-indigo-400">
-                {item.stat}
-                {item.previousStat && (
-                  <span className="ml-2 text-sm font-medium text-gray-500 dark:text-gray-400">
-                    from {item.previousStat}
+                <div className="absolute rounded-md bg-indigo-500 p-3">
+                  <span className="size-6 text-white" aria-hidden="true">
+                    {item.icon}
                   </span>
-                )}
-              </div>
-
+                </div>
+              )}
+              <p className="ml-16 truncate text-sm font-medium text-gray-400">{item.name}</p>
+            </dt>
+            <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
+              <p className="text-2xl font-semibold text-white">{item.stat}</p>
               {item.change && item.changeType && (
-                <div
+                <p
                   className={classNames(
-                    item.changeType === 'increase'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-400/10 dark:text-green-400'
-                      : 'bg-red-100 text-red-800 dark:bg-red-400/10 dark:text-red-400',
-                    'inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0',
+                    item.changeType === 'increase' ? 'text-green-400' : 'text-red-400',
+                    'ml-2 flex items-baseline text-sm font-semibold',
                   )}
                 >
                   {item.changeType === 'increase' ? (
-                    <ArrowUpIcon
-                      aria-hidden="true"
-                      className="-ml-1 mr-0.5 size-5 shrink-0 self-center text-green-600 dark:text-green-400"
-                    />
+                    <ArrowUpIcon aria-hidden="true" className="size-5 shrink-0 self-center text-green-400" />
                   ) : (
-                    <ArrowDownIcon
-                      aria-hidden="true"
-                      className="-ml-1 mr-0.5 size-5 shrink-0 self-center text-red-600 dark:text-red-400"
-                    />
+                    <ArrowDownIcon aria-hidden="true" className="size-5 shrink-0 self-center text-red-400" />
                   )}
-                  <span className="sr-only">
-                    {item.changeType === 'increase' ? 'Increased' : 'Decreased'} by
-                  </span>
+                  <span className="sr-only"> {item.changeType === 'increase' ? 'Increased' : 'Decreased'} by </span>
                   {item.change}
+                </p>
+              )}
+              {item.previousStat !== undefined && (
+                <div className="absolute inset-x-0 bottom-0 bg-gray-700/20 px-4 py-4 sm:px-6">
+                  <div className="text-sm">
+                    <span className="font-medium text-indigo-400">
+                      from {item.previousStat}
+                    </span>
+                  </div>
                 </div>
               )}
             </dd>
