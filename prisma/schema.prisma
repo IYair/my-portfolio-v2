@@ -80,7 +80,7 @@ model AboutProfile {
   title       String
   subtitle    String
   bio         String @db.Text
-  profileImage String?
+  profileImage String? @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -90,7 +90,7 @@ model AboutProfile {
 model Skill {
   id        Int      @id @default(autoincrement())
   name      String
-  icon      String
+  icon      String   @db.Text
   category  String?  // Frontend, Backend, Tools, etc.
   order     Int      @default(0)
   createdAt DateTime @default(now())
@@ -103,7 +103,7 @@ model ContactInfo {
   id        Int      @id @default(autoincrement())
   type      String   // email, phone, location, linkedin, github
   value     String
-  icon      String?
+  icon      String?  @db.Text
   isHeroicon Boolean @default(false)
   order     Int      @default(0)
   createdAt DateTime @default(now())
@@ -144,8 +144,8 @@ model Course {
   id           Int      @id @default(autoincrement())
   title        String
   provider     String   // Platzi, Udemy, etc.
-  providerIcon String?
-  icon         String?  // Technology icon for the course
+  providerIcon String?  @db.Text
+  icon         String?  @db.Text
   category     String?  // Optional grouping
   order        Int      @default(0)
   createdAt    DateTime @default(now())

@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import IconSelector from "@/components/ui/IconSelector";
 import { PencilIcon, PlusIcon, RocketLaunchIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -14,7 +15,6 @@ interface ContactInfo {
   type: string;
   value: string;
   icon?: string;
-  isHeroicon: boolean;
   order: number;
 }
 
@@ -22,7 +22,6 @@ interface ContactFormData {
   type: string;
   value: string;
   icon: string;
-  isHeroicon: boolean;
   order: number;
 }
 
@@ -44,7 +43,6 @@ export default function ContactInfoSection() {
     type: "",
     value: "",
     icon: "",
-    isHeroicon: false,
     order: 0,
   });
 
@@ -78,12 +76,20 @@ export default function ContactInfoSection() {
 
       const method = editingContact ? "PUT" : "POST";
 
+      // Preparar datos para envío - determinar si es heroicon automáticamente
+      const submitData = {
+        ...formData,
+        isHeroicon: formData.icon.startsWith("heroicon-"),
+        // Si es heroicon, limpiar el icono para la base de datos
+        icon: formData.icon.startsWith("heroicon-") ? "" : formData.icon,
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       if (response.ok) {
@@ -101,11 +107,28 @@ export default function ContactInfoSection() {
 
   const handleEdit = (contact: ContactInfo) => {
     setEditingContact(contact);
+
+    // Si es heroicon, generar el formato correcto para el selector
+    let iconValue = contact.icon || "";
+    if (
+      "isHeroicon" in contact &&
+      (contact as ContactInfo & { isHeroicon: boolean }).isHeroicon &&
+      contact.type
+    ) {
+      // Mapear tipos a nombres de heroicons
+      const heroiconMap: { [key: string]: string } = {
+        email: "heroicon-envelope",
+        phone: "heroicon-phone",
+        location: "heroicon-location",
+        website: "heroicon-website",
+      };
+      iconValue = heroiconMap[contact.type] || iconValue;
+    }
+
     setFormData({
       type: contact.type,
       value: contact.value,
-      icon: contact.icon || "",
-      isHeroicon: contact.isHeroicon,
+      icon: iconValue,
       order: contact.order,
     });
     setShowForm(true);
@@ -138,7 +161,6 @@ export default function ContactInfoSection() {
       type: "",
       value: "",
       icon: "",
-      isHeroicon: false,
       order: 0,
     });
     setEditingContact(null);
@@ -197,29 +219,16 @@ export default function ContactInfoSection() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                  URL del Icono
+                  Icono
                 </label>
-                <Input
+                <IconSelector
+                  type="contact"
                   value={formData.icon}
-                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
-                  placeholder="ej: /icons/email.svg"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                  Es Heroicon
-                </label>
-                <Select
-                  value={formData.isHeroicon.toString()}
-                  onChange={value => setFormData({ ...formData, isHeroicon: value === "true" })}
-                  options={[
-                    { value: "false", label: "No" },
-                    { value: "true", label: "Sí" },
-                  ]}
-                  placeholder="Seleccionar opción"
+                  onChange={iconPath => setFormData({ ...formData, icon: iconPath })}
+                  placeholder="Selecciona un icono"
                 />
               </div>
               <div>
@@ -250,7 +259,7 @@ export default function ContactInfoSection() {
           <Card key={contact.id} className="p-4">
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                {contact.icon && !contact.isHeroicon && (
+                {contact.icon && (
                   <Image
                     src={contact.icon}
                     alt={contact.type}
@@ -286,7 +295,6 @@ export default function ContactInfoSection() {
             </div>
             <div className="flex justify-between text-sm text-[var(--foreground)] opacity-70">
               <span>Orden: {contact.order}</span>
-              <span>{contact.isHeroicon ? "Heroicon" : "Icono personalizado"}</span>
             </div>
           </Card>
         ))}

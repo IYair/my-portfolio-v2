@@ -3,6 +3,7 @@
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import IconSelector from "@/components/ui/IconSelector";
 import { PencilIcon, PlusIcon, TrashIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -171,13 +172,12 @@ export default function SkillsSection() {
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                  URL del Icono
+                  Icono
                 </label>
-                <Input
+                <IconSelector
                   value={formData.icon}
-                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
-                  placeholder="ej: /icons/react.svg"
-                  required
+                  onChange={iconPath => setFormData({ ...formData, icon: iconPath })}
+                  placeholder="Selecciona un icono"
                 />
               </div>
             </div>

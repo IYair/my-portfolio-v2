@@ -52,7 +52,9 @@ export default function ImageUpload({
         });
 
         if (!response.ok) {
-          throw new Error("Error al subir la imagen");
+          const errorData = await response.json().catch(() => ({ error: "Error desconocido" }));
+          console.error("Upload error:", errorData);
+          throw new Error(errorData.error || `Error HTTP ${response.status}`);
         }
 
         const data = await response.json();

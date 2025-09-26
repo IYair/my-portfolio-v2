@@ -5,7 +5,7 @@ import ImageUpload from "@/components/ui/ImageUpload";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
 import { UserIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 interface ProfileData {
@@ -23,22 +23,45 @@ export default function ProfileSection() {
     title: "",
     subtitle: "",
     bio: "",
-    profileImage: "",
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    loadProfile();
+  const regenerateImageUrl = useCallback(async (imageUrl: string) => {
+    try {
+      // Extraer la key de la URL de S3
+      const url = new URL(imageUrl);
+      const key = url.pathname.substring(1); // Remover la primera barra
+
+      const response = await fetch("/api/regenerate-url", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ key }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.url;
+      }
+    } catch (error) {
+      console.error("Error regenerating URL:", error);
+    }
+    return imageUrl; // Retorna la URL original si falla
   }, []);
 
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch("/api/admin/about/profile");
       if (response.ok) {
         const data = await response.json();
         if (data) {
+          // Si hay una imagen, regenerar su URL
+          if (data.profileImage) {
+            data.profileImage = await regenerateImageUrl(data.profileImage);
+          }
           setProfile(data);
         }
       }
@@ -48,7 +71,11 @@ export default function ProfileSection() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [regenerateImageUrl]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,7 +164,7 @@ export default function ProfileSection() {
             Imagen de Perfil
           </label>
           <ImageUpload
-            value={profile.profileImage || ""}
+            value={profile.profileImage}
             onChange={url => setProfile({ ...profile, profileImage: url })}
             disabled={saving}
             placeholder="Sube tu imagen de perfil"
