@@ -3,6 +3,7 @@
 import Button from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import IconSelector from "@/components/ui/IconSelector";
 import { BookOpenIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -207,10 +208,11 @@ export default function CoursesSection() {
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
                   Icono del Proveedor
                 </label>
-                <Input
+                <IconSelector
+                  type="providers"
                   value={formData.providerIcon}
-                  onChange={e => setFormData({ ...formData, providerIcon: e.target.value })}
-                  placeholder="ej: /icons/platzi.svg"
+                  onChange={iconPath => setFormData({ ...formData, providerIcon: iconPath })}
+                  placeholder="Selecciona el icono del proveedor"
                 />
               </div>
             </div>
@@ -218,12 +220,13 @@ export default function CoursesSection() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                  Icono del Curso
+                  Icono del Curso (Tecnología)
                 </label>
-                <Input
+                <IconSelector
+                  type="skills"
                   value={formData.icon}
-                  onChange={e => setFormData({ ...formData, icon: e.target.value })}
-                  placeholder="ej: /icons/react.svg"
+                  onChange={iconPath => setFormData({ ...formData, icon: iconPath })}
+                  placeholder="Selecciona la tecnología del curso"
                 />
               </div>
               <div>

@@ -80,11 +80,63 @@ const contactIcons = [
   { path: "heroicon-website", name: "Sitio Web (Icono)", category: "Heroicon" },
 ];
 
+// Iconos para proveedores de cursos
+const providerIcons = [
+  { path: "/icons/providers/platzi-svgrepo-com.svg", name: "Platzi", category: "Education" },
+  { path: "/icons/providers/udemy-icon-svgrepo-com.svg", name: "Udemy", category: "Education" },
+  { path: "/icons/providers/coursera-svgrepo-com.svg", name: "Coursera", category: "Education" },
+  { path: "/icons/providers/edx-svgrepo-com.svg", name: "edX", category: "Education" },
+  { path: "/icons/providers/udacity-svgrepo-com.svg", name: "Udacity", category: "Education" },
+  {
+    path: "/icons/providers/codecademy-svgrepo-com.svg",
+    name: "Codecademy",
+    category: "Education",
+  },
+  {
+    path: "/icons/providers/freecodecamp-svgrepo-com.svg",
+    name: "freeCodeCamp",
+    category: "Education",
+  },
+  {
+    path: "/icons/providers/khan-academy-icon-svgrepo-com.svg",
+    name: "Khan Academy",
+    category: "Education",
+  },
+  {
+    path: "/icons/providers/linkedin-svgrepo-com.svg",
+    name: "LinkedIn Learning",
+    category: "Education",
+  },
+  {
+    path: "/icons/providers/pluralsight-svgrepo-com.svg",
+    name: "Pluralsight",
+    category: "Education",
+  },
+  { path: "/icons/providers/devtalles.svg", name: "DevTalles", category: "Education" },
+  {
+    path: "/icons/providers/google-color-svgrepo-com.svg",
+    name: "Google",
+    category: "Certification",
+  },
+  {
+    path: "/icons/providers/microsoft-svgrepo-com.svg",
+    name: "Microsoft",
+    category: "Certification",
+  },
+  {
+    path: "/icons/providers/amazon-color-svgrepo-com.svg",
+    name: "Amazon (AWS)",
+    category: "Certification",
+  },
+  { path: "/icons/providers/oracle-svgrepo-com.svg", name: "Oracle", category: "Certification" },
+  { path: "/icons/providers/cisco-svgrepo-com.svg", name: "Cisco", category: "Certification" },
+];
+
 interface IconSelectorProps {
   value: string;
   onChange: (iconPath: string) => void;
   placeholder?: string;
-  type?: "skills" | "contact";
+  type?: "skills" | "contact" | "providers";
 }
 
 export default function IconSelector({
@@ -97,7 +149,8 @@ export default function IconSelector({
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const availableIcons = type === "contact" ? contactIcons : skillIcons;
+  const availableIcons =
+    type === "contact" ? contactIcons : type === "providers" ? providerIcons : skillIcons;
 
   // Buscar icono seleccionado
   const selectedIcon = availableIcons.find(icon => icon.path === value);

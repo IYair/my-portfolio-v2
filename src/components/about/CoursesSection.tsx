@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { getCourses } from "@/services/aboutService";
+import Image from "next/image";
 
 export default async function CoursesSection() {
   const coursesByProvider = await getCourses();
@@ -18,18 +18,20 @@ export default async function CoursesSection() {
           return (
             <div key={provider} className="mb-8">
               {/* Provider Header */}
-              <div className="flex w-full flex-row">
+              <div className="flex w-full flex-row items-center">
                 {firstCourse.providerIcon && (
-                  <Image
-                    src={firstCourse.providerIcon}
-                    alt={provider}
-                    width={46}
-                    height={46}
-                    className="drop-shadow-[2px_8px_2px_rgba(0,0,0,0.4)]"
-                  />
+                  <div className="flex items-center justify-center rounded-lg bg-gray-100 p-2 shadow-sm dark:bg-gray-800">
+                    <Image
+                      src={firstCourse.providerIcon}
+                      alt={provider}
+                      width={32}
+                      height={32}
+                      className="h-16 w-16 object-contain"
+                    />
+                  </div>
                 )}
-                <p className="ml-2 text-justify text-2xl tracking-widest text-blue-900 lg:text-3xl">
-                  {provider.toUpperCase()}
+                <p className="ml-3 text-justify text-xl tracking-widest text-blue-900 lg:text-xl">
+                  {provider.toWellFormed()}
                 </p>
               </div>
 
@@ -41,12 +43,12 @@ export default async function CoursesSection() {
                       <Image
                         src={course.icon}
                         alt={course.title}
-                        width={24}
-                        height={24}
+                        width={44}
+                        height={44}
                         className="drop-shadow-[1px_2px_1px_rgba(0,0,0,0.4)]"
                       />
                     )}
-                    <p className="ml-2 text-justify tracking-widest text-blue-900">
+                    <p className="ml-3 text-justify tracking-widest text-blue-900">
                       {course.title}
                     </p>
                   </div>
