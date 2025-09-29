@@ -1,10 +1,8 @@
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    console.log('📊 Dashboard stats API called')
-
     // Simple parallel queries - no over-optimization
     const [
       postsCount,
@@ -15,7 +13,7 @@ export async function GET() {
       unreadContactsCount,
       recentPosts,
       recentProjects,
-      recentContacts
+      recentContacts,
     ] = await Promise.all([
       prisma.post.count(),
       prisma.post.count({ where: { published: true } }),
@@ -26,24 +24,22 @@ export async function GET() {
 
       prisma.post.findMany({
         select: { id: true, title: true, published: true, createdAt: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 3,
       }),
 
       prisma.project.findMany({
         select: { id: true, title: true, featured: true, createdAt: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 2,
       }),
 
       prisma.contact.findMany({
         select: { id: true, name: true, read: true, createdAt: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 2,
       }),
-    ])
-
-    console.log('✅ Dashboard stats fetched successfully')
+    ]);
 
     return NextResponse.json({
       stats: {
@@ -58,14 +54,10 @@ export async function GET() {
         posts: recentPosts,
         projects: recentProjects,
         contacts: recentContacts,
-      }
-    })
-
+      },
+    });
   } catch (error) {
-    console.error('❌ Error fetching dashboard stats:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch dashboard stats' },
-      { status: 500 }
-    )
+    console.error("❌ Error fetching dashboard stats:", error);
+    return NextResponse.json({ error: "Failed to fetch dashboard stats" }, { status: 500 });
   }
 }

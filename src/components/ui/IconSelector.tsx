@@ -13,33 +13,58 @@ import {
 
 // Iconos para habilidades técnicas
 const skillIcons = [
-  { path: "/icons/Html.svg", name: "HTML", category: "Frontend" },
-  { path: "/icons/Css.svg", name: "CSS", category: "Frontend" },
-  { path: "/icons/logo-javascript.svg", name: "JavaScript", category: "Frontend" },
-  { path: "/icons/devicon_typescript.svg", name: "TypeScript", category: "Frontend" },
-  { path: "/icons/React.svg", name: "React", category: "Frontend" },
-  { path: "/icons/Nextjs.svg", name: "Next.js (Dark)", category: "Frontend" },
-  { path: "/icons/Nextjs-white.svg", name: "Next.js (White)", category: "Frontend" },
-  { path: "/icons/vscode-icons_file-type-node.svg", name: "Node.js", category: "Backend" },
-  { path: "/icons/devicon_tailwindcss.svg", name: "Tailwind CSS", category: "Frontend" },
-  { path: "/icons/devicon_mysql.svg", name: "MySQL", category: "Database" },
-  { path: "/icons/devicon_postgresql.svg", name: "PostgreSQL", category: "Database" },
-  { path: "/icons/devicon_prisma.svg", name: "Prisma", category: "Database" },
-  { path: "/icons/devicon_redux.svg", name: "Redux", category: "Frontend" },
-  { path: "/icons/devicon_git.svg", name: "Git", category: "Tools" },
-  { path: "/icons/Git.svg", name: "Git (Alt)", category: "Tools" },
-  { path: "/icons/github.svg", name: "GitHub", category: "Tools" },
-  { path: "/icons/logo-github.svg", name: "GitHub (Alt)", category: "Tools" },
-  { path: "/icons/logos_figma.svg", name: "Figma", category: "Tools" },
-  { path: "/icons/devicon_postman.svg", name: "Postman", category: "Tools" },
-  { path: "/icons/skill-icons_selenium.svg", name: "Selenium", category: "Testing" },
-  { path: "/icons/logos_sass.svg", name: "Sass", category: "Frontend" },
-  { path: "/icons/skill-icons_jest.svg", name: "Jest", category: "Testing" },
-  { path: "/icons/logo-docker.svg", name: "Docker", category: "Tools" },
-  { path: "/icons/python.svg", name: "Python", category: "Backend" },
-  { path: "/icons/Laravel.svg", name: "Laravel", category: "Backend" },
-  { path: "/icons/mdi_responsive.svg", name: "Responsive Design", category: "Frontend" },
-  { path: "/icons/bi_terminal.svg", name: "Terminal", category: "Tools" },
+  // Frontend Básico
+  { path: "/icons/skill_html.svg", name: "HTML", category: "Frontend" },
+  { path: "/icons/skill_css.svg", name: "CSS", category: "Frontend" },
+  { path: "/icons/skill_javascript.svg", name: "JavaScript", category: "Frontend" },
+  { path: "/icons/skill_typescript.svg", name: "TypeScript", category: "Frontend" },
+
+  // Frameworks Frontend
+  { path: "/icons/skill_react.svg", name: "React", category: "Frontend" },
+  { path: "/icons/skill_vue.svg", name: "Vue.js", category: "Frontend" },
+  { path: "/icons/skill_angular.svg", name: "Angular", category: "Frontend" },
+  { path: "/icons/skill_svelte.svg", name: "Svelte", category: "Frontend" },
+  { path: "/icons/skill_nextjs.svg", name: "Next.js", category: "Frontend" },
+
+  // Estilos y UI
+  { path: "/icons/skill_tailwind.svg", name: "Tailwind CSS", category: "Frontend" },
+  { path: "/icons/skill_sass.svg", name: "SASS", category: "Frontend" },
+  { path: "/icons/skill_bootstrap.svg", name: "Bootstrap", category: "Frontend" },
+
+  // Estado y Gestión
+  { path: "/icons/skill_redux.svg", name: "Redux", category: "Frontend" },
+  { path: "/icons/skill_graphql.svg", name: "GraphQL", category: "Frontend" },
+  { path: "/icons/skill_inertia.svg", name: "Inertia.js", category: "Frontend" },
+
+  // Backend
+  { path: "/icons/skill_nodejs.svg", name: "Node.js", category: "Backend" },
+  { path: "/icons/skill_express.svg", name: "Express.js", category: "Backend" },
+  { path: "/icons/skill_nestjs.svg", name: "NestJS", category: "Backend" },
+  { path: "/icons/skill_python.svg", name: "Python", category: "Backend" },
+  { path: "/icons/skill_laravel.svg", name: "Laravel", category: "Backend" },
+  { path: "/icons/skill_dotnet.svg", name: "ASP.NET", category: "Backend" },
+  { path: "/icons/skill_csharp.svg", name: "C#", category: "Backend" },
+
+  // Bases de Datos
+  { path: "/icons/skill_mysql.svg", name: "MySQL", category: "Database" },
+  { path: "/icons/skill_postgresql.svg", name: "PostgreSQL", category: "Database" },
+  { path: "/icons/skill_sqlserver.svg", name: "SQL Server", category: "Database" },
+  { path: "/icons/skill_mongodb.svg", name: "MongoDB", category: "Database" },
+  { path: "/icons/skill_redis.svg", name: "Redis", category: "Database" },
+
+  // Cloud y DevOps
+  { path: "/icons/skill_aws.svg", name: "AWS", category: "Cloud" },
+  { path: "/icons/skill_azure.svg", name: "Azure", category: "Cloud" },
+  { path: "/icons/skill_vercel.svg", name: "Vercel", category: "Cloud" },
+  { path: "/icons/skill_firebase.svg", name: "Firebase", category: "Cloud" },
+  { path: "/icons/skill_kubernetes.svg", name: "Kubernetes", category: "DevOps" },
+  { path: "/icons/skill_docker.svg", name: "Docker", category: "DevOps" },
+
+  // Mobile
+  { path: "/icons/skill_flutter.svg", name: "Flutter", category: "Mobile" },
+
+  // Herramientas de Desarrollo
+  { path: "/icons/skill_git.svg", name: "Git", category: "Tools" },
 ];
 
 // Iconos para información de contacto - incluyendo heroicons como rutas normales
@@ -137,7 +162,6 @@ export default function IconSelector({
   }, [isOpen]);
 
   const handleSelect = (iconPath: string) => {
-    console.log("IconSelector - Selecting:", iconPath);
     onChange(iconPath);
     setIsOpen(false);
   };
