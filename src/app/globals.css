@@ -491,7 +491,7 @@ body {
   animation: meteor linear infinite;
 }
 
-/* Neon Glow Animation */
+/* Neon Glow Animation - Dark Mode */
 @keyframes neon-pulse {
   0%,
   100% {
@@ -512,6 +512,31 @@ body {
   }
 }
 
+/* Neon Glow Animation - Light Mode (Sun Glow) */
+@keyframes neon-pulse-light {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.3))
+      drop-shadow(0 0 20px rgba(249, 115, 22, 0.25)) drop-shadow(0 0 30px rgba(234, 88, 12, 0.2));
+  }
+  25% {
+    filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.5))
+      drop-shadow(0 0 30px rgba(249, 115, 22, 0.4)) drop-shadow(0 0 45px rgba(234, 88, 12, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.4))
+      drop-shadow(0 0 25px rgba(249, 115, 22, 0.3)) drop-shadow(0 0 38px rgba(234, 88, 12, 0.25));
+  }
+  75% {
+    filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.6))
+      drop-shadow(0 0 35px rgba(249, 115, 22, 0.5)) drop-shadow(0 0 50px rgba(234, 88, 12, 0.4));
+  }
+}
+
 .neon-glow {
+  animation: neon-pulse-light 4s ease-in-out infinite;
+}
+
+.dark .neon-glow {
   animation: neon-pulse 4s ease-in-out infinite;
 }

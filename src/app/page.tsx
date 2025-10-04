@@ -24,7 +24,7 @@ export default function Home() {
                   Yair Chan
                 </span>
               </h1>
-              <p className="text-foreground/80 mb-8 text-2xl leading-relaxed md:text-2xl">
+              <p className="mb-8 text-2xl leading-relaxed font-medium text-gray-500 md:text-2xl dark:text-gray-300">
                 Desarrollador Full Stack apasionado por crear experiencias digitales increíbles y
                 soluciones innovadoras.
               </p>
@@ -167,7 +167,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-foreground/10 text-foreground/60 mt-8 border-t pt-8 text-center text-sm">
-            © 2024 Tu Nombre. Todos los derechos reservados.
+            © 2025 Yair Chan. Todos los derechos reservados.
           </div>
         </div>
       </footer>
