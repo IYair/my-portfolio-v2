@@ -2,37 +2,39 @@
 @import "../styles/_variables.scss";
 @import "../styles/_keyframe-animations.scss";
 
-/* Custom editor styles for better UX */
+@variant dark (&:is(.dark *));
+
+/* Custom editor styles for better UX - SOLO para el admin */
 .simple-editor-wrapper {
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
 }
 
 .simple-editor-content {
-  background: white !important;
-  color: #1f2937 !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  background: white;
+  color: #1f2937;
+  width: 100%;
+  max-width: 100%;
 }
 
 .simple-editor-content .tiptap {
-  background: white !important;
-  color: #1f2937 !important;
-  width: 100% !important;
-  max-width: 100% !important;
+  background: white;
+  color: #1f2937;
+  width: 100%;
+  max-width: 100%;
   overflow-wrap: break-word;
 }
 
-/* Dark mode adjustments */
+/* Dark mode adjustments - En admin, el editor siempre es claro */
 .dark .simple-editor-content {
-  background: white !important;
-  color: #1f2937 !important;
+  background: white;
+  color: #1f2937;
 }
 
 .dark .simple-editor-content .tiptap {
-  background: white !important;
-  color: #1f2937 !important;
+  background: white;
+  color: #1f2937;
 }
 
 /* Post content styling for blog pages */
@@ -150,15 +152,15 @@
 .prose pre.bg-gray-100,
 .prose pre.code-block-lowlight,
 .prose pre.shiki {
-  background-color: #0d1117 !important;
-  border: 1px solid #30363d;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
   overflow-x: auto;
   overflow-wrap: normal;
   white-space: pre;
   word-break: normal;
-  padding: 1rem !important;
+  padding: 1rem;
   border-radius: 0.5rem;
-  margin: 1.5rem 0 !important;
+  margin: 1.5rem 0;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.12),
     0 1px 2px rgba(0, 0, 0, 0.24);
@@ -167,8 +169,8 @@
 .prose pre.bg-gray-100 code,
 .prose pre.code-block-lowlight code,
 .prose pre.shiki code {
-  background: none !important;
-  color: inherit;
+  background: none;
+  color: #1f2937;
   font-size: 0.875rem;
   line-height: 1.7;
   white-space: pre;
@@ -176,6 +178,23 @@
   font-family: "Menlo", "Monaco", "Courier New", monospace;
   font-weight: 400;
   display: block;
+}
+
+/* Dark mode code blocks */
+.dark .prose pre.bg-gray-100,
+.dark .prose pre.code-block-lowlight,
+.dark .prose pre.shiki {
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.24),
+    0 1px 2px rgba(0, 0, 0, 0.36);
+}
+
+.dark .prose pre.bg-gray-100 code,
+.dark .prose pre.code-block-lowlight code,
+.dark .prose pre.shiki code {
+  color: inherit;
 }
 
 /* Lowlight syntax highlighting - Tailwind CSS inspired theme */
@@ -432,18 +451,16 @@
   --foreground: #171717;
 }
 
+:root.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

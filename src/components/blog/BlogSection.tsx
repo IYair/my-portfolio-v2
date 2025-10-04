@@ -29,7 +29,7 @@ export default function BlogSection() {
           setPosts(data);
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        // Error fetching posts
       } finally {
         setLoading(false);
       }
@@ -65,9 +65,9 @@ export default function BlogSection() {
           <div className="grid gap-8 md:grid-cols-3">
             {[1, 2, 3].map(i => (
               <div key={i} className="animate-pulse">
-                <div className="mb-4 h-48 rounded-lg bg-gray-200 dark:bg-gray-700"></div>
-                <div className="mb-2 h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
-                <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div className="mb-4 h-48 rounded-lg bg-gray-300 dark:bg-gray-700"></div>
+                <div className="mb-2 h-4 rounded bg-gray-300 dark:bg-gray-700"></div>
+                <div className="h-4 w-3/4 rounded bg-gray-300 dark:bg-gray-700"></div>
               </div>
             ))}
           </div>

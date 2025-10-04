@@ -52,10 +52,10 @@ export default function Navigation() {
                 className="hover:bg-foreground/5 rounded-lg p-2 transition-colors"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? (
-                  <SunIcon className="text-foreground h-5 w-5" />
-                ) : (
+                {theme === "light" ? (
                   <MoonIcon className="text-foreground h-5 w-5" />
+                ) : (
+                  <SunIcon className="text-foreground h-5 w-5" />
                 )}
               </button>
             )}

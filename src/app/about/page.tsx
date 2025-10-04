@@ -52,7 +52,7 @@ export default function About() {
         </section>
 
         {/* Right Section */}
-        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-white p-4 lg:col-span-2">
+        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-white p-4 lg:col-span-2 dark:bg-gray-800">
           <AboutMeSection />
 
           <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-900 to-transparent"></div>

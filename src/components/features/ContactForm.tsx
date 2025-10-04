@@ -27,11 +27,9 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
     message: string;
   }>({ type: null, message: "" });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,10 +66,12 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
         message: "",
       });
     } catch (error) {
-      console.error("Contact form error:", error);
       setSubmitStatus({
         type: "error",
-        message: error instanceof Error ? error.message : "Error al enviar el mensaje. Inténtalo de nuevo.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Error al enviar el mensaje. Inténtalo de nuevo.",
       });
     } finally {
       setIsSubmitting(false);
@@ -79,12 +79,12 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
   };
 
   return (
-    <div className={`max-w-2xl mx-auto ${className}`}>
+    <div className={`mx-auto max-w-2xl ${className}`}>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name and Email Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-2">
+            <label htmlFor="name" className="mb-2 block text-sm font-medium">
               Nombre *
             </label>
             <input
@@ -94,12 +94,12 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
+              className="border-foreground/20 bg-background w-full rounded-lg border px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               placeholder="Tu nombre"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2">
+            <label htmlFor="email" className="mb-2 block text-sm font-medium">
               Email *
             </label>
             <input
@@ -109,7 +109,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
+              className="border-foreground/20 bg-background w-full rounded-lg border px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               placeholder="tu@email.com"
             />
           </div>
@@ -117,7 +117,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
 
         {/* Subject */}
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium mb-2">
+          <label htmlFor="subject" className="mb-2 block text-sm font-medium">
             Asunto
           </label>
           <input
@@ -126,14 +126,14 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
+            className="border-foreground/20 bg-background w-full rounded-lg border px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
             placeholder="¿En qué te puedo ayudar?"
           />
         </div>
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-sm font-medium mb-2">
+          <label htmlFor="message" className="mb-2 block text-sm font-medium">
             Mensaje *
           </label>
           <textarea
@@ -143,7 +143,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
             onChange={handleChange}
             required
             rows={6}
-            className="w-full px-4 py-3 border border-foreground/20 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background resize-none"
+            className="border-foreground/20 bg-background w-full resize-none rounded-lg border px-4 py-3 focus:border-transparent focus:ring-2 focus:ring-blue-500"
             placeholder="Escribe tu mensaje aquí..."
           />
         </div>
@@ -153,7 +153,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full px-6 py-3 rounded-lg font-medium transition-colors ${
+            className={`w-full rounded-lg px-6 py-3 font-medium transition-colors ${
               isSubmitting
                 ? "bg-foreground/50 cursor-not-allowed"
                 : "bg-foreground text-background hover:bg-foreground/90"
@@ -166,10 +166,10 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
         {/* Status Message */}
         {submitStatus.type && (
           <div
-            className={`p-4 rounded-lg ${
+            className={`rounded-lg p-4 ${
               submitStatus.type === "success"
-                ? "bg-green-50 border border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
-                : "bg-red-50 border border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400"
+                ? "border border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
+                : "border border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
             }`}
           >
             {submitStatus.message}

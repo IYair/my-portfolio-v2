@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { ArrowLeftIcon, CalendarIcon, TagIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { CalendarIcon, TagIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 
 interface Post {
@@ -39,7 +39,6 @@ export default function BlogPostPage() {
           setError("Error al cargar el post");
         }
       } catch (error) {
-        console.error("Error fetching post:", error);
         setError("Error al cargar el post");
       } finally {
         setLoading(false);
@@ -99,8 +98,7 @@ export default function BlogPostPage() {
               preElement.replaceWith(newPre);
             }
           } catch (error) {
-            console.error(`Error highlighting code block (${language}):`, error);
-            // Fallback: just mark as processed to prevent retry loop
+            // Error highlighting code block, fallback: just mark as processed to prevent retry loop
             preElement.classList.add("shiki-processed");
           }
         }
@@ -120,15 +118,15 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 dark:bg-gray-900">
+      <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-6">
           <div className="animate-pulse">
-            <div className="mb-6 h-6 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-4 h-12 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-8 h-4 w-48 rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="mb-6 h-6 w-32 rounded bg-gray-300 dark:bg-gray-700"></div>
+            <div className="mb-4 h-12 w-3/4 rounded bg-gray-300 dark:bg-gray-700"></div>
+            <div className="mb-8 h-4 w-48 rounded bg-gray-300 dark:bg-gray-700"></div>
             <div className="space-y-4">
               {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="h-4 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div key={i} className="h-4 rounded bg-gray-300 dark:bg-gray-700"></div>
               ))}
             </div>
           </div>
@@ -139,11 +137,11 @@ export default function BlogPostPage() {
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 dark:bg-gray-900">
+      <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-6">
           <Link
             href="/blog"
-            className="mb-8 inline-flex items-center text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mb-8 inline-flex items-center text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
             Volver al blog
@@ -152,7 +150,7 @@ export default function BlogPostPage() {
             <h1 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
               {error || "Post no encontrado"}
             </h1>
-            <p className="mb-8 text-gray-600 dark:text-gray-400">
+            <p className="mb-8 text-gray-700 dark:text-gray-400">
               El artículo que buscas no existe o ha sido removido.
             </p>
             <Link
@@ -168,19 +166,19 @@ export default function BlogPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-20 dark:bg-gray-900">
+    <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
       <div className="mx-auto max-w-4xl px-6">
         {/* Navigation */}
         <Link
           href="/blog"
-          className="mb-8 inline-flex items-center text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          className="mb-8 inline-flex items-center text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ArrowLeftIcon className="mr-2 h-5 w-5" />
           Volver al blog
         </Link>
 
         {/* Article */}
-        <article className="rounded-lg bg-white p-8 shadow-sm dark:bg-gray-800">
+        <article className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           {/* Header */}
           <header className="mb-8">
             <h1 className="mb-6 text-4xl leading-tight font-bold text-gray-900 dark:text-white">
@@ -188,7 +186,7 @@ export default function BlogPostPage() {
             </h1>
 
             {/* Meta */}
-            <div className="mb-6 flex items-center text-gray-600 dark:text-gray-400">
+            <div className="mb-6 flex items-center text-gray-700 dark:text-gray-400">
               <CalendarIcon className="mr-2 h-5 w-5" />
               <time dateTime={post.createdAt}>Publicado el {formatDate(post.createdAt)}</time>
               {post.featured && (
@@ -200,7 +198,7 @@ export default function BlogPostPage() {
 
             {/* Excerpt */}
             {post.excerpt && (
-              <p className="mb-6 text-xl leading-relaxed text-gray-700 dark:text-gray-300">
+              <p className="mb-6 text-xl leading-relaxed text-gray-800 dark:text-gray-300">
                 {post.excerpt}
               </p>
             )}
@@ -211,7 +209,7 @@ export default function BlogPostPage() {
                 {post.tags.map(tag => (
                   <span
                     key={tag.id}
-                    className="flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                    className="flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800 dark:bg-gray-700 dark:text-gray-300"
                   >
                     <TagIcon className="mr-1 h-4 w-4" />
                     {tag.name}
@@ -223,7 +221,7 @@ export default function BlogPostPage() {
 
           {/* Content */}
           <div
-            className="prose prose-lg dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-strong:text-gray-900 dark:prose-strong:text-white prose-code:text-gray-900 dark:prose-code:text-white prose-img:rounded-lg prose-img:shadow-lg tiptap-content max-w-none"
+            className="prose prose-lg prose-headings:text-gray-900 prose-p:text-gray-800 prose-a:text-blue-600 prose-strong:text-gray-900 prose-code:text-gray-900 prose-img:rounded-lg prose-img:shadow-lg dark:prose-invert dark:prose-headings:text-white dark:prose-p:text-gray-300 dark:prose-a:text-blue-400 dark:prose-strong:text-white dark:prose-code:text-white tiptap-content max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </article>
@@ -232,7 +230,7 @@ export default function BlogPostPage() {
         <div className="mt-12 text-center">
           <Link
             href="/blog"
-            className="inline-flex items-center rounded-lg bg-gray-100 px-6 py-3 font-medium text-gray-900 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
+            className="inline-flex items-center rounded-lg bg-gray-200 px-6 py-3 font-medium text-gray-900 transition-colors hover:bg-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
           >
             ← Ver más artículos
           </Link>

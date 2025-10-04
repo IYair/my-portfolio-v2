@@ -29,7 +29,7 @@ export default function BlogPage() {
           setPosts(data);
         }
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        // Error fetching posts
       } finally {
         setLoading(false);
       }
@@ -54,18 +54,18 @@ export default function BlogPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-20 dark:bg-gray-900">
+      <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-6">
           <div className="animate-pulse">
-            <div className="mb-4 h-8 w-32 rounded bg-gray-200 dark:bg-gray-700"></div>
-            <div className="mb-8 h-12 w-96 rounded bg-gray-200 dark:bg-gray-700"></div>
+            <div className="mb-4 h-8 w-32 rounded bg-gray-300 dark:bg-gray-700"></div>
+            <div className="mb-8 h-12 w-96 rounded bg-gray-300 dark:bg-gray-700"></div>
             <div className="space-y-8">
               {[1, 2, 3].map(i => (
-                <div key={i} className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                  <div className="mb-3 h-6 w-3/4 rounded bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="mb-2 h-4 w-24 rounded bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="mb-4 h-4 w-full rounded bg-gray-200 dark:bg-gray-700"></div>
-                  <div className="h-4 w-4/5 rounded bg-gray-200 dark:bg-gray-700"></div>
+                <div key={i} className="rounded-lg bg-gray-50 p-6 shadow-sm dark:bg-gray-800">
+                  <div className="mb-3 h-6 w-3/4 rounded bg-gray-300 dark:bg-gray-700"></div>
+                  <div className="mb-2 h-4 w-24 rounded bg-gray-300 dark:bg-gray-700"></div>
+                  <div className="mb-4 h-4 w-full rounded bg-gray-300 dark:bg-gray-700"></div>
+                  <div className="h-4 w-4/5 rounded bg-gray-300 dark:bg-gray-700"></div>
                 </div>
               ))}
             </div>
@@ -76,19 +76,19 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-20 dark:bg-gray-900">
+    <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
       <div className="mx-auto max-w-4xl px-6">
         {/* Header */}
         <div className="mb-12">
           <Link
             href="/"
-            className="mb-6 inline-flex items-center text-gray-600 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mb-6 inline-flex items-center text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
             Volver al inicio
           </Link>
           <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">Blog</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+          <p className="text-xl text-gray-700 dark:text-gray-300">
             Artículos sobre desarrollo web, tecnología y programación
           </p>
         </div>

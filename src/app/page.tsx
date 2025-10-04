@@ -1,7 +1,7 @@
 "use client";
 
-import ContactForm from "@/components/features/ContactForm";
 import BlogSection from "@/components/blog/BlogSection";
+import ContactForm from "@/components/features/ContactForm";
 import { Meteors } from "@/components/ui/meteors";
 import Image from "next/image";
 
@@ -20,7 +20,7 @@ export default function Home() {
             <div className="relative z-20 max-w-3xl">
               <h1 className="mb-6 text-6xl font-bold md:text-6xl">
                 Hola, soy{" "}
-                <span className="pointer-events-none bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-6xl leading-none font-semibold whitespace-pre-wrap text-transparent dark:from-white dark:to-slate-900/10">
+                <span className="bg-gradient-to-b from-gray-300 to-gray-900 bg-clip-text text-6xl leading-none font-semibold whitespace-pre-wrap text-transparent dark:from-white dark:to-gray-800">
                   Yair Chan
                 </span>
               </h1>
@@ -47,7 +47,7 @@ export default function Home() {
         </div>
         {/* Profile Image */}
         <div className="flex justify-center pt-20 md:absolute md:right-6 md:bottom-0 md:h-full md:justify-end lg:right-12 xl:right-24 2xl:right-40">
-          <div className="relative h-96 brightness-[75%] md:h-full">
+          <div className="relative h-96 brightness-[95%] md:h-full">
             <Image
               src="/images/me.png"
               alt="Yair Chan - Desarrollador Full Stack"
@@ -144,15 +144,24 @@ export default function Home() {
       <footer className="border-foreground/10 relative z-20 border-t py-12">
         <div className="mx-auto max-w-6xl px-6">
           <div className="flex flex-col items-center justify-between md:flex-row">
-            <div className="mb-4 font-mono text-lg font-semibold md:mb-0">Tu Nombre</div>
+            <div className="mb-4 font-mono text-lg font-semibold md:mb-0">Yair Chan</div>
             <div className="flex space-x-6">
-              <a href="#" className="text-foreground/60 hover:text-foreground transition-colors">
+              <a
+                href="https://github.com/IYair"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+              >
                 GitHub
               </a>
-              <a href="#" className="text-foreground/60 hover:text-foreground transition-colors">
+              <a
+                href="https://www.linkedin.com/in/yair-chan/"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+              >
                 LinkedIn
               </a>
-              <a href="#" className="text-foreground/60 hover:text-foreground transition-colors">
+              <a
+                href="https://x.com/EnyaDev"
+                className="text-foreground/60 hover:text-foreground transition-colors"
+              >
                 Twitter
               </a>
             </div>
