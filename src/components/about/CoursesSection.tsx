@@ -10,7 +10,7 @@ export default async function CoursesSection() {
 
   return (
     <section className="ml-10">
-      <h2 className="m-3 flex text-2xl font-extralight text-blue-900 lg:text-3xl">CURSOS</h2>
+      <h2 className="m-3 flex text-2xl font-extralight text-blue-300 lg:text-3xl">CURSOS</h2>
 
       <div className="flex flex-col">
         {Object.entries(coursesByProvider).map(([provider, courses]) => {
@@ -20,7 +20,7 @@ export default async function CoursesSection() {
               {/* Provider Header */}
               <div className="flex w-full flex-row items-center">
                 {firstCourse.providerIcon && (
-                  <div className="flex items-center justify-center rounded-lg bg-gray-100 p-2 shadow-sm dark:bg-gray-800">
+                  <div className="flex items-center justify-center rounded-lg bg-gray-700 p-2 shadow-sm">
                     <Image
                       src={firstCourse.providerIcon}
                       alt={provider}
@@ -30,7 +30,7 @@ export default async function CoursesSection() {
                     />
                   </div>
                 )}
-                <p className="ml-3 text-justify text-xl tracking-widest text-blue-900 lg:text-xl">
+                <p className="ml-3 text-justify text-xl tracking-widest text-blue-300 lg:text-xl">
                   {provider.toWellFormed()}
                 </p>
               </div>
@@ -48,7 +48,7 @@ export default async function CoursesSection() {
                         className="drop-shadow-[1px_2px_1px_rgba(0,0,0,0.4)]"
                       />
                     )}
-                    <p className="ml-3 text-justify tracking-widest text-blue-900">
+                    <p className="ml-3 text-justify tracking-widest text-blue-300">
                       {course.title}
                     </p>
                   </div>

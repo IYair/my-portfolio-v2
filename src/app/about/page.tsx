@@ -1,17 +1,17 @@
-import { Metadata } from "next";
 import { getAboutProfile } from "@/services/aboutService";
+import { Metadata } from "next";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;
 
 // Dynamic components
+import AboutMeSection from "@/components/about/AboutMeSection";
+import ContactSection from "@/components/about/ContactSection";
+import CoursesSection from "@/components/about/CoursesSection";
+import EducationSection from "@/components/about/EducationSection";
+import ExperienceSection from "@/components/about/ExperienceSection";
 import ProfileSection from "@/components/about/ProfileSection";
 import SkillsSection from "@/components/about/SkillsSection";
-import ContactSection from "@/components/about/ContactSection";
-import AboutMeSection from "@/components/about/AboutMeSection";
-import ExperienceSection from "@/components/about/ExperienceSection";
-import EducationSection from "@/components/about/EducationSection";
-import CoursesSection from "@/components/about/CoursesSection";
 
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getAboutProfile();
@@ -52,16 +52,16 @@ export default function About() {
         </section>
 
         {/* Right Section */}
-        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-white p-4 lg:col-span-2 dark:bg-gray-800">
+        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-slate-800 p-4 lg:col-span-2">
           <AboutMeSection />
 
-          <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-900 to-transparent"></div>
+          <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-400 to-transparent"></div>
 
           <div className="mt-10">
             <ExperienceSection />
             <EducationSection />
 
-            <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-900 to-transparent"></div>
+            <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-400 to-transparent"></div>
 
             <CoursesSection />
           </div>

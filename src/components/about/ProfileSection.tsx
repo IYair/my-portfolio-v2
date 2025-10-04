@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { getAboutProfile } from "@/services/aboutService";
+import Image from "next/image";
 
 export default async function ProfileSection() {
   const profile = await getAboutProfile();
@@ -29,11 +29,11 @@ export default async function ProfileSection() {
             YAIR CHAN
           </h1>
           <div className="flex w-full items-start justify-center">
-            <div className="mt-2 h-px flex-1 bg-gradient-to-r from-transparent to-white"></div>
-            <h2 className="mb-4 px-4 text-center font-thin tracking-widest whitespace-nowrap text-white">
+            <div className="mt-2 h-px flex-1 bg-gradient-to-r from-transparent to-gray-900 dark:to-white"></div>
+            <h2 className="mb-4 px-4 text-center font-thin tracking-widest whitespace-nowrap text-gray-900 dark:text-white">
               SOFTWARE DEVELOPER
             </h2>
-            <div className="mt-2 h-px flex-1 bg-gradient-to-l from-transparent to-white"></div>
+            <div className="mt-2 h-px flex-1 bg-gradient-to-l from-transparent to-gray-900 dark:to-white"></div>
           </div>
         </div>
       </div>

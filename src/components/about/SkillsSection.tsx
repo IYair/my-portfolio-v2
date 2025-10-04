@@ -7,7 +7,7 @@ export default async function SkillsSection() {
 
   return (
     <div className="mt-10">
-      <h2 className="m-3 flex items-center text-2xl font-thin text-white lg:text-3xl">
+      <h2 className="m-3 flex items-center text-2xl font-thin text-gray-800 lg:text-3xl dark:text-white">
         <TrophyIcon className="mr-4 h-auto w-10 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
         HABILIDADES TÉCNICAS
       </h2>
@@ -15,7 +15,9 @@ export default async function SkillsSection() {
         {skills.map(skill => (
           <div key={skill.id} className="flex flex-col items-center">
             <Image src={skill.icon} alt={skill.name} height={64} width={64} className="h-16 w-16" />
-            <p className="text-center text-sm font-thin text-white">{skill.name}</p>
+            <p className="text-center text-sm font-thin text-gray-800 dark:text-white">
+              {skill.name}
+            </p>
           </div>
         ))}
       </div>

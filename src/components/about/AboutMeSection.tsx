@@ -9,14 +9,14 @@ export default async function AboutMeSection() {
     // Fallback content
     return (
       <div>
-        <h2 className="m-3 flex items-center text-2xl font-bold text-blue-900 lg:text-3xl">
+        <h2 className="m-3 flex items-center text-2xl font-bold text-blue-300 lg:text-3xl">
           <UserIcon className="mr-4 h-auto w-10 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
           SOBRE MI
         </h2>
-        <h3 className="m-3 text-xl text-blue-900">
+        <h3 className="m-3 text-xl text-blue-400">
           Software Developer | Web Developer | Full Stack Developer
         </h3>
-        <p className="m-3 pr-10 text-justify text-black" style={getPreserveWhitespaceStyle()}>
+        <p className="m-3 pr-10 text-justify text-gray-200" style={getPreserveWhitespaceStyle()}>
           Como profesional en tecnologías web y desarrollo de software, me destaco por mi pasión por
           la innovación y el aprendizaje constante.
         </p>
@@ -26,12 +26,12 @@ export default async function AboutMeSection() {
 
   return (
     <div>
-      <h2 className="m-3 flex items-center text-2xl font-bold text-blue-900 lg:text-3xl">
+      <h2 className="m-3 flex items-center text-2xl font-bold text-blue-300 lg:text-3xl">
         <UserIcon className="mr-4 h-auto w-10 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
         SOBRE MI
       </h2>
-      <h3 className="m-3 text-xl text-blue-900">{profile.subtitle}</h3>
-      <p className="m-3 pr-10 text-justify text-black" style={getPreserveWhitespaceStyle()}>
+      <h3 className="m-3 text-xl text-blue-400">{profile.subtitle}</h3>
+      <p className="m-3 pr-10 text-justify text-gray-200" style={getPreserveWhitespaceStyle()}>
         {profile.bio}
       </p>
     </div>

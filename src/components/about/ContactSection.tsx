@@ -6,11 +6,11 @@ const getHeroiconComponent = (type: string) => {
   switch (type.toLowerCase()) {
     case "phone":
       return (
-        <DevicePhoneMobileIcon className="ml-8 h-auto w-9 text-white drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
+        <DevicePhoneMobileIcon className="ml-8 h-auto w-9 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] dark:text-white" />
       );
     case "email":
       return (
-        <EnvelopeIcon className="ml-8 h-auto w-9 text-white drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
+        <EnvelopeIcon className="ml-8 h-auto w-9 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] dark:text-white" />
       );
     default:
       return null;
@@ -22,7 +22,7 @@ export default async function ContactSection() {
 
   return (
     <div className="mt-10">
-      <h2 className="m-3 flex items-center text-2xl font-thin text-white lg:text-3xl">
+      <h2 className="m-3 flex items-center text-2xl font-thin text-gray-800 lg:text-3xl dark:text-white">
         <RocketLaunchIcon className="mr-4 h-auto w-10 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
         CONTACTAME
       </h2>
@@ -40,7 +40,9 @@ export default async function ContactSection() {
                     className="ml-8 h-auto w-8"
                   />
                 )}
-            <p className="ml-2 text-justify font-thin text-white">{contact.value}</p>
+            <p className="ml-2 text-justify font-thin text-gray-800 dark:text-white">
+              {contact.value}
+            </p>
           </div>
         ))}
       </div>
