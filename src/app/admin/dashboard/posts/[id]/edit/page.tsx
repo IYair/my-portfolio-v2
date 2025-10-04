@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import TagSelector from "@/components/ui/TagSelector";
 import Toggle from "@/components/ui/Toggle";
+import ImageUpload from "@/components/ui/ImageUpload";
 import FormEditor, { FormEditorRef } from "@/components/editor/FormEditor";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import PostPreview from "@/components/blog/PostPreview";
@@ -25,6 +26,7 @@ interface Post {
   slug: string;
   excerpt: string;
   content: string;
+  coverImage: string | null;
   published: boolean;
   featured: boolean;
   tags: { id: number; name: string }[];
@@ -47,6 +49,7 @@ export default function EditPostPage() {
     slug: "",
     excerpt: "",
     content: "",
+    coverImage: "",
     published: false,
     featured: false,
     tags: [] as string[],
@@ -93,6 +96,7 @@ export default function EditPostPage() {
             slug: post.slug,
             excerpt: post.excerpt || "",
             content: post.content,
+            coverImage: post.coverImage || "",
             published: post.published,
             featured: post.featured,
             tags: post.tags.map(tag => tag.name),
@@ -404,6 +408,22 @@ export default function EditPostPage() {
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Imagen de Portada
+              </label>
+              <ImageUpload
+                value={formData.coverImage}
+                onChange={url => setFormData(prev => ({ ...prev, coverImage: url }))}
+                placeholder="Sube una imagen de portada para el post"
+                maxSize={10}
+                width={600}
+                height={300}
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Imagen que se mostrará en la tarjeta del post. Recomendado: 1200x630px
+              </p>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Extracto
               </label>
               <textarea
@@ -528,6 +548,7 @@ export default function EditPostPage() {
           title={formData.title}
           excerpt={formData.excerpt}
           content={formData.content}
+          coverImage={formData.coverImage}
           tags={formData.tags}
           onClose={() => setShowPreview(false)}
         />

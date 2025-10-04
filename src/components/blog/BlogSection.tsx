@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { CalendarIcon, TagIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Post {
   id: number;
@@ -10,6 +11,7 @@ interface Post {
   slug: string;
   excerpt: string;
   content: string;
+  coverImage: string | null;
   published: boolean;
   featured: boolean;
   createdAt: string;
@@ -23,7 +25,7 @@ export default function BlogSection() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("/api/posts?published=true&limit=3");
+        const response = await fetch("/api/posts?published=true&limit=7");
         if (response.ok) {
           const data = await response.json();
           setPosts(data);
@@ -96,9 +98,14 @@ export default function BlogSection() {
     );
   }
 
+  // Layout: 3 posts left + 1 featured center + 3 posts right
+  const [featuredPost, ...otherPosts] = posts;
+  const leftPosts = otherPosts.slice(0, 3);
+  const rightPosts = otherPosts.slice(3, 6);
+
   return (
     <section id="blog" className="relative z-20 py-20">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto max-w-7xl px-6">
         <div className="mb-16 text-center">
           <h2 className="mb-6 text-4xl font-bold">Blog</h2>
           <p className="text-foreground/80 mx-auto max-w-3xl text-xl">
@@ -106,59 +113,120 @@ export default function BlogSection() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3">
-          {posts.map(post => (
-            <article
-              key={post.id}
-              className="border-foreground/10 bg-background/50 hover:bg-background/80 group rounded-lg border p-6 backdrop-blur-sm transition-all duration-300 hover:shadow-lg"
-            >
-              {/* Post Header */}
-              <div className="mb-4">
-                <h3 className="mb-2 text-xl leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                  <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                </h3>
+        {/* Magazine Layout: 3 Left + 1 Featured Center + 3 Right */}
+        <div className="grid gap-6 lg:grid-cols-12">
+          {/* Left Column - 3 Small Posts */}
+          <div className="flex flex-col gap-6 lg:col-span-3">
+            {leftPosts.map(post => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group">
+                <article className="border-foreground/10 bg-background/50 hover:bg-background/80 overflow-hidden rounded-lg border backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                  {post.coverImage && (
+                    <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover !transition-transform !duration-[800ms] !ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        style={{ transition: "transform 800ms cubic-bezier(0.4, 0, 0.2, 1)" }}
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="mb-2 line-clamp-2 text-sm leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                      <CalendarIcon className="mr-1 h-3 w-3" />
+                      {formatDate(post.createdAt)}
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
 
-                {/* Date */}
-                <div className="mb-3 flex items-center text-sm text-gray-600 dark:text-gray-400">
-                  <CalendarIcon className="mr-1 h-4 w-4" />
-                  {formatDate(post.createdAt)}
-                </div>
-
-                {/* Excerpt */}
-                <p className="text-foreground/80 mb-4 leading-relaxed">
-                  {post.excerpt || truncateContent(post.content)}
-                </p>
-
-                {/* Tags */}
-                {post.tags.length > 0 && (
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    {post.tags.slice(0, 3).map(tag => (
-                      <span
-                        key={tag.id}
-                        className="flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-                      >
-                        <TagIcon className="mr-1 h-3 w-3" />
-                        {tag.name}
-                      </span>
-                    ))}
-                    {post.tags.length > 3 && (
-                      <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                        +{post.tags.length - 3}
-                      </span>
-                    )}
+          {/* Center Column - 1 Large Featured Post */}
+          {featuredPost && (
+            <Link href={`/blog/${featuredPost.slug}`} className="group lg:col-span-6">
+              <article className="border-foreground/10 bg-background/50 hover:bg-background/80 h-full overflow-hidden rounded-xl border backdrop-blur-sm transition-all duration-1000 hover:shadow-xl">
+                {featuredPost.coverImage && (
+                  <div className="relative h-[400px] overflow-hidden bg-gray-200 dark:bg-gray-800">
+                    <Image
+                      src={featuredPost.coverImage}
+                      alt={featuredPost.title}
+                      fill
+                      className="object-cover !transition-transform !duration-[800ms] !ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority
+                      style={{ transition: "transform 800ms cubic-bezier(0.4, 0, 0.2, 1)" }}
+                    />
                   </div>
                 )}
-              </div>
+                <div className="p-8">
+                  <h3 className="mb-4 text-3xl leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    {featuredPost.title}
+                  </h3>
+                  <div className="mb-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
+                    <CalendarIcon className="mr-2 h-5 w-5" />
+                    {formatDate(featuredPost.createdAt)}
+                  </div>
+                  <p className="text-foreground/80 mb-6 line-clamp-3 text-lg leading-relaxed">
+                    {featuredPost.excerpt || truncateContent(featuredPost.content, 200)}
+                  </p>
+                  {featuredPost.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {featuredPost.tags.slice(0, 3).map(tag => (
+                        <span
+                          key={tag.id}
+                          className="flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                        >
+                          <TagIcon className="mr-1 h-4 w-4" />
+                          {tag.name}
+                        </span>
+                      ))}
+                      {featuredPost.tags.length > 3 && (
+                        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                          +{featuredPost.tags.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </article>
+            </Link>
+          )}
 
-              {/* Read More Link */}
-              <Link
-                href={`/blog/${post.slug}`}
-                className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-400"
-              >
-                Leer artículo →
+          {/* Right Column - 3 Small Posts */}
+          <div className="flex flex-col gap-6 lg:col-span-3">
+            {rightPosts.map(post => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group">
+                <article className="border-foreground/10 bg-background/50 hover:bg-background/80 overflow-hidden rounded-lg border backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                  {post.coverImage && (
+                    <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover !transition-transform !duration-[800ms] !ease-[cubic-bezier(0.4,0,0.2,1)] will-change-transform group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        style={{ transition: "transform 800ms cubic-bezier(0.4, 0, 0.2, 1)" }}
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="mb-2 line-clamp-2 text-sm leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                      <CalendarIcon className="mr-1 h-3 w-3" />
+                      {formatDate(post.createdAt)}
+                    </div>
+                  </div>
+                </article>
               </Link>
-            </article>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* View All Posts Link */}

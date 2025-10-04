@@ -6,11 +6,19 @@ interface PostPreviewProps {
   title: string;
   excerpt: string;
   content: string;
+  coverImage?: string;
   tags: string[];
   onClose: () => void;
 }
 
-export default function PostPreview({ title, excerpt, content, tags, onClose }: PostPreviewProps) {
+export default function PostPreview({
+  title,
+  excerpt,
+  content,
+  coverImage,
+  tags,
+  onClose,
+}: PostPreviewProps) {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-white dark:bg-gray-900">
       {/* Header */}
@@ -32,6 +40,16 @@ export default function PostPreview({ title, excerpt, content, tags, onClose }: 
       <div className="mx-auto max-w-4xl px-6 py-8">
         {/* Post Header */}
         <header className="mb-8">
+          {/* Cover Image */}
+          {coverImage && (
+            <div className="mb-6 overflow-hidden rounded-lg">
+              <img
+                src={coverImage}
+                alt={title || "Portada del post"}
+                className="h-96 w-full object-cover"
+              />
+            </div>
+          )}
           <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">
             {title || "Título del post"}
           </h1>

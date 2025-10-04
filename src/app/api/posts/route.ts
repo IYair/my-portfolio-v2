@@ -13,7 +13,7 @@ const postSchema = z
     contentType: z.enum(["markdown", "editorjs", "notion", "tiptap"]).default("markdown"),
     published: z.boolean().default(false),
     featured: z.boolean().default(false),
-    coverImage: z.string().url().optional(),
+    coverImage: z.string().url().optional().or(z.literal("")),
     tags: z.array(z.string()).optional(),
   })
   .refine(data => data.content || data.contentJson, {
@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
         slug: true,
         excerpt: true,
         content: limit ? false : true, // Don't include content in list view for performance
+        coverImage: true,
         published: true,
         featured: true,
         createdAt: true,
@@ -127,6 +128,7 @@ export async function POST(request: NextRequest) {
         contentType: validatedData.contentType,
         excerpt: validatedData.excerpt,
         slug: validatedData.slug,
+        coverImage: validatedData.coverImage,
         published: validatedData.published,
         featured: validatedData.featured,
         tags: {

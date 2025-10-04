@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import TagSelector from "@/components/ui/TagSelector";
 import Toggle from "@/components/ui/Toggle";
+import ImageUpload from "@/components/ui/ImageUpload";
 import { useToast } from "@/hooks/useToast";
 import {
   BookOpenIcon,
@@ -31,6 +32,7 @@ export default function NewPostPage() {
     slug: "",
     excerpt: "",
     content: "",
+    coverImage: "",
     published: false,
     featured: false,
     tags: [] as string[],
@@ -258,6 +260,22 @@ export default function NewPostPage() {
             </div>
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Imagen de Portada
+              </label>
+              <ImageUpload
+                value={formData.coverImage}
+                onChange={url => setFormData(prev => ({ ...prev, coverImage: url }))}
+                placeholder="Sube una imagen de portada para el post"
+                maxSize={10}
+                width={600}
+                height={300}
+              />
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Imagen que se mostrará en la tarjeta del post. Recomendado: 1200x630px
+              </p>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Extracto
               </label>
               <textarea
@@ -382,6 +400,7 @@ export default function NewPostPage() {
           title={formData.title}
           excerpt={formData.excerpt}
           content={formData.content}
+          coverImage={formData.coverImage}
           tags={formData.tags}
           onClose={() => setShowPreview(false)}
         />

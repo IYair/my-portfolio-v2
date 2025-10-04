@@ -16,7 +16,7 @@ const updatePostSchema = z.object({
   contentType: z.enum(["markdown", "editorjs", "notion", "tiptap"]).optional(),
   published: z.boolean().optional(),
   featured: z.boolean().optional(),
-  coverImage: z.string().url().optional(),
+  coverImage: z.string().url().optional().or(z.literal("")),
   tags: z.array(z.string()).optional(),
 });
 
