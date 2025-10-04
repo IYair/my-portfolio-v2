@@ -26,20 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        {/* Blocking script to prevent theme flash - minified for performance */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(){try{let e=localStorage.getItem('theme');('dark'===e||!e&&matchMedia('(prefers-color-scheme:dark)').matches)&&document.documentElement.classList.add('dark')}catch(e){}}();`,
+          }}
+        />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>
           <Navigation />
           {children}
-          <Toaster
-            position="top-right"
-            expand={false}
-            richColors
-            closeButton
-            theme="system"
-          />
+          <Toaster position="top-right" expand={false} richColors closeButton theme="system" />
         </SessionProvider>
       </body>
     </html>
