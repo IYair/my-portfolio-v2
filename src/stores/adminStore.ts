@@ -98,6 +98,9 @@ interface AdminStore {
   resetDashboard: () => void;
   resetPosts: () => void;
   resetProjects: () => void;
+  // Cache invalidation
+  invalidatePostsCache: () => void;
+  invalidateAllCache: () => void;
   resetContacts: () => void;
 }
 
@@ -147,7 +150,7 @@ const useAdminStore = create<AdminStore>()(
         try {
           console.log("🎯 Fetching dashboard data...");
           const response = await axios.get("/api/dashboard/stats", {
-            timeout: 30000,
+            timeout: 8000,
           });
 
           set({
@@ -182,7 +185,7 @@ const useAdminStore = create<AdminStore>()(
         try {
           console.log("📝 Fetching posts data...");
           const response = await axios.get("/api/posts", {
-            timeout: 30000,
+            timeout: 8000,
           });
 
           set({
@@ -216,7 +219,7 @@ const useAdminStore = create<AdminStore>()(
         try {
           console.log("🚀 Fetching projects data...");
           const response = await axios.get("/api/projects", {
-            timeout: 30000,
+            timeout: 8000,
           });
 
           set({
@@ -250,7 +253,7 @@ const useAdminStore = create<AdminStore>()(
         try {
           console.log("📧 Fetching contacts data...");
           const response = await axios.get("/api/contacts", {
-            timeout: 30000,
+            timeout: 8000,
           });
 
           set({
@@ -286,6 +289,20 @@ const useAdminStore = create<AdminStore>()(
 
       resetContacts: () => {
         set({ contacts: [], contactsError: null, contactsLoading: false });
+        cacheTimestamps.contacts = 0;
+      },
+
+      // Cache invalidation functions
+      invalidatePostsCache: () => {
+        console.log("🔄 Invalidating posts cache");
+        cacheTimestamps.posts = 0;
+      },
+
+      invalidateAllCache: () => {
+        console.log("🔄 Invalidating all cache");
+        cacheTimestamps.dashboard = 0;
+        cacheTimestamps.posts = 0;
+        cacheTimestamps.projects = 0;
         cacheTimestamps.contacts = 0;
       },
     }),

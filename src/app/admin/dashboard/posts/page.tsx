@@ -18,7 +18,7 @@ import {
   PencilIcon,
   TrashIcon,
   ExclamationTriangleIcon,
-  EyeIcon
+  EyeIcon,
 } from "@heroicons/react/24/outline";
 
 // Using Post interface from the store
@@ -28,11 +28,11 @@ export default function PostsPage() {
   const { posts, postsLoading: isLoading, fetchPosts } = useAdminStore();
   const [deleteModal, setDeleteModal] = useState<{ open: boolean; post: Post | null }>({
     open: false,
-    post: null
+    post: null,
   });
   const [isDeleting, setIsDeleting] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [featuredFilter, setFeaturedFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [featuredFilter, setFeaturedFilter] = useState<string>("all");
   const { success, error } = useToast();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function PostsPage() {
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/posts/${deleteModal.post.id}`, {
+      const response = await fetch(`/api/admin/posts/${deleteModal.post.id}`, {
         method: "DELETE",
       });
 
@@ -57,7 +57,10 @@ export default function PostsPage() {
         // Refetch posts after deletion
         fetchPosts();
         setDeleteModal({ open: false, post: null });
-        success("Post eliminado", `El post "${deleteModal.post.title}" ha sido eliminado exitosamente`);
+        success(
+          "Post eliminado",
+          `El post "${deleteModal.post.title}" ha sido eliminado exitosamente`
+        );
       } else {
         error("Error al eliminar", "No se pudo eliminar el post. Inténtalo de nuevo.");
       }
@@ -75,61 +78,49 @@ export default function PostsPage() {
 
   // Filter posts based on selected filters
   const filteredPosts = posts.filter(post => {
-    const matchesStatus = statusFilter === 'all' ||
-      (statusFilter === 'published' && post.published) ||
-      (statusFilter === 'draft' && !post.published);
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "published" && post.published) ||
+      (statusFilter === "draft" && !post.published);
 
-    const matchesFeatured = featuredFilter === 'all' ||
-      (featuredFilter === 'featured' && post.featured) ||
-      (featuredFilter === 'normal' && !post.featured);
+    const matchesFeatured =
+      featuredFilter === "all" ||
+      (featuredFilter === "featured" && post.featured) ||
+      (featuredFilter === "normal" && !post.featured);
 
     return matchesStatus && matchesFeatured;
   });
 
   const columns: Column<Post>[] = [
     {
-      key: 'title',
-      header: 'Título',
-      render: (post) => (
+      key: "title",
+      header: "Título",
+      render: post => (
         <div>
-          <div className="font-medium text-gray-900 dark:text-white">
-            {post.title}
-          </div>
-          <div className="text-gray-500 dark:text-gray-400 text-sm">
-            {post.slug}
-          </div>
+          <div className="font-medium text-gray-900 dark:text-white">{post.title}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">{post.slug}</div>
         </div>
-      )
+      ),
     },
     {
-      key: 'published',
-      header: 'Estado',
-      render: (post) => (
+      key: "published",
+      header: "Estado",
+      render: post => (
         <BadgeGroup>
-          <Badge
-            variant={post.published ? 'green' : 'yellow'}
-          >
-            {post.published ? 'Publicado' : 'Borrador'}
+          <Badge variant={post.published ? "green" : "yellow"}>
+            {post.published ? "Publicado" : "Borrador"}
           </Badge>
-          {post.featured && (
-            <Badge variant="blue">
-              Destacado
-            </Badge>
-          )}
+          {post.featured && <Badge variant="blue">Destacado</Badge>}
         </BadgeGroup>
-      )
+      ),
     },
     {
-      key: 'tags',
-      header: 'Tags',
-      render: (post) => (
+      key: "tags",
+      header: "Tags",
+      render: post => (
         <BadgeGroup>
-          {post.tags.slice(0, 3).map((tag) => (
-            <Badge
-              key={tag.id}
-              variant="gray"
-              size="sm"
-            >
+          {post.tags.slice(0, 3).map(tag => (
+            <Badge key={tag.id} variant="gray" size="sm">
               {tag.name}
             </Badge>
           ))}
@@ -139,40 +130,32 @@ export default function PostsPage() {
             </Badge>
           )}
         </BadgeGroup>
-      )
+      ),
     },
     {
-      key: 'createdAt',
-      header: 'Fecha',
-      render: (post) => (
+      key: "createdAt",
+      header: "Fecha",
+      render: post => (
         <div className="text-sm text-gray-500 dark:text-gray-400">
-          {new Date(post.createdAt).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+          {new Date(post.createdAt).toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
           })}
         </div>
-      )
+      ),
     },
     {
-      key: 'actions',
-      header: 'Acciones',
-      render: (post) => (
+      key: "actions",
+      header: "Acciones",
+      render: post => (
         <div className="flex gap-1">
           <Tooltip content="Preview post">
-            <Button
-              variant="ghost"
-              size="sm"
-              icon={<EyeIcon className="h-4 w-4" />}
-            />
+            <Button variant="ghost" size="sm" icon={<EyeIcon className="h-4 w-4" />} />
           </Tooltip>
           <Tooltip content="Edit post">
             <Link href={`/admin/dashboard/posts/${post.id}/edit`}>
-              <Button
-                variant="ghost"
-                size="sm"
-                icon={<PencilIcon className="h-4 w-4" />}
-              />
+              <Button variant="ghost" size="sm" icon={<PencilIcon className="h-4 w-4" />} />
             </Link>
           </Tooltip>
           <Tooltip content="Delete post (cannot be undone)">
@@ -185,33 +168,28 @@ export default function PostsPage() {
           </Tooltip>
         </div>
       ),
-      headerClassName: 'text-right pr-4 sm:pr-0'
-    }
+      headerClassName: "text-right pr-4 sm:pr-0",
+    },
   ];
 
-  const breadcrumbs = [
-    { name: "Posts", current: true }
-  ];
+  const breadcrumbs = [{ name: "Posts", current: true }];
 
   const statusOptions = [
-    { value: 'all', label: 'Todos los estados' },
-    { value: 'published', label: 'Publicados' },
-    { value: 'draft', label: 'Borradores' }
+    { value: "all", label: "Todos los estados" },
+    { value: "published", label: "Publicados" },
+    { value: "draft", label: "Borradores" },
   ];
 
   const featuredOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'featured', label: 'Destacados' },
-    { value: 'normal', label: 'Normales' }
+    { value: "all", label: "Todos" },
+    { value: "featured", label: "Destacados" },
+    { value: "normal", label: "Normales" },
   ];
 
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
-      <Breadcrumbs
-        pages={breadcrumbs}
-        homeHref="/admin/dashboard"
-      />
+      <Breadcrumbs pages={breadcrumbs} homeHref="/admin/dashboard" />
 
       {/* Success Alert - Shown when posts are loaded */}
       {!isLoading && posts.length > 0 && (
@@ -227,35 +205,35 @@ export default function PostsPage() {
       {/* Loading State */}
       {isLoading ? (
         <div className="space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div className="space-y-2">
-              <div className="h-8 w-32 bg-gray-700/50 rounded animate-pulse"></div>
-              <div className="h-4 w-48 bg-gray-700/50 rounded animate-pulse"></div>
+              <div className="h-8 w-32 animate-pulse rounded bg-gray-700/50"></div>
+              <div className="h-4 w-48 animate-pulse rounded bg-gray-700/50"></div>
             </div>
-            <div className="h-10 w-28 bg-gray-700/50 rounded animate-pulse"></div>
+            <div className="h-10 w-28 animate-pulse rounded bg-gray-700/50"></div>
           </div>
           <SkeletonTable rows={5} columns={5} />
         </div>
       ) : (
         <>
           {/* Filters */}
-          <div className="mb-6 flex flex-col sm:flex-row gap-4">
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
             <Select
               options={statusOptions}
               value={statusFilter}
-              onChange={(value) => setStatusFilter(value as string)}
+              onChange={value => setStatusFilter(value as string)}
               placeholder="Filtrar por estado"
               className="w-full sm:w-48"
             />
             <Select
               options={featuredOptions}
               value={featuredFilter}
-              onChange={(value) => setFeaturedFilter(value as string)}
+              onChange={value => setFeaturedFilter(value as string)}
               placeholder="Filtrar por tipo"
               className="w-full sm:w-48"
             />
             <div className="flex-1" />
-            <div className="text-sm text-gray-500 dark:text-gray-400 self-center">
+            <div className="self-center text-sm text-gray-500 dark:text-gray-400">
               Mostrando {filteredPosts.length} de {posts.length} posts
             </div>
           </div>
@@ -269,10 +247,7 @@ export default function PostsPage() {
               description="Gestiona todos los posts de tu blog, desde borradores hasta publicaciones."
               headerActions={
                 <Link href="/admin/dashboard/posts/new">
-                  <Button
-                    variant="primary"
-                    icon={<PlusIcon className="h-5 w-5" />}
-                  >
+                  <Button variant="primary" icon={<PlusIcon className="h-5 w-5" />}>
                     Nuevo Post
                   </Button>
                 </Link>
@@ -290,8 +265,8 @@ export default function PostsPage() {
               actions={[
                 {
                   label: "Create Post",
-                  onClick: () => window.location.href = "/admin/dashboard/posts/new"
-                }
+                  onClick: () => (window.location.href = "/admin/dashboard/posts/new"),
+                },
               ]}
             />
           )}
@@ -310,11 +285,11 @@ export default function PostsPage() {
           label: "Eliminar",
           onClick: handleDeleteConfirm,
           variant: "danger",
-          loading: isDeleting
+          loading: isDeleting,
         }}
         secondaryAction={{
           label: "Cancelar",
-          onClick: handleDeleteCancel
+          onClick: handleDeleteCancel,
         }}
       />
     </div>

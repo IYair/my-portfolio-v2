@@ -1,4 +1,7 @@
+"use client";
+
 import ContactForm from "@/components/features/ContactForm";
+import BlogSection from "@/components/blog/BlogSection";
 import { Meteors } from "@/components/ui/meteors";
 import Image from "next/image";
 
@@ -119,6 +122,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Blog Section */}
+      <BlogSection />
 
       {/* Contact Section */}
       <section id="contact" className="bg-foreground/5 relative z-20 py-20">

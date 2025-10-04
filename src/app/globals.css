@@ -1,4 +1,431 @@
 @import "tailwindcss";
+@import "../styles/_variables.scss";
+@import "../styles/_keyframe-animations.scss";
+
+/* Custom editor styles for better UX */
+.simple-editor-wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden;
+}
+
+.simple-editor-content {
+  background: white !important;
+  color: #1f2937 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.simple-editor-content .tiptap {
+  background: white !important;
+  color: #1f2937 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word;
+}
+
+/* Dark mode adjustments */
+.dark .simple-editor-content {
+  background: white !important;
+  color: #1f2937 !important;
+}
+
+.dark .simple-editor-content .tiptap {
+  background: white !important;
+  color: #1f2937 !important;
+}
+
+/* Post content styling for blog pages */
+.prose .tiptap,
+.prose {
+  /* Define highlight color variables */
+  --tt-color-highlight-yellow: #fef08a;
+  --tt-color-highlight-blue: #bfdbfe;
+  --tt-color-highlight-green: #bbf7d0;
+  --tt-color-highlight-pink: #fce7f3;
+  --tt-color-highlight-purple: #e9d5ff;
+  --tt-color-highlight-red: #fecaca;
+  --tt-color-highlight-orange: #fed7aa;
+}
+
+/* Tiptap highlight styles */
+.prose mark[data-color] {
+  padding: 0.125em 0.25em;
+  border-radius: 0.25rem;
+  font-weight: inherit;
+}
+
+.prose mark[data-color*="yellow"] {
+  background-color: #fef08a !important;
+  color: #92400e !important;
+}
+
+.prose mark[data-color*="blue"] {
+  background-color: #bfdbfe !important;
+  color: #1e40af !important;
+}
+
+.prose mark[data-color*="green"] {
+  background-color: #bbf7d0 !important;
+  color: #166534 !important;
+}
+
+.prose mark[data-color*="pink"] {
+  background-color: #fce7f3 !important;
+  color: #be185d !important;
+}
+
+.prose mark[data-color*="purple"] {
+  background-color: #e9d5ff !important;
+  color: #7c3aed !important;
+}
+
+.prose mark[data-color*="red"] {
+  background-color: #fecaca !important;
+  color: #dc2626 !important;
+}
+
+.prose mark[data-color*="orange"] {
+  background-color: #fed7aa !important;
+  color: #ea580c !important;
+}
+
+/* Tiptap image styles */
+.prose img.max-w-full {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin: 1.5rem 0;
+}
+
+/* Hide placeholder images that fail to load */
+.prose img[src*="tiptap-ui-placeholder-image.jpg"] {
+  display: none;
+}
+
+/* Heading styles for blog posts */
+.prose h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 2.5rem;
+  margin-top: 0;
+  margin-bottom: 0.875rem;
+  color: #111827;
+}
+
+.dark .prose h1 {
+  color: #f9fafb;
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 2.25rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.dark .prose h2 {
+  color: #f3f4f6;
+}
+
+.prose h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #374151;
+}
+
+.dark .prose h3 {
+  color: #e5e7eb;
+}
+
+/* Code block improvements - Tailwind CSS style */
+.prose pre.bg-gray-100,
+.prose pre.code-block-lowlight,
+.prose pre.shiki {
+  background-color: #0d1117 !important;
+  border: 1px solid #30363d;
+  overflow-x: auto;
+  overflow-wrap: normal;
+  white-space: pre;
+  word-break: normal;
+  padding: 1rem !important;
+  border-radius: 0.5rem;
+  margin: 1.5rem 0 !important;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.prose pre.bg-gray-100 code,
+.prose pre.code-block-lowlight code,
+.prose pre.shiki code {
+  background: none !important;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  white-space: pre;
+  word-break: normal;
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  font-weight: 400;
+  display: block;
+}
+
+/* Lowlight syntax highlighting - Tailwind CSS inspired theme */
+.prose .hljs-comment,
+.prose .hljs-quote {
+  color: #64748b;
+  font-style: italic;
+}
+
+.prose .hljs-keyword,
+.prose .hljs-selector-tag,
+.prose .hljs-subst {
+  color: #c084fc;
+}
+
+.prose .hljs-number,
+.prose .hljs-literal,
+.prose .hljs-variable,
+.prose .hljs-template-variable,
+.prose .hljs-tag .hljs-attr {
+  color: #7dd3fc;
+}
+
+.prose .hljs-string,
+.prose .hljs-doctag {
+  color: #86efac;
+}
+
+.prose .hljs-title,
+.prose .hljs-section,
+.prose .hljs-selector-id {
+  color: #fbbf24;
+}
+
+.prose .hljs-type,
+.prose .hljs-class .hljs-title {
+  color: #38bdf8;
+}
+
+.prose .hljs-tag,
+.prose .hljs-name,
+.prose .hljs-attribute {
+  color: #5eead4;
+}
+
+.prose .hljs-regexp,
+.prose .hljs-link {
+  color: #86efac;
+}
+
+.prose .hljs-symbol,
+.prose .hljs-bullet {
+  color: #7dd3fc;
+}
+
+.prose .hljs-built_in,
+.prose .hljs-builtin-name {
+  color: #7dd3fc;
+}
+
+.prose .hljs-meta {
+  color: #94a3b8;
+}
+
+.prose .hljs-deletion {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.prose .hljs-addition {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.prose .hljs-emphasis {
+  font-style: italic;
+}
+
+.prose .hljs-strong {
+  font-weight: 600;
+}
+
+/* Dark mode for post content */
+.dark .prose mark[data-color*="yellow"] {
+  background-color: #92400e !important;
+  color: #fef3c7 !important;
+}
+
+.dark .prose mark[data-color*="blue"] {
+  background-color: #1e40af !important;
+  color: #dbeafe !important;
+}
+
+.dark .prose mark[data-color*="green"] {
+  background-color: #166534 !important;
+  color: #dcfce7 !important;
+}
+
+.dark .prose mark[data-color*="pink"] {
+  background-color: #be185d !important;
+  color: #fdf2f8 !important;
+}
+
+.dark .prose mark[data-color*="purple"] {
+  background-color: #7c3aed !important;
+  color: #f3e8ff !important;
+}
+
+.dark .prose mark[data-color*="red"] {
+  background-color: #dc2626 !important;
+  color: #fee2e2 !important;
+}
+
+.dark .prose mark[data-color*="orange"] {
+  background-color: #ea580c !important;
+  color: #ffedd5 !important;
+}
+
+.dark .prose pre.bg-gray-100,
+.dark .prose pre.code-block-lowlight {
+  background-color: #0f172a !important;
+  border-color: #1e293b;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.24),
+    0 1px 2px rgba(0, 0, 0, 0.36);
+}
+
+.dark .prose pre.bg-gray-100 code,
+.dark .prose pre.code-block-lowlight code {
+  color: #cbd5e1 !important;
+}
+
+/* Lowlight syntax highlighting - Tailwind CSS dark theme */
+.dark .prose .hljs-comment,
+.dark .prose .hljs-quote {
+  color: #475569;
+  font-style: italic;
+}
+
+.dark .prose .hljs-keyword,
+.dark .prose .hljs-selector-tag,
+.dark .prose .hljs-subst {
+  color: #a78bfa;
+}
+
+.dark .prose .hljs-number,
+.dark .prose .hljs-literal,
+.dark .prose .hljs-variable,
+.dark .prose .hljs-template-variable,
+.dark .prose .hljs-tag .hljs-attr {
+  color: #67e8f9;
+}
+
+.dark .prose .hljs-string,
+.dark .prose .hljs-doctag {
+  color: #6ee7b7;
+}
+
+.dark .prose .hljs-title,
+.dark .prose .hljs-section,
+.dark .prose .hljs-selector-id {
+  color: #fcd34d;
+}
+
+.dark .prose .hljs-type,
+.dark .prose .hljs-class .hljs-title {
+  color: #22d3ee;
+}
+
+.dark .prose .hljs-tag,
+.dark .prose .hljs-name,
+.dark .prose .hljs-attribute {
+  color: #2dd4bf;
+}
+
+.dark .prose .hljs-regexp,
+.dark .prose .hljs-link {
+  color: #6ee7b7;
+}
+
+.dark .prose .hljs-symbol,
+.dark .prose .hljs-bullet {
+  color: #67e8f9;
+}
+
+.dark .prose .hljs-built_in,
+.dark .prose .hljs-builtin-name {
+  color: #67e8f9;
+}
+
+.dark .prose .hljs-meta {
+  color: #64748b;
+}
+
+.dark .prose .hljs-deletion {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+}
+
+.dark .prose .hljs-addition {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #6ee7b7;
+}
+
+.dark .prose .hljs-emphasis {
+  font-style: italic;
+}
+
+.dark .prose .hljs-strong {
+  font-weight: 600;
+}
+
+/* Text alignment styles (already working with inline styles but adding for consistency) */
+.prose p[style*="text-align: center"] {
+  text-align: center;
+}
+
+.prose p[style*="text-align: right"] {
+  text-align: right;
+}
+
+.prose p[style*="text-align: justify"] {
+  text-align: justify;
+}
+
+.prose p[style*="text-align: left"] {
+  text-align: left;
+}
+
+/* Ensure all tiptap content renders properly */
+.prose .tiptap-content h1,
+.prose .tiptap-content h2,
+.prose .tiptap-content h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.prose .tiptap-content h1 {
+  font-size: 2.25rem;
+}
+
+.prose .tiptap-content h2 {
+  font-size: 1.875rem;
+}
+
+.prose .tiptap-content h3 {
+  font-size: 1.5rem;
+}
 
 :root {
   --background: #ffffff;
@@ -49,25 +476,22 @@ body {
 
 /* Neon Glow Animation */
 @keyframes neon-pulse {
-  0%, 100% {
+  0%,
+  100% {
     filter: drop-shadow(0 0 15px rgba(34, 197, 234, 0.4))
-            drop-shadow(0 0 30px rgba(59, 130, 246, 0.3))
-            drop-shadow(0 0 45px rgba(147, 51, 234, 0.2));
+      drop-shadow(0 0 30px rgba(59, 130, 246, 0.3)) drop-shadow(0 0 45px rgba(147, 51, 234, 0.2));
   }
   25% {
     filter: drop-shadow(0 0 25px rgba(34, 197, 234, 0.7))
-            drop-shadow(0 0 50px rgba(59, 130, 246, 0.5))
-            drop-shadow(0 0 75px rgba(147, 51, 234, 0.4));
+      drop-shadow(0 0 50px rgba(59, 130, 246, 0.5)) drop-shadow(0 0 75px rgba(147, 51, 234, 0.4));
   }
   50% {
     filter: drop-shadow(0 0 20px rgba(34, 197, 234, 0.6))
-            drop-shadow(0 0 40px rgba(59, 130, 246, 0.4))
-            drop-shadow(0 0 60px rgba(147, 51, 234, 0.3));
+      drop-shadow(0 0 40px rgba(59, 130, 246, 0.4)) drop-shadow(0 0 60px rgba(147, 51, 234, 0.3));
   }
   75% {
     filter: drop-shadow(0 0 30px rgba(34, 197, 234, 0.8))
-            drop-shadow(0 0 60px rgba(59, 130, 246, 0.6))
-            drop-shadow(0 0 90px rgba(147, 51, 234, 0.5));
+      drop-shadow(0 0 60px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 90px rgba(147, 51, 234, 0.5));
   }
 }
 
