@@ -43,7 +43,7 @@ export default function About() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="grid h-screen w-full grid-cols-1 gap-14 overflow-y-scroll rounded-2xl px-4 py-24 lg:grid-cols-3 lg:px-40">
+      <div className="grid h-screen w-full grid-cols-1 gap-6 overflow-y-scroll rounded-2xl px-4 py-16 sm:gap-10 sm:px-8 sm:py-20 lg:grid-cols-3 lg:gap-14 lg:px-40 lg:py-24">
         {/* Left Section */}
         <section id="sideLeft" className="col-span-1 flex flex-col lg:col-span-1">
           <ProfileSection />
@@ -52,16 +52,16 @@ export default function About() {
         </section>
 
         {/* Right Section */}
-        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-slate-800 p-4 lg:col-span-2">
+        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-slate-800 p-3 sm:p-4 lg:col-span-2">
           <AboutMeSection />
 
-          <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-400 to-transparent"></div>
+          <div className="mt-3 h-px w-full bg-gradient-to-r from-blue-400 to-transparent sm:mt-4"></div>
 
-          <div className="mt-10">
+          <div className="mt-4 sm:mt-6 lg:mt-10">
             <ExperienceSection />
             <EducationSection />
 
-            <div className="mt-4 h-px w-full bg-gradient-to-r from-blue-400 to-transparent"></div>
+            <div className="mt-3 h-px w-full bg-gradient-to-r from-blue-400 to-transparent sm:mt-4"></div>
 
             <CoursesSection />
           </div>

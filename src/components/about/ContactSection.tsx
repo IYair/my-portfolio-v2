@@ -6,11 +6,11 @@ const getHeroiconComponent = (type: string) => {
   switch (type.toLowerCase()) {
     case "phone":
       return (
-        <DevicePhoneMobileIcon className="ml-8 h-auto w-9 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] dark:text-white" />
+        <DevicePhoneMobileIcon className="ml-4 h-auto w-6 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:ml-6 sm:w-7 lg:ml-8 lg:w-9 dark:text-white" />
       );
     case "email":
       return (
-        <EnvelopeIcon className="ml-8 h-auto w-9 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] dark:text-white" />
+        <EnvelopeIcon className="ml-4 h-auto w-6 text-gray-800 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:ml-6 sm:w-7 lg:ml-8 lg:w-9 dark:text-white" />
       );
     default:
       return null;
@@ -21,12 +21,12 @@ export default async function ContactSection() {
   const contactInfo = await getContactInfo();
 
   return (
-    <div className="mt-10">
-      <h2 className="m-3 flex items-center text-2xl font-thin text-gray-800 lg:text-3xl dark:text-white">
-        <RocketLaunchIcon className="mr-4 h-auto w-10 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)]" />
-        CONTACTAME
+    <div className="mt-6 sm:mt-8 lg:mt-10">
+      <h2 className="m-2 flex items-center text-lg font-thin text-gray-800 sm:m-3 sm:text-xl lg:text-2xl xl:text-3xl dark:text-white">
+        <RocketLaunchIcon className="mr-2 h-auto w-7 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:mr-3 sm:w-8 lg:mr-4 lg:w-10" />
+        <span className="text-sm sm:text-base lg:text-lg xl:text-xl">CONTACTAME</span>
       </h2>
-      <div className="flex flex-col space-y-6">
+      <div className="flex flex-col space-y-3 sm:space-y-4 lg:space-y-6">
         {contactInfo.map(contact => (
           <div key={contact.id} className="flex flex-row items-center">
             {contact.isHeroicon
@@ -37,10 +37,10 @@ export default async function ContactSection() {
                     alt={contact.value}
                     width={24}
                     height={24}
-                    className="ml-8 h-auto w-8"
+                    className="ml-4 h-auto w-6 sm:ml-6 sm:w-7 lg:ml-8 lg:w-8"
                   />
                 )}
-            <p className="ml-2 text-justify font-thin text-gray-800 dark:text-white">
+            <p className="ml-2 text-xs font-thin break-all text-gray-800 sm:text-sm lg:text-base dark:text-white">
               {contact.value}
             </p>
           </div>
