@@ -31,3 +31,32 @@ export function getPreserveWhitespaceStyle(): React.CSSProperties {
     wordBreak: "break-word",
   };
 }
+
+/**
+ * Parses text and identifies list items (lines starting with bullet points)
+ * Returns an array of objects with type 'text' or 'list' and content
+ */
+export function parseTextWithLists(
+  text: string
+): Array<{ type: "text" | "list"; content: string }> {
+  if (!text) return [];
+
+  const lines = text.split("\n");
+  const result: Array<{ type: "text" | "list"; content: string }> = [];
+
+  lines.forEach(line => {
+    const trimmedLine = line.trim();
+
+    // Check if line starts with bullet point (•, -, *, or ·)
+    if (trimmedLine.match(/^[•\-\*·]\s+/)) {
+      // Remove the bullet character and add as list item
+      const content = trimmedLine.replace(/^[•\-\*·]\s+/, "");
+      result.push({ type: "list", content });
+    } else if (trimmedLine) {
+      // Non-empty line that's not a list item
+      result.push({ type: "text", content: trimmedLine });
+    }
+  });
+
+  return result;
+}
