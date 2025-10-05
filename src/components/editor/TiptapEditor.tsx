@@ -49,6 +49,21 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
               class: "bg-gray-100 dark:bg-gray-800 rounded-md p-4 font-mono text-sm",
             },
           },
+          bulletList: {
+            HTMLAttributes: {
+              class: "list-disc list-outside ml-4 pl-2",
+            },
+          },
+          orderedList: {
+            HTMLAttributes: {
+              class: "list-decimal list-outside ml-4 pl-2",
+            },
+          },
+          listItem: {
+            HTMLAttributes: {
+              class: "ml-2",
+            },
+          },
         }),
         Placeholder.configure({
           placeholder,

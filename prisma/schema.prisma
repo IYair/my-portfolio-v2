@@ -115,15 +115,16 @@ model ContactInfo {
 }
 
 model WorkExperience {
-  id          Int      @id @default(autoincrement())
-  position    String
-  company     String
-  description String   @db.Text
-  startDate   String?  // Format: "2020" or "Jan 2020"
-  endDate     String?  // Format: "2022" or "Present"
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  position        String
+  company         String
+  description     String   @db.Text
+  descriptionHtml String?  @db.LongText // Rich text HTML content from TipTap
+  startDate       String?  // Format: "2020" or "Jan 2020"
+  endDate         String?  // Format: "2022" or "Present"
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("work_experience")
 }

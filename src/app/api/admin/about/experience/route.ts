@@ -27,22 +27,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { position, company, description, startDate, endDate, order } = await request.json();
+    const body = await request.json();
+    const { position, company, description, descriptionHtml, startDate, endDate, order } = body;
+
+    console.log("POST /api/admin/about/experience", { body });
+
+    // Validate required fields
+    if (!position || !company) {
+      return NextResponse.json({ error: "Position and company are required" }, { status: 400 });
+    }
 
     const experience = await prisma.workExperience.create({
       data: {
         position,
         company,
-        description,
-        startDate,
-        endDate,
-        order: order || 0,
+        description: description || "",
+        descriptionHtml: descriptionHtml || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        order: order ?? 0,
       },
     });
 
     return NextResponse.json(experience);
   } catch (error) {
     console.error("Error creating work experience:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }

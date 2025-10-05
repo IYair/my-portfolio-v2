@@ -1,18 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import Textarea from "@/components/ui/Textarea";
 import { Card } from "@/components/ui/Card";
 import { toast } from "sonner";
 import { BriefcaseIcon, PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
+import type { TiptapEditorRef } from "@/components/editor/TiptapEditor";
+
+const TiptapEditor = dynamic(() => import("@/components/editor/TiptapEditor"), {
+  ssr: false,
+  loading: () => <div className="h-64 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800"></div>,
+});
 
 interface WorkExperience {
   id: number;
   position: string;
   company: string;
   description: string;
+  descriptionHtml?: string | null;
   startDate?: string;
   endDate?: string;
   order: number;
@@ -22,6 +29,7 @@ interface ExperienceFormData {
   position: string;
   company: string;
   description: string;
+  descriptionHtml: string;
   startDate: string;
   endDate: string;
   order: number;
@@ -36,10 +44,12 @@ export default function ExperienceSection() {
     position: "",
     company: "",
     description: "",
+    descriptionHtml: "",
     startDate: "",
     endDate: "",
     order: 0,
   });
+  const editorRef = useRef<TiptapEditorRef>(null);
 
   useEffect(() => {
     loadExperiences();
@@ -65,18 +75,38 @@ export default function ExperienceSection() {
     e.preventDefault();
 
     try {
+      // Get HTML content from TipTap editor
+      const descriptionHtml = editorRef.current?.getHTML() || "";
+
+      // Convert HTML to plain text for backward compatibility
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = descriptionHtml;
+      const plainText = tempDiv.textContent || tempDiv.innerText || "";
+
       const url = editingExperience
         ? `/api/admin/about/experience/${editingExperience.id}`
         : "/api/admin/about/experience";
 
       const method = editingExperience ? "PUT" : "POST";
 
+      const payload = {
+        position: formData.position,
+        company: formData.company,
+        description: plainText || "Sin descripción",
+        descriptionHtml,
+        startDate: formData.startDate || null,
+        endDate: formData.endDate || null,
+        order: formData.order || 0,
+      };
+
+      console.log("Sending payload:", payload);
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -84,11 +114,24 @@ export default function ExperienceSection() {
         loadExperiences();
         resetForm();
       } else {
-        toast.error("Error al guardar la experiencia");
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          errorData = { error: "Error al parsear respuesta del servidor" };
+        }
+        console.error("Server error:", errorData);
+        toast.error(
+          "Error al guardar: " +
+            (errorData.error || "Error desconocido") +
+            (errorData.details ? ` - ${errorData.details}` : "")
+        );
       }
     } catch (error) {
       console.error("Error saving experience:", error);
-      toast.error("Error al guardar la experiencia");
+      toast.error(
+        "Error de red al guardar la experiencia: " + (error instanceof Error ? error.message : "")
+      );
     }
   };
 
@@ -98,10 +141,19 @@ export default function ExperienceSection() {
       position: experience.position,
       company: experience.company,
       description: experience.description,
+      descriptionHtml: experience.descriptionHtml || "",
       startDate: experience.startDate || "",
       endDate: experience.endDate || "",
       order: experience.order,
     });
+
+    // Set editor content
+    setTimeout(() => {
+      if (editorRef.current && experience.descriptionHtml) {
+        editorRef.current.setContent(experience.descriptionHtml);
+      }
+    }, 100);
+
     setShowForm(true);
   };
 
@@ -132,10 +184,12 @@ export default function ExperienceSection() {
       position: "",
       company: "",
       description: "",
+      descriptionHtml: "",
       startDate: "",
       endDate: "",
       order: 0,
     });
+    editorRef.current?.clear();
     setEditingExperience(null);
     setShowForm(false);
   };
@@ -227,14 +281,19 @@ export default function ExperienceSection() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">Descripción</label>
-              <Textarea
-                value={formData.description}
-                onChange={e => setFormData({ ...formData, description: e.target.value })}
+              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
+                Descripción (Editor Rico)
+              </label>
+              <TiptapEditor
+                ref={editorRef}
+                content={formData.descriptionHtml}
+                onChange={html => setFormData({ ...formData, descriptionHtml: html })}
                 placeholder="Describe tus responsabilidades y logros en este puesto..."
-                rows={4}
-                required
               />
+              <p className="mt-1 text-xs text-[var(--foreground)] opacity-60">
+                Usa el editor para dar formato a tu experiencia laboral. Puedes agregar listas,
+                negritas, cursivas, enlaces, etc.
+              </p>
             </div>
 
             <div className="flex gap-2">
@@ -276,9 +335,16 @@ export default function ExperienceSection() {
                 </Button>
               </div>
             </div>
-            <p className="whitespace-pre-wrap text-[var(--foreground)] opacity-80">
-              {experience.description}
-            </p>
+            {experience.descriptionHtml ? (
+              <div
+                className="prose prose-sm dark:prose-invert max-w-none text-[var(--foreground)] opacity-80"
+                dangerouslySetInnerHTML={{ __html: experience.descriptionHtml }}
+              />
+            ) : (
+              <p className="whitespace-pre-wrap text-[var(--foreground)] opacity-80">
+                {experience.description}
+              </p>
+            )}
             <p className="mt-2 text-xs text-[var(--foreground)] opacity-70">
               Orden: {experience.order}
             </p>

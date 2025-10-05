@@ -9,26 +9,42 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { position, company, description, startDate, endDate, order } = await request.json();
+    const body = await request.json();
+    const { position, company, description, descriptionHtml, startDate, endDate, order } = body;
+
     const params = await context.params;
     const id = parseInt(params.id);
+
+    console.log("PUT /api/admin/about/experience/" + id, { body });
+
+    // Validate required fields
+    if (!position || !company) {
+      return NextResponse.json({ error: "Position and company are required" }, { status: 400 });
+    }
 
     const experience = await prisma.workExperience.update({
       where: { id },
       data: {
         position,
         company,
-        description,
-        startDate,
-        endDate,
-        order,
+        description: description || "",
+        descriptionHtml: descriptionHtml || null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        order: order ?? 0,
       },
     });
 
     return NextResponse.json(experience);
   } catch (error) {
     console.error("Error updating work experience:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }
 
