@@ -47,6 +47,32 @@ export default async function ContactSection() {
               >
                 {contact.value}
               </a>
+            ) : contact.type.toLowerCase() === "linkedin" ? (
+              <a
+                href={
+                  contact.value.startsWith("http")
+                    ? contact.value
+                    : `https://linkedin.com/in/${contact.value}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 text-xs font-thin break-all text-gray-800 transition-colors duration-200 hover:text-blue-500 active:text-blue-600 sm:text-sm lg:text-base dark:text-white dark:hover:text-blue-400 dark:active:text-blue-500"
+              >
+                {contact.value}
+              </a>
+            ) : contact.type.toLowerCase() === "github" ? (
+              <a
+                href={
+                  contact.value.startsWith("http")
+                    ? contact.value
+                    : `https://github.com/${contact.value}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 text-xs font-thin break-all text-gray-800 transition-colors duration-200 hover:text-blue-500 active:text-blue-600 sm:text-sm lg:text-base dark:text-white dark:hover:text-blue-400 dark:active:text-blue-500"
+              >
+                {contact.value}
+              </a>
             ) : (
               <p className="ml-2 text-xs font-thin break-all text-gray-800 sm:text-sm lg:text-base dark:text-white">
                 {contact.value}
