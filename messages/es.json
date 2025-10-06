@@ -1,0 +1,57 @@
+{
+  "common": {
+    "viewProjects": "Ver Proyectos",
+    "contactMe": "Contáctame",
+    "readMore": "Leer más",
+    "allRightsReserved": "Todos los derechos reservados"
+  },
+  "nav": {
+    "home": "Inicio",
+    "about": "Acerca",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "projects": "Proyectos"
+  },
+  "hero": {
+    "greeting": "Hola, soy",
+    "name": "Yair Chan",
+    "description": "Desarrollador Full Stack apasionado por crear experiencias digitales increíbles y soluciones innovadoras."
+  },
+  "about": {
+    "title": "Acerca de mí",
+    "description1": "Soy un desarrollador con experiencia en tecnologías modernas como React, Next.js, Node.js y TypeScript. Me encanta resolver problemas complejos y crear aplicaciones que marquen la diferencia.",
+    "description2": "Cuando no estoy programando, me gusta escribir en mi blog sobre tecnología y compartir conocimientos con la comunidad.",
+    "technologies": "Tecnologías"
+  },
+  "projects": {
+    "title": "Proyectos",
+    "description": "Explora mis proyectos más recientes y las tecnologías que utilizo.",
+    "viewAll": "Ver todos los proyectos →"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Lee mis últimos artículos sobre desarrollo web y tecnología.",
+    "readArticles": "Leer artículos →",
+    "latestPosts": "Últimas publicaciones",
+    "noPosts": "No hay publicaciones disponibles en este momento.",
+    "readMore": "Leer más →"
+  },
+  "contact": {
+    "title": "Contáctame",
+    "description": "¿Tienes un proyecto en mente? ¡Me encantaría conocer más detalles! Envíame un mensaje y conversemos sobre cómo puedo ayudarte.",
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "message": "Mensaje",
+      "send": "Enviar mensaje",
+      "sending": "Enviando...",
+      "success": "¡Mensaje enviado exitosamente!",
+      "error": "Error al enviar el mensaje. Por favor, intenta de nuevo."
+    }
+  },
+  "footer": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter"
+  }
+}

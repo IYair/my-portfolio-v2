@@ -1,0 +1,57 @@
+{
+  "common": {
+    "viewProjects": "View Projects",
+    "contactMe": "Contact Me",
+    "readMore": "Read more",
+    "allRightsReserved": "All rights reserved"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact",
+    "projects": "Projects"
+  },
+  "hero": {
+    "greeting": "Hi, I'm",
+    "name": "Yair Chan",
+    "description": "Full Stack Developer passionate about creating amazing digital experiences and innovative solutions."
+  },
+  "about": {
+    "title": "About me",
+    "description1": "I'm a developer with experience in modern technologies like React, Next.js, Node.js, and TypeScript. I love solving complex problems and creating applications that make a difference.",
+    "description2": "When I'm not coding, I enjoy writing on my blog about technology and sharing knowledge with the community.",
+    "technologies": "Technologies"
+  },
+  "projects": {
+    "title": "Projects",
+    "description": "Explore my latest projects and the technologies I use.",
+    "viewAll": "View all projects →"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Read my latest articles about web development and technology.",
+    "readArticles": "Read articles →",
+    "latestPosts": "Latest posts",
+    "noPosts": "No posts available at the moment.",
+    "readMore": "Read more →"
+  },
+  "contact": {
+    "title": "Contact Me",
+    "description": "Have a project in mind? I'd love to know more details! Send me a message and let's talk about how I can help you.",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "send": "Send message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Error sending message. Please try again."
+    }
+  },
+  "footer": {
+    "github": "GitHub",
+    "linkedin": "LinkedIn",
+    "twitter": "Twitter"
+  }
+}

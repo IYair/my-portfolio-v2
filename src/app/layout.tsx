@@ -1,10 +1,4 @@
-import Navigation from "@/components/layout/Navigation";
-import SessionProvider from "@/components/providers/SessionProvider";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,18 +11,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Yair Chan - Portfolio",
-  description: "Portfolio personal de Yair Chan - Desarrollador Full Stack",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html suppressHydrationWarning>
       <head>
         {/* Blocking script to prevent theme flash - minified for performance */}
         <script
@@ -37,15 +26,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SessionProvider>
-          <Navigation />
-          {children}
-          <Analytics />
-          <SpeedInsights />
-          <Toaster position="top-right" expand={false} richColors closeButton theme="system" />
-        </SessionProvider>
-      </body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

@@ -1,15 +1,18 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "@/hooks/useTheme";
+import { Link } from "@/i18n/routing";
+import { Bars3Icon, MoonIcon, SunIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navigation() {
   const pathname = usePathname();
   const { theme, toggleTheme, mounted } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const t = useTranslations("nav");
 
   // No mostrar navegación en rutas de admin
   if (pathname.startsWith("/admin")) {
@@ -17,11 +20,11 @@ export default function Navigation() {
   }
 
   const navItems = [
-    { href: "/", label: "Inicio" },
-    { href: "/about", label: "Acerca" },
-    { href: "/#projects", label: "Proyectos" },
-    { href: "/#blog", label: "Blog" },
-    { href: "/#contact", label: "Contacto" },
+    { href: "/", label: t("home") },
+    { href: "/about", label: t("about") },
+    { href: "/#projects", label: t("projects") },
+    { href: "/#blog", label: t("blog") },
+    { href: "/#contact", label: t("contact") },
   ];
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
@@ -52,6 +55,8 @@ export default function Navigation() {
                 </Link>
               ))}
             </div>
+            {/* Language Switcher */}
+            <LanguageSwitcher />
             {/* Theme Toggle Button */}
             {mounted && (
               <button
