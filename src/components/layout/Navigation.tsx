@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
+import { SunIcon, MoonIcon, Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "@/hooks/useTheme";
+import { useState } from "react";
 
 export default function Navigation() {
   const pathname = usePathname();
   const { theme, toggleTheme, mounted } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // No mostrar navegación en rutas de admin
   if (pathname.startsWith("/admin")) {
@@ -22,14 +24,19 @@ export default function Navigation() {
     { href: "/#contact", label: "Contacto" },
   ];
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <nav className="bg-background/80 border-foreground/10 fixed top-0 z-50 w-full border-b backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="font-mono text-lg font-semibold">
-            <Link href="/">Yair Chan</Link>
+            <Link href="/" onClick={closeMobileMenu}>
+              Yair Chan
+            </Link>
           </div>
           <div className="flex items-center space-x-6">
+            {/* Desktop Navigation */}
             <div className="hidden space-x-8 md:flex">
               {navItems.map(item => (
                 <Link
@@ -59,9 +66,43 @@ export default function Navigation() {
                 )}
               </button>
             )}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="hover:bg-foreground/5 rounded-lg p-2 transition-colors md:hidden"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <XMarkIcon className="text-foreground h-6 w-6" />
+              ) : (
+                <Bars3Icon className="text-foreground h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="border-foreground/10 bg-background/95 border-t backdrop-blur-sm md:hidden">
+          <div className="mx-auto max-w-6xl space-y-1 px-6 py-4">
+            {navItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMobileMenu}
+                className={`block rounded-lg px-4 py-3 transition-colors ${
+                  pathname === item.href
+                    ? "bg-foreground/5 text-foreground/70"
+                    : "hover:bg-foreground/5 hover:text-foreground/70"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
