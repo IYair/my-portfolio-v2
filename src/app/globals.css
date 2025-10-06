@@ -27,15 +27,15 @@
   overflow-wrap: break-word;
 }
 
-/* Dark mode adjustments - En admin, el editor siempre es claro */
+/* Dark mode adjustments - Respeta el tema oscuro en el admin */
 .dark .simple-editor-content {
-  background: white;
-  color: #1f2937;
+  background: #1f2937;
+  color: #f9fafb;
 }
 
 .dark .simple-editor-content .tiptap {
-  background: white;
-  color: #1f2937;
+  background: #1f2937;
+  color: #f9fafb;
 }
 
 /* Post content styling for blog pages */

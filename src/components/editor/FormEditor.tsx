@@ -290,7 +290,7 @@ export const FormEditor = React.forwardRef<FormEditorRef, FormEditorProps>(
 
     return (
       <div
-        className={`w-full max-w-full overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 ${className}`}
+        className={`w-full max-w-full overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 ${className}`}
       >
         <EditorContext.Provider value={{ editor }}>
           {editable && (
@@ -322,7 +322,7 @@ export const FormEditor = React.forwardRef<FormEditorRef, FormEditorProps>(
           <EditorContent
             editor={editor}
             role="presentation"
-            className="simple-editor-content min-h-[300px] w-full max-w-full overflow-x-auto bg-white p-6"
+            className="simple-editor-content min-h-[300px] w-full max-w-full overflow-x-auto bg-white p-6 dark:bg-gray-800"
           />
         </EditorContext.Provider>
       </div>
