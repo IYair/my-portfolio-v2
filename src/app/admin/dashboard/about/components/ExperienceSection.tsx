@@ -4,10 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { BriefcaseIcon, PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import dynamic from "next/dynamic";
 import type { TiptapEditorRef } from "@/components/editor/TiptapEditor";
+import { format as tempoFormat, parse as tempoParse } from "@formkit/tempo";
 
 const TiptapEditor = dynamic(() => import("@/components/editor/TiptapEditor"), {
   ssr: false,
@@ -30,8 +33,9 @@ interface ExperienceFormData {
   company: string;
   description: string;
   descriptionHtml: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  isPresent: boolean;
   order: number;
 }
 
@@ -45,8 +49,9 @@ export default function ExperienceSection() {
     company: "",
     description: "",
     descriptionHtml: "",
-    startDate: "",
-    endDate: "",
+    startDate: undefined,
+    endDate: undefined,
+    isPresent: false,
     order: 0,
   });
   const editorRef = useRef<TiptapEditorRef>(null);
@@ -94,8 +99,14 @@ export default function ExperienceSection() {
         company: formData.company,
         description: plainText || "Sin descripción",
         descriptionHtml,
-        startDate: formData.startDate || null,
-        endDate: formData.endDate || null,
+        startDate: formData.startDate
+          ? tempoFormat(formData.startDate, "MMMM YYYY", "es").toUpperCase()
+          : null,
+        endDate: formData.isPresent
+          ? "Presente"
+          : formData.endDate
+            ? tempoFormat(formData.endDate, "MMMM YYYY", "es").toUpperCase()
+            : null,
         order: formData.order || 0,
       };
 
@@ -117,7 +128,7 @@ export default function ExperienceSection() {
         let errorData;
         try {
           errorData = await response.json();
-        } catch (e) {
+        } catch {
           errorData = { error: "Error al parsear respuesta del servidor" };
         }
         console.error("Server error:", errorData);
@@ -137,13 +148,46 @@ export default function ExperienceSection() {
 
   const handleEdit = (experience: WorkExperience) => {
     setEditingExperience(experience);
+
+    // Parse dates from string format "MMMM YYYY" to Date using Tempo
+    const parseDate = (dateStr: string | undefined | null): Date | undefined => {
+      if (!dateStr || dateStr === "Presente" || dateStr === "Present") return undefined;
+
+      try {
+        // Try different formats with Tempo
+        const formats = [
+          "MMMM YYYY", // "ENERO 2023"
+          "MMM YYYY", // "ENE 2023"
+        ];
+
+        for (const formatStr of formats) {
+          try {
+            const parsedDate = tempoParse(dateStr, formatStr, "es");
+            if (parsedDate && !isNaN(parsedDate.getTime())) {
+              return parsedDate;
+            }
+          } catch {
+            continue;
+          }
+        }
+
+        // If all formats fail, return undefined
+        console.warn(`Could not parse date: ${dateStr}`);
+        return undefined;
+      } catch (error) {
+        console.error("Error parsing date:", dateStr, error);
+        return undefined;
+      }
+    };
+
     setFormData({
       position: experience.position,
       company: experience.company,
       description: experience.description,
       descriptionHtml: experience.descriptionHtml || "",
-      startDate: experience.startDate || "",
-      endDate: experience.endDate || "",
+      startDate: parseDate(experience.startDate),
+      endDate: parseDate(experience.endDate),
+      isPresent: experience.endDate?.toLowerCase() === "presente",
       order: experience.order,
     });
 
@@ -185,8 +229,9 @@ export default function ExperienceSection() {
       company: "",
       description: "",
       descriptionHtml: "",
-      startDate: "",
-      endDate: "",
+      startDate: undefined,
+      endDate: undefined,
+      isPresent: false,
       order: 0,
     });
     editorRef.current?.clear();
@@ -246,27 +291,47 @@ export default function ExperienceSection() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
                   Fecha de Inicio
                 </label>
-                <Input
-                  value={formData.startDate}
-                  onChange={e => setFormData({ ...formData, startDate: e.target.value })}
-                  placeholder="ej: Enero 2020"
+                <DatePicker
+                  date={formData.startDate}
+                  onDateChange={date => setFormData({ ...formData, startDate: date })}
+                  placeholder="Seleccionar fecha de inicio"
                 />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
                   Fecha de Fin
                 </label>
-                <Input
-                  value={formData.endDate}
-                  onChange={e => setFormData({ ...formData, endDate: e.target.value })}
-                  placeholder="ej: Presente o Diciembre 2022"
+                <DatePicker
+                  date={formData.endDate}
+                  onDateChange={date => setFormData({ ...formData, endDate: date })}
+                  placeholder="Seleccionar fecha de fin"
+                  disabled={formData.isPresent}
                 />
               </div>
+            </div>
+
+            <div>
+              <Checkbox
+                id="isPresent"
+                checked={formData.isPresent}
+                onChange={e =>
+                  setFormData({
+                    ...formData,
+                    isPresent: e.target.checked,
+                    endDate: e.target.checked ? undefined : formData.endDate,
+                  })
+                }
+                label="Trabajo actual"
+                description="Marca esta opción si actualmente trabajas en esta empresa"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
                   Orden

@@ -31,9 +31,15 @@ export default async function ExperienceSection() {
                   <h3 className="mx-2 text-sm font-medium tracking-wide text-blue-300 sm:mx-3 sm:text-base sm:tracking-wider lg:text-lg xl:text-xl 2xl:text-2xl">
                     {experience.position}
                   </h3>
-                  <p className="mx-2 text-justify text-xs text-red-400 sm:mx-3 sm:text-sm lg:text-base xl:text-lg">
-                    {experience.company}
-                  </p>
+                  <div className="mx-2 flex flex-row items-center justify-between sm:mx-3">
+                    <p className="text-justify text-xs text-red-400 sm:text-sm lg:text-base xl:text-lg">
+                      {experience.company}
+                    </p>
+                    <p className="ml-4 text-xs text-nowrap text-gray-400 capitalize sm:text-sm lg:text-base">
+                      {experience.startDate?.toLowerCase()}
+                      {experience.endDate && ` - ${experience.endDate.toLowerCase()}`}
+                    </p>
+                  </div>
 
                   {hasRichContent ? (
                     <div
