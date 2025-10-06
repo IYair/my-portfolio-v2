@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { RocketLaunchIcon, EnvelopeIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import { getContactInfo } from "@/services/aboutService";
+import { getTranslations } from "next-intl/server";
 
 const getHeroiconComponent = (type: string) => {
   switch (type.toLowerCase()) {
@@ -18,13 +19,16 @@ const getHeroiconComponent = (type: string) => {
 };
 
 export default async function ContactSection() {
+  const t = await getTranslations("aboutPage");
   const contactInfo = await getContactInfo();
 
   return (
     <div className="mt-6 sm:mt-8 lg:mt-10">
       <h2 className="m-2 flex items-center text-lg font-thin text-gray-800 sm:m-3 sm:text-xl lg:text-2xl xl:text-3xl dark:text-white">
         <RocketLaunchIcon className="mr-2 h-auto w-7 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:mr-3 sm:w-8 lg:mr-4 lg:w-10" />
-        <span className="text-sm sm:text-base lg:text-lg xl:text-xl">CONTACTAME</span>
+        <span className="text-sm sm:text-base lg:text-lg xl:text-xl">
+          {t("contactInfo").toUpperCase()}
+        </span>
       </h2>
       <div className="flex flex-row flex-wrap gap-3 sm:gap-4 lg:flex-col lg:gap-0 lg:space-y-6">
         {contactInfo.map(contact => (

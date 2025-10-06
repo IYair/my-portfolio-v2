@@ -10,7 +10,18 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     }
 
     const body = await request.json();
-    const { position, company, description, descriptionHtml, startDate, endDate, order } = body;
+    const {
+      position,
+      positionEn,
+      company,
+      description,
+      descriptionEn,
+      descriptionHtml,
+      descriptionHtmlEn,
+      startDate,
+      endDate,
+      order,
+    } = body;
 
     const params = await context.params;
     const id = parseInt(params.id);
@@ -26,9 +37,12 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
       where: { id },
       data: {
         position,
+        positionEn: positionEn || null,
         company,
         description: description || "",
+        descriptionEn: descriptionEn || null,
         descriptionHtml: descriptionHtml || null,
+        descriptionHtmlEn: descriptionHtmlEn || null,
         startDate: startDate || null,
         endDate: endDate || null,
         order: order ?? 0,

@@ -69,8 +69,13 @@ model AboutProfile {
   id           Int      @id @default(autoincrement())
   name         String
   title        String
+  titleEn      String?
   subtitle     String
+  subtitleEn   String?
   bio          String   @db.Text
+  bioHtml      String?  @db.LongText
+  bioEn        String?  @db.Text
+  bioHtmlEn    String?  @db.LongText
   profileImage String?  @db.Text
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -106,14 +111,17 @@ model ContactInfo {
 model WorkExperience {
   id              Int      @id @default(autoincrement())
   position        String
+  positionEn      String?
   company         String
   description     String   @db.Text
+  descriptionEn   String?  @db.Text
   startDate       String?
   endDate         String?
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   descriptionHtml String?  @db.LongText
+  descriptionHtmlEn String? @db.LongText
 
   @@map("work_experience")
 }
@@ -122,7 +130,9 @@ model Education {
   id          Int      @id @default(autoincrement())
   institution String
   degree      String
+  degreeEn    String?
   field       String?
+  fieldEn     String?
   startDate   String?
   endDate     String?
   order       Int      @default(0)
@@ -135,10 +145,12 @@ model Education {
 model Course {
   id           Int      @id @default(autoincrement())
   title        String
+  titleEn      String?
   provider     String
   providerIcon String?  @db.Text
   icon         String?  @db.Text
   category     String?
+  categoryEn   String?
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

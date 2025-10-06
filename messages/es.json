@@ -53,5 +53,18 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "twitter": "Twitter"
+  },
+  "aboutPage": {
+    "skills": "Habilidades",
+    "contactInfo": "Información de Contacto",
+    "aboutMe": "Acerca de Mí",
+    "experience": "Experiencia",
+    "education": "Educación",
+    "courses": "Cursos y Certificaciones",
+    "present": "Presente",
+    "metadata": {
+      "title": "Acerca de {name} - {title}",
+      "description": "Conoce más sobre mi experiencia como desarrollador de software, habilidades técnicas y trayectoria profesional."
+    }
   }
 }

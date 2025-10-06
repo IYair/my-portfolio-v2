@@ -20,9 +20,12 @@ const TiptapEditor = dynamic(() => import("@/components/editor/TiptapEditor"), {
 interface WorkExperience {
   id: number;
   position: string;
+  positionEn?: string | null;
   company: string;
   description: string;
   descriptionHtml?: string | null;
+  descriptionEn?: string | null;
+  descriptionHtmlEn?: string | null;
   startDate?: string;
   endDate?: string;
   order: number;
@@ -30,9 +33,12 @@ interface WorkExperience {
 
 interface ExperienceFormData {
   position: string;
+  positionEn: string;
   company: string;
   description: string;
   descriptionHtml: string;
+  descriptionEn: string;
+  descriptionHtmlEn: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
   isPresent: boolean;
@@ -46,15 +52,20 @@ export default function ExperienceSection() {
   const [editingExperience, setEditingExperience] = useState<WorkExperience | null>(null);
   const [formData, setFormData] = useState<ExperienceFormData>({
     position: "",
+    positionEn: "",
     company: "",
     description: "",
     descriptionHtml: "",
+    descriptionEn: "",
+    descriptionHtmlEn: "",
     startDate: undefined,
     endDate: undefined,
     isPresent: false,
     order: 0,
   });
+  const [isTranslating, setIsTranslating] = useState(false);
   const editorRef = useRef<TiptapEditorRef>(null);
+  const editorEnRef = useRef<TiptapEditorRef>(null);
 
   useEffect(() => {
     loadExperiences();
@@ -76,17 +87,67 @@ export default function ExperienceSection() {
     }
   };
 
+  const handleTranslate = async () => {
+    if (!formData.position || !formData.descriptionHtml) {
+      toast.error("Completa el puesto y la descripción antes de traducir");
+      return;
+    }
+
+    setIsTranslating(true);
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          texts: [formData.position, formData.descriptionHtml],
+          targetLang: "en",
+          sourceLang: "es",
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData({
+          ...formData,
+          positionEn: data.translations[0] || "",
+          descriptionHtmlEn: data.translations[1] || "",
+        });
+
+        // Update English editor content
+        setTimeout(() => {
+          if (editorEnRef.current && data.translations[1]) {
+            editorEnRef.current.setContent(data.translations[1]);
+          }
+        }, 100);
+
+        toast.success("Traducción completada");
+      } else {
+        toast.error("Error al traducir");
+      }
+    } catch (error) {
+      console.error("Error translating:", error);
+      toast.error("Error al traducir");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // Get HTML content from TipTap editor
+      // Get HTML content from TipTap editors
       const descriptionHtml = editorRef.current?.getHTML() || "";
+      const descriptionHtmlEn = editorEnRef.current?.getHTML() || "";
 
       // Convert HTML to plain text for backward compatibility
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = descriptionHtml;
       const plainText = tempDiv.textContent || tempDiv.innerText || "";
+
+      const tempDivEn = document.createElement("div");
+      tempDivEn.innerHTML = descriptionHtmlEn;
+      const plainTextEn = tempDivEn.textContent || tempDivEn.innerText || "";
 
       const url = editingExperience
         ? `/api/admin/about/experience/${editingExperience.id}`
@@ -96,9 +157,12 @@ export default function ExperienceSection() {
 
       const payload = {
         position: formData.position,
+        positionEn: formData.positionEn || null,
         company: formData.company,
         description: plainText || "Sin descripción",
         descriptionHtml,
+        descriptionEn: plainTextEn || null,
+        descriptionHtmlEn: descriptionHtmlEn || null,
         startDate: formData.startDate
           ? tempoFormat(formData.startDate, "MMMM YYYY", "es").toUpperCase()
           : null,
@@ -182,9 +246,12 @@ export default function ExperienceSection() {
 
     setFormData({
       position: experience.position,
+      positionEn: experience.positionEn || "",
       company: experience.company,
       description: experience.description,
       descriptionHtml: experience.descriptionHtml || "",
+      descriptionEn: experience.descriptionEn || "",
+      descriptionHtmlEn: experience.descriptionHtmlEn || "",
       startDate: parseDate(experience.startDate),
       endDate: parseDate(experience.endDate),
       isPresent: experience.endDate?.toLowerCase() === "presente",
@@ -195,6 +262,9 @@ export default function ExperienceSection() {
     setTimeout(() => {
       if (editorRef.current && experience.descriptionHtml) {
         editorRef.current.setContent(experience.descriptionHtml);
+      }
+      if (editorEnRef.current && experience.descriptionHtmlEn) {
+        editorEnRef.current.setContent(experience.descriptionHtmlEn);
       }
     }, 100);
 
@@ -226,15 +296,19 @@ export default function ExperienceSection() {
   const resetForm = () => {
     setFormData({
       position: "",
+      positionEn: "",
       company: "",
       description: "",
       descriptionHtml: "",
+      descriptionEn: "",
+      descriptionHtmlEn: "",
       startDate: undefined,
       endDate: undefined,
       isPresent: false,
       order: 0,
     });
     editorRef.current?.clear();
+    editorEnRef.current?.clear();
     setEditingExperience(null);
     setShowForm(false);
   };
@@ -315,7 +389,7 @@ export default function ExperienceSection() {
               </div>
             </div>
 
-            <div>
+            <div className="space-y-3">
               <Checkbox
                 id="isPresent"
                 checked={formData.isPresent}
@@ -345,20 +419,76 @@ export default function ExperienceSection() {
               </div>
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
-                Descripción (Editor Rico)
-              </label>
-              <TiptapEditor
-                ref={editorRef}
-                content={formData.descriptionHtml}
-                onChange={html => setFormData({ ...formData, descriptionHtml: html })}
-                placeholder="Describe tus responsabilidades y logros en este puesto..."
-              />
-              <p className="mt-1 text-xs text-[var(--foreground)] opacity-60">
-                Usa el editor para dar formato a tu experiencia laboral. Puedes agregar listas,
-                negritas, cursivas, enlaces, etc.
-              </p>
+            <div className="space-y-6">
+              {/* Spanish Editor */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
+                  Descripción en Español (Editor Rico)
+                </label>
+                <TiptapEditor
+                  ref={editorRef}
+                  content={formData.descriptionHtml}
+                  onChange={html => setFormData({ ...formData, descriptionHtml: html })}
+                  placeholder="Describe tus responsabilidades y logros en este puesto..."
+                />
+                <p className="mt-1 text-xs text-[var(--foreground)] opacity-60">
+                  Usa el editor para dar formato a tu experiencia laboral. Puedes agregar listas,
+                  negritas, cursivas, enlaces, etc.
+                </p>
+              </div>
+
+              {/* Translate Button */}
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={handleTranslate}
+                  disabled={isTranslating || !formData.position || !formData.descriptionHtml}
+                >
+                  {isTranslating ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
+                      Traduciendo...
+                    </>
+                  ) : (
+                    <>🌐 Traducir al Inglés</>
+                  )}
+                </Button>
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
+              </div>
+
+              {/* English Position */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
+                  Puesto en Inglés
+                </label>
+                <Input
+                  value={formData.positionEn}
+                  onChange={e => setFormData({ ...formData, positionEn: e.target.value })}
+                  placeholder="e.g: Frontend Developer"
+                />
+                <p className="mt-1 text-xs text-[var(--foreground)] opacity-60">
+                  Puedes editarlo manualmente o usar el botón de traducción
+                </p>
+              </div>
+
+              {/* English Editor */}
+              <div>
+                <label className="mb-2 block text-sm font-medium text-[var(--foreground)]">
+                  Descripción en Inglés (Editor Rico)
+                </label>
+                <TiptapEditor
+                  ref={editorEnRef}
+                  content={formData.descriptionHtmlEn}
+                  onChange={html => setFormData({ ...formData, descriptionHtmlEn: html })}
+                  placeholder="Describe your responsibilities and achievements in this position..."
+                />
+                <p className="mt-1 text-xs text-[var(--foreground)] opacity-60">
+                  Edita la traducción si es necesario para mejorar el formato o corregir términos
+                  técnicos
+                </p>
+              </div>
             </div>
 
             <div className="flex gap-2">

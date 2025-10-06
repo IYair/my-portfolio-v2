@@ -53,5 +53,18 @@
     "github": "GitHub",
     "linkedin": "LinkedIn",
     "twitter": "Twitter"
+  },
+  "aboutPage": {
+    "skills": "Skills",
+    "contactInfo": "Contact Information",
+    "aboutMe": "About Me",
+    "experience": "Experience",
+    "education": "Education",
+    "courses": "Courses & Certifications",
+    "present": "Present",
+    "metadata": {
+      "title": "About {name} - {title}",
+      "description": "Learn more about my experience as a software developer, technical skills and professional background."
+    }
   }
 }

@@ -28,7 +28,18 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { position, company, description, descriptionHtml, startDate, endDate, order } = body;
+    const {
+      position,
+      positionEn,
+      company,
+      description,
+      descriptionEn,
+      descriptionHtml,
+      descriptionHtmlEn,
+      startDate,
+      endDate,
+      order,
+    } = body;
 
     console.log("POST /api/admin/about/experience", { body });
 
@@ -40,9 +51,12 @@ export async function POST(request: NextRequest) {
     const experience = await prisma.workExperience.create({
       data: {
         position,
+        positionEn: positionEn || null,
         company,
         description: description || "",
+        descriptionEn: descriptionEn || null,
         descriptionHtml: descriptionHtml || null,
+        descriptionHtmlEn: descriptionHtmlEn || null,
         startDate: startDate || null,
         endDate: endDate || null,
         order: order ?? 0,

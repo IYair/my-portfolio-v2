@@ -1,8 +1,11 @@
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { getEducation } from "@/services/aboutService";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function EducationSection() {
-  const educations = await getEducation();
+  const locale = (await getLocale()) as "es" | "en";
+  const t = await getTranslations("aboutPage");
+  const educations = await getEducation(locale);
 
   if (educations.length === 0) {
     return null;
@@ -14,7 +17,7 @@ export default async function EducationSection() {
         <div className="mb-2 flex flex-row items-center">
           <AcademicCapIcon className="ml-2 h-auto w-6 text-red-400 sm:ml-4 sm:w-8 lg:ml-8 lg:w-10" />
           <h2 className="mx-2 flex text-base font-light text-red-400 sm:mx-3 sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-            Capacitación Académica
+            {t("education")}
           </h2>
         </div>
         <div className="flex flex-row">

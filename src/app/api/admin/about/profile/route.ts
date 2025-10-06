@@ -36,15 +36,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, title, subtitle, bio, profileImage } = await request.json();
+    const {
+      name,
+      title,
+      titleEn,
+      subtitle,
+      subtitleEn,
+      bio,
+      bioHtml,
+      bioEn,
+      bioHtmlEn,
+      profileImage,
+    } = await request.json();
 
     await prisma.aboutProfile.deleteMany();
     const profile = await prisma.aboutProfile.create({
       data: {
         name,
         title,
+        titleEn: titleEn || null,
         subtitle,
+        subtitleEn: subtitleEn || null,
         bio,
+        bioHtml: bioHtml || null,
+        bioEn: bioEn || null,
+        bioHtmlEn: bioHtmlEn || null,
         profileImage,
       },
     });

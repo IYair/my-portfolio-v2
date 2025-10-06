@@ -1,8 +1,10 @@
 import { getAboutProfile } from "@/services/aboutService";
 import Image from "next/image";
+import { getLocale } from "next-intl/server";
 
 export default async function ProfileSection() {
-  const profile = await getAboutProfile();
+  const locale = (await getLocale()) as "es" | "en";
+  const profile = await getAboutProfile(locale);
 
   if (!profile) {
     // Fallback to static data if no profile found

@@ -1,8 +1,11 @@
 import { getCourses } from "@/services/aboutService";
 import Image from "next/image";
+import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function CoursesSection() {
-  const coursesByProvider = await getCourses();
+  const locale = (await getLocale()) as "es" | "en";
+  const t = await getTranslations("aboutPage");
+  const coursesByProvider = await getCourses(locale);
 
   if (Object.keys(coursesByProvider).length === 0) {
     return null;
@@ -11,7 +14,7 @@ export default async function CoursesSection() {
   return (
     <section className="ml-2 sm:ml-4 lg:ml-10">
       <h2 className="m-2 flex text-base font-extralight text-blue-300 sm:m-3 sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-        CURSOS
+        {t("courses").toUpperCase()}
       </h2>
 
       <div className="flex flex-col">

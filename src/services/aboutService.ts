@@ -24,7 +24,7 @@ function cleanS3Url(url: string | null): string | null {
   }
 }
 
-export async function getAboutProfile() {
+export async function getAboutProfile(locale: "es" | "en" = "es") {
   try {
     const profile = await prisma.aboutProfile.findFirst({
       orderBy: { updatedAt: "desc" },
@@ -32,11 +32,17 @@ export async function getAboutProfile() {
 
     if (!profile) return null;
 
-    // Clean S3 URLs
-    return {
+    // Use translated fields if locale is 'en' and translation exists
+    const localizedProfile = {
       ...profile,
+      title: locale === "en" && profile.titleEn ? profile.titleEn : profile.title,
+      subtitle: locale === "en" && profile.subtitleEn ? profile.subtitleEn : profile.subtitle,
+      bio: locale === "en" && profile.bioEn ? profile.bioEn : profile.bio,
+      bioHtml: locale === "en" && profile.bioHtmlEn ? profile.bioHtmlEn : profile.bioHtml,
       profileImage: cleanS3Url(profile.profileImage),
     };
+
+    return localizedProfile;
   } catch (error) {
     console.error("Error fetching about profile:", error);
     return null;
@@ -77,39 +83,55 @@ export async function getContactInfo() {
   }
 }
 
-export async function getWorkExperience() {
+export async function getWorkExperience(locale: "es" | "en" = "es") {
   try {
     const experience = await prisma.workExperience.findMany({
       orderBy: { order: "asc" },
     });
-    return experience;
+
+    // Use translated fields if locale is 'en' and translation exists
+    return experience.map(exp => ({
+      ...exp,
+      position: locale === "en" && exp.positionEn ? exp.positionEn : exp.position,
+      description: locale === "en" && exp.descriptionEn ? exp.descriptionEn : exp.description,
+      descriptionHtml:
+        locale === "en" && exp.descriptionHtmlEn ? exp.descriptionHtmlEn : exp.descriptionHtml,
+    }));
   } catch (error) {
     console.error("Error fetching work experience:", error);
     return [];
   }
 }
 
-export async function getEducation() {
+export async function getEducation(locale: "es" | "en" = "es") {
   try {
     const education = await prisma.education.findMany({
       orderBy: { order: "asc" },
     });
-    return education;
+
+    // Use translated fields if locale is 'en' and translation exists
+    return education.map(edu => ({
+      ...edu,
+      degree: locale === "en" && edu.degreeEn ? edu.degreeEn : edu.degree,
+      field: locale === "en" && edu.fieldEn ? edu.fieldEn : edu.field,
+    }));
   } catch (error) {
     console.error("Error fetching education:", error);
     return [];
   }
 }
 
-export async function getCourses() {
+export async function getCourses(locale: "es" | "en" = "es") {
   try {
     const courses = await prisma.course.findMany({
       orderBy: [{ provider: "asc" }, { order: "asc" }],
     });
 
-    // Clean S3 URLs in course icons
+    // Clean S3 URLs and apply translations
     const cleanedCourses = courses.map(course => ({
       ...course,
+      title: locale === "en" && course.titleEn ? course.titleEn : course.title,
+      category: locale === "en" && course.categoryEn ? course.categoryEn : course.category,
       icon: course.icon ? cleanS3Url(course.icon) : course.icon,
       providerIcon: course.providerIcon ? cleanS3Url(course.providerIcon) : course.providerIcon,
     }));
