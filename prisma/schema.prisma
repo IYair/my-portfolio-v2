@@ -1,40 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-// Blog posts model
 model Post {
   id          Int      @id @default(autoincrement())
   title       String
   slug        String   @unique
   excerpt     String?  @db.Text
   content     String   @db.LongText
-  contentJson String?  @db.LongText // Editor.js JSON data
-  contentType String   @default("markdown") // "markdown", "editorjs", "notion", or "tiptap"
   published   Boolean  @default(false)
   featured    Boolean  @default(false)
   coverImage  String?
-  tags        Tag[]    @relation("PostTags")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  contentJson String?  @db.LongText
+  contentType String   @default("markdown")
+  tags        Tag[]    @relation("PostTags")
 
   @@map("posts")
 }
 
-// Tags model
 model Tag {
   id    Int    @id @default(autoincrement())
   name  String @unique
@@ -43,26 +35,24 @@ model Tag {
   @@map("tags")
 }
 
-// Projects model
 model Project {
-  id          Int      @id @default(autoincrement())
-  title       String
-  slug        String   @unique
-  description String?  @db.Text
-  longDescription String? @db.LongText
-  image       String?
-  demoUrl     String?
-  githubUrl   String?
-  technologies String  @db.Text // JSON array as string
-  featured    Boolean  @default(false)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  title           String
+  slug            String   @unique
+  description     String?  @db.Text
+  longDescription String?  @db.LongText
+  image           String?
+  demoUrl         String?
+  githubUrl       String?
+  technologies    String   @db.Text
+  featured        Boolean  @default(false)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("projects")
 }
 
-// Contact messages model
 model Contact {
   id        Int      @id @default(autoincrement())
   name      String
@@ -75,16 +65,15 @@ model Contact {
   @@map("contacts")
 }
 
-// About page content models
 model AboutProfile {
-  id          Int    @id @default(autoincrement())
-  name        String
-  title       String
-  subtitle    String
-  bio         String @db.Text
-  profileImage String? @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  name         String
+  title        String
+  subtitle     String
+  bio          String   @db.Text
+  profileImage String?  @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("about_profile")
 }
@@ -93,7 +82,7 @@ model Skill {
   id        Int      @id @default(autoincrement())
   name      String
   icon      String   @db.Text
-  category  String?  // Frontend, Backend, Tools, etc.
+  category  String?
   order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -102,14 +91,14 @@ model Skill {
 }
 
 model ContactInfo {
-  id        Int      @id @default(autoincrement())
-  type      String   // email, phone, location, linkedin, github
-  value     String
-  icon      String?  @db.Text
-  isHeroicon Boolean @default(false)
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  type       String
+  value      String
+  icon       String?  @db.Text
+  isHeroicon Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("contact_info")
 }
@@ -119,12 +108,12 @@ model WorkExperience {
   position        String
   company         String
   description     String   @db.Text
-  descriptionHtml String?  @db.LongText // Rich text HTML content from TipTap
-  startDate       String?  // Format: "2020" or "Jan 2020"
-  endDate         String?  // Format: "2022" or "Present"
+  startDate       String?
+  endDate         String?
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  descriptionHtml String?  @db.LongText
 
   @@map("work_experience")
 }
@@ -146,10 +135,10 @@ model Education {
 model Course {
   id           Int      @id @default(autoincrement())
   title        String
-  provider     String   // Platzi, Udemy, etc.
+  provider     String
   providerIcon String?  @db.Text
   icon         String?  @db.Text
-  category     String?  // Optional grouping
+  category     String?
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
