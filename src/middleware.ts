@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { withAuth } from "next-auth/middleware";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
@@ -6,21 +6,41 @@ import { routing } from "./i18n/routing";
 // Create the internationalization middleware
 const intlMiddleware = createMiddleware(routing);
 
-// Auth middleware
-const authMiddleware = withAuth(
-  function onSuccess() {
-    // Lógica adicional si necesitas
+// Public paths that don't need protection
+const publicPaths = ["/admin/login"];
+
+export default withAuth(
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+
+    // Skip i18n for admin, api and static files
+    const shouldSkipI18n =
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/api") ||
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/images") ||
+      pathname.startsWith("/favicon.ico") ||
+      pathname.includes(".");
+
+    if (shouldSkipI18n) {
+      return NextResponse.next();
+    }
+
+    // Apply internationalization middleware
+    return intlMiddleware(req);
   },
   {
     callbacks: {
       authorized: ({ token, req }) => {
+        const { pathname } = req.nextUrl;
+
         // Permitir acceso a /admin/login sin autenticación
-        if (req.nextUrl.pathname === "/admin/login") {
+        if (publicPaths.some(path => pathname === path)) {
           return true;
         }
 
         // Proteger todas las demás rutas de admin
-        if (req.nextUrl.pathname.startsWith("/admin")) {
+        if (pathname.startsWith("/admin")) {
           return token?.role === "admin";
         }
 
@@ -29,30 +49,6 @@ const authMiddleware = withAuth(
     },
   }
 );
-
-export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Apply auth middleware for admin routes
-  if (pathname.startsWith("/admin")) {
-    return (authMiddleware as never)(request, {} as never);
-  }
-
-  // Skip i18n for api and static files
-  const shouldSkipI18n =
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/images") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.includes(".");
-
-  if (shouldSkipI18n) {
-    return NextResponse.next();
-  }
-
-  // Apply internationalization middleware
-  return intlMiddleware(request);
-}
 
 export const config = {
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
