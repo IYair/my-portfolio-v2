@@ -99,6 +99,7 @@ export async function translateBatch(
       targetLangCode as deepl.TargetLanguageCode
     );
 
+    // DeepL always returns an array when given an array input
     if (Array.isArray(results)) {
       return results.map(result => ({
         text: result.text,
@@ -106,11 +107,11 @@ export async function translateBatch(
       }));
     }
 
-    // Single result
+    // This shouldn't happen with array input, but handle it just in case
     return [
       {
-        text: results.text,
-        detectedSourceLang: results.detectedSourceLang,
+        text: (results as deepl.TextResult).text,
+        detectedSourceLang: (results as deepl.TextResult).detectedSourceLang,
       },
     ];
   } catch (error) {
