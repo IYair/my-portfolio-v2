@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 export default function Home() {
-  const t = useTranslations();
   const hero = useTranslations("hero");
   const about = useTranslations("about");
   const projects = useTranslations("projects");
