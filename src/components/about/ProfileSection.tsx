@@ -7,7 +7,7 @@ export default async function ProfileSection() {
   if (!profile) {
     // Fallback to static data if no profile found
     return (
-      <div className="relative aspect-[9/16] h-[450px] sm:h-[550px] lg:h-[650px]">
+      <div className="relative mt-4 aspect-[9/16] h-[450px] sm:mt-0 sm:h-[550px] lg:h-[650px]">
         <Image
           src="/images/me.png"
           alt="Imagen de perfil"
@@ -41,7 +41,7 @@ export default async function ProfileSection() {
   }
 
   return (
-    <div className="relative aspect-[9/16] h-[450px] sm:h-[550px] lg:h-[650px]">
+    <div className="relative mt-4 aspect-[9/16] h-[450px] sm:mt-0 sm:h-[550px] lg:h-[650px]">
       <Image
         src={profile.profileImage || "/images/me.png"}
         alt="Imagen de perfil"
