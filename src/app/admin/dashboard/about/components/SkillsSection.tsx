@@ -6,7 +6,7 @@ import Input from "@/components/ui/Input";
 import IconSelector from "@/components/ui/IconSelector";
 import { PencilIcon, PlusIcon, TrashIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { toast } from "sonner";
 
 interface Skill {
@@ -24,7 +24,7 @@ interface SkillFormData {
   order: number;
 }
 
-export default function SkillsSection() {
+const SkillsSection = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -226,6 +226,7 @@ export default function SkillsSection() {
                   alt={skill.name}
                   width={32}
                   height={32}
+                  loading="lazy"
                   className="h-8 w-8"
                   onError={e => {
                     const target = e.target as HTMLImageElement;
@@ -265,4 +266,6 @@ export default function SkillsSection() {
       )}
     </div>
   );
-}
+};
+
+export default memo(SkillsSection);

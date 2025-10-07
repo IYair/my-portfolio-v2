@@ -10,15 +10,15 @@ import {
   TrophyIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 
-// Component imports
-import ContactInfoSection from "./components/ContactInfoSection";
-import CoursesSection from "./components/CoursesSection";
-import EducationSection from "./components/EducationSection";
-import ExperienceSection from "./components/ExperienceSection";
-import ProfileSection from "./components/ProfileSection";
-import SkillsSection from "./components/SkillsSection";
+// Lazy load components for better performance
+const ContactInfoSection = lazy(() => import("./components/ContactInfoSection"));
+const CoursesSection = lazy(() => import("./components/CoursesSection"));
+const EducationSection = lazy(() => import("./components/EducationSection"));
+const ExperienceSection = lazy(() => import("./components/ExperienceSection"));
+const ProfileSection = lazy(() => import("./components/ProfileSection"));
+const SkillsSection = lazy(() => import("./components/SkillsSection"));
 
 type Section = "profile" | "skills" | "contact" | "experience" | "education" | "courses";
 
@@ -64,22 +64,56 @@ export default function AboutAdmin() {
     },
   ];
 
+  const LoadingFallback = () => (
+    <div className="flex h-64 items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--foreground)]"></div>
+    </div>
+  );
+
   const renderSection = () => {
     switch (activeSection) {
       case "profile":
-        return <ProfileSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ProfileSection />
+          </Suspense>
+        );
       case "skills":
-        return <SkillsSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <SkillsSection />
+          </Suspense>
+        );
       case "contact":
-        return <ContactInfoSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ContactInfoSection />
+          </Suspense>
+        );
       case "experience":
-        return <ExperienceSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ExperienceSection />
+          </Suspense>
+        );
       case "education":
-        return <EducationSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <EducationSection />
+          </Suspense>
+        );
       case "courses":
-        return <CoursesSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <CoursesSection />
+          </Suspense>
+        );
       default:
-        return <ProfileSection />;
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <ProfileSection />
+          </Suspense>
+        );
     }
   };
 

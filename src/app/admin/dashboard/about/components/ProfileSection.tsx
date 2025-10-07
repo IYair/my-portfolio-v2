@@ -11,7 +11,11 @@ import type { TiptapEditorRef } from "@/components/editor/TiptapEditor";
 
 const TiptapEditor = dynamic(() => import("@/components/editor/TiptapEditor"), {
   ssr: false,
-  loading: () => <div className="h-64 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800"></div>,
+  loading: () => (
+    <div className="min-h-[300px] animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800">
+      <div className="h-full w-full"></div>
+    </div>
+  ),
 });
 
 interface ProfileData {

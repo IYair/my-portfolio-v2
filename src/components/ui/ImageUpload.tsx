@@ -130,6 +130,8 @@ export default function ImageUpload({
               fill
               className="object-cover"
               sizes={`${width}px`}
+              loading="eager"
+              priority
             />
           </div>
           {!disabled && (
