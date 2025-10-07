@@ -38,7 +38,7 @@ export default function About() {
     <div
       className="min-h-screen"
       style={{
-        backgroundImage: "url(/images/NoiseTexture.png)",
+        backgroundImage: "url(/images/NoiseTexture-optimized.webp)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}

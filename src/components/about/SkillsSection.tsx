@@ -23,6 +23,7 @@ export default async function SkillsSection() {
               alt={skill.name}
               height={64}
               width={64}
+              loading="lazy"
               className="h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16"
             />
             <p className="mt-1 text-center text-xs font-thin text-gray-800 sm:text-sm dark:text-white">
