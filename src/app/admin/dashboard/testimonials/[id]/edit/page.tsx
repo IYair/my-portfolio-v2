@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -17,7 +17,8 @@ interface TestimonialFormData {
   order: number;
 }
 
-export default function EditTestimonialPage({ params }: { params: { id: string } }) {
+export default function EditTestimonialPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -35,11 +36,11 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
 
   useEffect(() => {
     fetchTestimonial();
-  }, [params.id]);
+  }, [id]);
 
   const fetchTestimonial = async () => {
     try {
-      const response = await fetch(`/api/admin/testimonials/${params.id}`);
+      const response = await fetch(`/api/admin/testimonials/${id}`);
       if (response.ok) {
         const data = await response.json();
         setFormData({
@@ -68,7 +69,7 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
     setError("");
 
     try {
-      const response = await fetch(`/api/admin/testimonials/${params.id}`, {
+      const response = await fetch(`/api/admin/testimonials/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -133,8 +134,8 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
                 type="text"
                 id="author"
                 value={formData.author}
-                onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+                onChange={e => setFormData({ ...formData, author: e.target.value })}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
                 required
               />
             </div>
@@ -147,19 +148,17 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
                 type="text"
                 id="handle"
                 value={formData.handle}
-                onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+                onChange={e => setFormData({ ...formData, handle: e.target.value })}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
                 required
               />
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block font-medium">
-                Imagen de Perfil
-              </label>
+              <label className="mb-2 block font-medium">Imagen de Perfil</label>
               <ImageUpload
                 value={formData.image}
-                onChange={(url) => setFormData({ ...formData, image: url })}
+                onChange={url => setFormData({ ...formData, image: url })}
                 placeholder="Sube la imagen de perfil"
                 maxSize={5}
                 width={200}
@@ -180,8 +179,8 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
               <textarea
                 id="content"
                 value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+                onChange={e => setFormData({ ...formData, content: e.target.value })}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
                 rows={6}
                 required
               />
@@ -194,8 +193,8 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
               <textarea
                 id="contentEn"
                 value={formData.contentEn}
-                onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+                onChange={e => setFormData({ ...formData, contentEn: e.target.value })}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
                 rows={6}
               />
             </div>
@@ -211,7 +210,7 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
                 type="checkbox"
                 id="published"
                 checked={formData.published}
-                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                onChange={e => setFormData({ ...formData, published: e.target.checked })}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/20"
               />
               <label htmlFor="published" className="ml-2 font-medium">
@@ -227,7 +226,7 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
                 type="checkbox"
                 id="featured"
                 checked={formData.featured}
-                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                onChange={e => setFormData({ ...formData, featured: e.target.checked })}
                 className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500/20"
               />
               <label htmlFor="featured" className="ml-2 font-medium">
@@ -246,8 +245,8 @@ export default function EditTestimonialPage({ params }: { params: { id: string }
                 type="number"
                 id="order"
                 value={formData.order}
-                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
-                className="w-32 rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700"
+                onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                className="w-32 rounded-lg border border-gray-300 bg-white px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none dark:border-gray-600 dark:bg-gray-700"
               />
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 Los testimonios se ordenan ascendentemente por este valor

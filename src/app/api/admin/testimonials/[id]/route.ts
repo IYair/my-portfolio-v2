@@ -6,10 +6,7 @@ import { PrismaClient } from "@/generated/prisma";
 const prisma = new PrismaClient();
 
 // GET - Obtener un testimonio específico
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -17,8 +14,9 @@ export async function GET(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
+    const { id } = await params;
     const testimonial = await prisma.testimonial.findUnique({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
     });
 
     if (!testimonial) {
@@ -33,10 +31,7 @@ export async function GET(
 }
 
 // PUT - Actualizar testimonio
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -55,8 +50,9 @@ export async function PUT(
       });
     }
 
+    const { id } = await params;
     const testimonial = await prisma.testimonial.update({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
       data: {
         content,
         contentEn,
@@ -77,10 +73,7 @@ export async function PUT(
 }
 
 // DELETE - Eliminar testimonio
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -88,8 +81,9 @@ export async function DELETE(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
+    const { id } = await params;
     await prisma.testimonial.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: parseInt(id) },
     });
 
     return NextResponse.json({ message: "Testimonio eliminado" });

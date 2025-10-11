@@ -12,7 +12,7 @@ interface Post {
   id: number;
   title: string;
   slug: string;
-  excerpt: string;
+  excerpt: string | null;
   content: string;
   coverImage: string | null;
   published: boolean;
@@ -49,10 +49,7 @@ async function getPosts(): Promise<Post[]> {
         },
       },
     },
-    orderBy: [
-      { featured: "desc" },
-      { createdAt: "desc" },
-    ],
+    orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
   });
 
   return posts;
@@ -83,7 +80,7 @@ export default async function BlogPage() {
           <div className="mb-12">
             <Link
               href="/"
-              className="mb-6 inline-flex items-center text-foreground/60 transition-colors hover:text-foreground"
+              className="text-foreground/60 hover:text-foreground mb-6 inline-flex items-center transition-colors"
             >
               <ArrowLeftIcon className="mr-2 h-5 w-5" />
               {common("back") || "Volver"}
@@ -92,7 +89,7 @@ export default async function BlogPage() {
             <p className="text-foreground/70 text-xl">{t("pageDescription")}</p>
           </div>
           <div className="py-16 text-center">
-            <p className="text-lg text-foreground/60">{t("noPosts")}</p>
+            <p className="text-foreground/60 text-lg">{t("noPosts")}</p>
           </div>
         </div>
       </div>
@@ -111,7 +108,7 @@ export default async function BlogPage() {
         <div className="mb-12">
           <Link
             href="/"
-            className="mb-6 inline-flex items-center text-foreground/60 transition-colors hover:text-foreground"
+            className="text-foreground/60 hover:text-foreground mb-6 inline-flex items-center transition-colors"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
             {common("back") || "Volver"}
@@ -139,7 +136,7 @@ export default async function BlogPage() {
                     </div>
                   )}
                   <div className="p-4">
-                    <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="mb-2 line-clamp-2 text-sm leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {post.title}
                     </h3>
                     <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
@@ -169,7 +166,7 @@ export default async function BlogPage() {
                   </div>
                 )}
                 <div className="p-8">
-                  <h3 className="mb-4 text-3xl font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  <h3 className="mb-4 text-3xl leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                     {featuredPost.title}
                   </h3>
                   <div className="mb-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
@@ -219,7 +216,7 @@ export default async function BlogPage() {
                     </div>
                   )}
                   <div className="p-4">
-                    <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="mb-2 line-clamp-2 text-sm leading-tight font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
                       {post.title}
                     </h3>
                     <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">

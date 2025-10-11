@@ -8,11 +8,7 @@ import Toggle from "@/components/ui/Toggle";
 import ImageUpload from "@/components/ui/ImageUpload";
 import TagSelector from "@/components/ui/TagSelector";
 import { useToast } from "@/hooks/useToast";
-import {
-  RocketLaunchIcon,
-  CheckCircleIcon,
-  ArrowPathIcon,
-} from "@heroicons/react/24/outline";
+import { RocketLaunchIcon, CheckCircleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import useAdminStore, { Project } from "@/stores/adminStore";
@@ -158,12 +154,15 @@ export default function EditProjectPage() {
     setFormData(prev => ({ ...prev, image: url }));
   }, []);
 
-  const handleTechnologiesChange = useCallback((tags: string[]) => {
-    setFormData(prev => ({ ...prev, technologies: tags }));
-    if (errors.technologies) {
-      setErrors(prev => ({ ...prev, technologies: "" }));
-    }
-  }, [errors.technologies]);
+  const handleTechnologiesChange = useCallback(
+    (tags: string[]) => {
+      setFormData(prev => ({ ...prev, technologies: tags }));
+      if (errors.technologies) {
+        setErrors(prev => ({ ...prev, technologies: "" }));
+      }
+    },
+    [errors.technologies]
+  );
 
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -213,7 +212,7 @@ export default function EditProjectPage() {
 
     try {
       await promise(
-        async () => {
+        (async () => {
           const response = await fetch(`/api/projects/${projectId}`, {
             method: "PATCH",
             headers: {
@@ -235,11 +234,11 @@ export default function EditProjectPage() {
           }
 
           return response.json();
-        },
+        })(),
         {
           loading: "Actualizando proyecto...",
           success: "¡Proyecto actualizado exitosamente!",
-          error: (err) => err.message || "Error al actualizar el proyecto",
+          error: err => err.message || "Error al actualizar el proyecto",
         }
       );
 
@@ -290,9 +289,7 @@ export default function EditProjectPage() {
           <RocketLaunchIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Editar Proyecto
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Editar Proyecto</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Actualiza la información del proyecto
           </p>
@@ -356,12 +353,18 @@ export default function EditProjectPage() {
           </h2>
 
           <div className="space-y-6">
-            <ImageUpload
-              label="Imagen del Proyecto"
-              value={formData.image}
-              onUpload={handleImageUpload}
-              helperText="Imagen principal del proyecto (recomendado: 1200x630px)"
-            />
+            <div>
+              <label className="mb-2 block text-sm font-medium">Imagen del Proyecto</label>
+              <ImageUpload
+                value={formData.image}
+                onChange={handleImageUpload}
+                placeholder="Sube la imagen del proyecto"
+                maxSize={5}
+              />
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                Imagen principal del proyecto (recomendado: 1200x630px)
+              </p>
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               <Input
@@ -387,9 +390,7 @@ export default function EditProjectPage() {
 
         {/* Technologies */}
         <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
-          <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">
-            Tecnologías
-          </h2>
+          <h2 className="mb-6 text-lg font-semibold text-gray-900 dark:text-white">Tecnologías</h2>
 
           <div>
             <TagSelector
@@ -400,9 +401,7 @@ export default function EditProjectPage() {
               placeholder="Selecciona las tecnologías..."
             />
             {errors.technologies && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                {errors.technologies}
-              </p>
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.technologies}</p>
             )}
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
               Selecciona todas las tecnologías utilizadas en el proyecto
@@ -429,7 +428,7 @@ export default function EditProjectPage() {
                 label="Orden de Visualización"
                 type="number"
                 value={formData.order.toString()}
-                onChange={(e) => {
+                onChange={e => {
                   const value = parseInt(e.target.value) || 0;
                   setFormData(prev => ({ ...prev, order: value }));
                 }}
@@ -443,12 +442,7 @@ export default function EditProjectPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-4 border-t border-gray-200 pt-6 dark:border-gray-700">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleCancel}
-            disabled={isSubmitting}
-          >
+          <Button type="button" variant="ghost" onClick={handleCancel} disabled={isSubmitting}>
             Cancelar
           </Button>
           <Button
