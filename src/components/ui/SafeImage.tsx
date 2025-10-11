@@ -1,3 +1,5 @@
+"use client";
+
 import Image from 'next/image'
 import { useState } from 'react'
 import { getSafeImageSrc, isLocalImage, isValidImageUrl } from '@/lib/imageUtils'
@@ -5,22 +7,24 @@ import { getSafeImageSrc, isLocalImage, isValidImageUrl } from '@/lib/imageUtils
 interface SafeImageProps {
   src: string
   alt: string
-  width: number
-  height: number
+  width?: number
+  height?: number
+  fill?: boolean
   className?: string
   fallback?: React.ReactNode
 }
 
-export default function SafeImage({ 
-  src, 
-  alt, 
-  width, 
-  height, 
-  className = '', 
-  fallback 
+export default function SafeImage({
+  src,
+  alt,
+  width,
+  height,
+  fill,
+  className = '',
+  fallback
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false)
-  
+
   // Default fallback if none provided
   const defaultFallback = (
     <div className={`${className} bg-gray-100 dark:bg-gray-800 flex items-center justify-center`}>
@@ -40,8 +44,7 @@ export default function SafeImage({
     <Image
       src={safeSrc}
       alt={alt}
-      width={width}
-      height={height}
+      {...(fill ? { fill: true } : { width: width || 400, height: height || 300 })}
       className={className}
       onError={() => setHasError(true)}
       // Use unoptimized for external images to avoid potential issues
