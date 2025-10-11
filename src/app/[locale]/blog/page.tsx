@@ -1,8 +1,12 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import { CalendarIcon, TagIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { Link } from "@/i18n/routing";
+import { getTranslations, getLocale } from "next-intl/server";
+import Image from "next/image";
+import { PrismaClient } from "@/generated/prisma";
+import { format } from "@formkit/tempo";
+import type { Metadata } from "next";
+
+const prisma = new PrismaClient();
 
 interface Post {
   id: number;
@@ -10,161 +14,224 @@ interface Post {
   slug: string;
   excerpt: string;
   content: string;
+  coverImage: string | null;
   published: boolean;
   featured: boolean;
-  createdAt: string;
+  createdAt: Date;
   tags: { id: number; name: string }[];
 }
 
-export default function BlogPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+// Enable ISR - revalidate every 60 seconds
+export const revalidate = 60;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch("/api/posts?published=true");
-        if (response.ok) {
-          const data = await response.json();
-          setPosts(data);
-        }
-      } catch (error) {
-        // Error fetching posts
-      } finally {
-        setLoading(false);
-      }
-    };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("blog");
 
-    fetchPosts();
-  }, []);
+  return {
+    title: t("title"),
+    description: t("pageDescription"),
+    openGraph: {
+      title: t("title"),
+      description: t("pageDescription"),
+      type: "website",
+    },
+  };
+}
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("es-ES", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+async function getPosts(): Promise<Post[]> {
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    include: {
+      tags: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: [
+      { featured: "desc" },
+      { createdAt: "desc" },
+    ],
+  });
+
+  return posts;
+}
+
+export default async function BlogPage() {
+  const t = await getTranslations("blog");
+  const common = await getTranslations("common");
+  const locale = await getLocale();
+  const posts = await getPosts();
+
+  const formatDate = (date: Date) => {
+    // Use @formkit/tempo as per project rules
+    const localeFormat = locale === "en" ? "MMMM D, YYYY" : "D [de] MMMM [de] YYYY";
+    return format(date, localeFormat, locale);
   };
 
-  const truncateContent = (content: string, maxLength: number = 150) => {
+  const truncateContent = (content: string, maxLength: number = 120) => {
     const textContent = content.replace(/<[^>]*>/g, ""); // Remove HTML tags
     if (textContent.length <= maxLength) return textContent;
     return textContent.substring(0, maxLength) + "...";
   };
 
-  if (loading) {
+  if (posts.length === 0) {
     return (
-      <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
-        <div className="mx-auto max-w-4xl px-6">
-          <div className="animate-pulse">
-            <div className="mb-4 h-8 w-32 rounded bg-gray-300 dark:bg-gray-700"></div>
-            <div className="mb-8 h-12 w-96 rounded bg-gray-300 dark:bg-gray-700"></div>
-            <div className="space-y-8">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="rounded-lg bg-gray-50 p-6 shadow-sm dark:bg-gray-800">
-                  <div className="mb-3 h-6 w-3/4 rounded bg-gray-300 dark:bg-gray-700"></div>
-                  <div className="mb-2 h-4 w-24 rounded bg-gray-300 dark:bg-gray-700"></div>
-                  <div className="mb-4 h-4 w-full rounded bg-gray-300 dark:bg-gray-700"></div>
-                  <div className="h-4 w-4/5 rounded bg-gray-300 dark:bg-gray-700"></div>
-                </div>
-              ))}
-            </div>
+      <div className="min-h-screen py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-12">
+            <Link
+              href="/"
+              className="mb-6 inline-flex items-center text-foreground/60 transition-colors hover:text-foreground"
+            >
+              <ArrowLeftIcon className="mr-2 h-5 w-5" />
+              {common("back") || "Volver"}
+            </Link>
+            <h1 className="mb-4 text-4xl font-bold">{t("title")}</h1>
+            <p className="text-foreground/70 text-xl">{t("pageDescription")}</p>
+          </div>
+          <div className="py-16 text-center">
+            <p className="text-lg text-foreground/60">{t("noPosts")}</p>
           </div>
         </div>
       </div>
     );
   }
 
+  // Layout: 3 posts left + 1 featured center + 3 posts right
+  const [featuredPost, ...otherPosts] = posts;
+  const leftPosts = otherPosts.slice(0, 3);
+  const rightPosts = otherPosts.slice(3, 6);
+
   return (
-    <div className="min-h-screen bg-white py-20 dark:bg-gray-900">
-      <div className="mx-auto max-w-4xl px-6">
+    <div className="min-h-screen py-20">
+      <div className="mx-auto max-w-7xl px-6">
         {/* Header */}
         <div className="mb-12">
           <Link
             href="/"
-            className="mb-6 inline-flex items-center text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mb-6 inline-flex items-center text-foreground/60 transition-colors hover:text-foreground"
           >
             <ArrowLeftIcon className="mr-2 h-5 w-5" />
-            Volver al inicio
+            {common("back") || "Volver"}
           </Link>
-          <h1 className="mb-4 text-4xl font-bold text-gray-900 dark:text-white">Blog</h1>
-          <p className="text-xl text-gray-700 dark:text-gray-300">
-            Artículos sobre desarrollo web, tecnología y programación
-          </p>
+          <h1 className="mb-4 text-4xl font-bold">{t("title")}</h1>
+          <p className="text-foreground/70 text-xl">{t("pageDescription")}</p>
         </div>
 
-        {/* Posts */}
-        {posts.length === 0 ? (
-          <div className="py-16 text-center">
-            <h2 className="mb-4 text-2xl font-semibold text-gray-900 dark:text-white">
-              Aún no hay artículos publicados
-            </h2>
-            <p className="mb-8 text-gray-600 dark:text-gray-400">
-              Pronto estaré compartiendo contenido interesante sobre desarrollo web y tecnología.
-            </p>
-            <Link
-              href="/"
-              className="inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
-            >
-              Volver al inicio
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            {posts.map(post => (
-              <article
-                key={post.id}
-                className="rounded-lg bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:bg-gray-800"
-              >
-                {/* Post Header */}
-                <div className="mb-4">
-                  <h2 className="mb-3 text-2xl font-bold text-gray-900 transition-colors hover:text-blue-600 dark:text-white dark:hover:text-blue-400">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h2>
-
-                  {/* Meta */}
-                  <div className="mb-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
-                    <CalendarIcon className="mr-1 h-4 w-4" />
-                    {formatDate(post.createdAt)}
-                    {post.featured && (
-                      <span className="ml-4 rounded-full bg-yellow-100 px-2 py-1 text-xs text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                        Destacado
-                      </span>
-                    )}
+        {/* Magazine Layout: 3 Left + 1 Featured Center + 3 Right */}
+        <div className="grid gap-6 lg:grid-cols-12">
+          {/* Left Column - 3 Small Posts */}
+          <div className="flex flex-col gap-6 lg:col-span-3">
+            {leftPosts.map(post => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group">
+                <article className="border-foreground/10 bg-background/50 hover:bg-background/80 overflow-hidden rounded-lg border backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                  {post.coverImage && (
+                    <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                      <CalendarIcon className="mr-1 h-3 w-3" />
+                      {formatDate(post.createdAt)}
+                    </div>
                   </div>
+                </article>
+              </Link>
+            ))}
+          </div>
 
-                  {/* Excerpt */}
-                  <p className="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">
-                    {post.excerpt || truncateContent(post.content)}
+          {/* Center Column - 1 Large Featured Post */}
+          {featuredPost && (
+            <Link href={`/blog/${featuredPost.slug}`} className="group lg:col-span-6">
+              <article className="border-foreground/10 bg-background/50 hover:bg-background/80 h-full overflow-hidden rounded-xl border backdrop-blur-sm transition-all duration-1000 hover:shadow-xl">
+                {featuredPost.coverImage && (
+                  <div className="relative h-[400px] overflow-hidden bg-gray-200 dark:bg-gray-800">
+                    <Image
+                      src={featuredPost.coverImage}
+                      alt={featuredPost.title}
+                      fill
+                      className="object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      priority
+                    />
+                  </div>
+                )}
+                <div className="p-8">
+                  <h3 className="mb-4 text-3xl font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    {featuredPost.title}
+                  </h3>
+                  <div className="mb-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
+                    <CalendarIcon className="mr-2 h-5 w-5" />
+                    {formatDate(featuredPost.createdAt)}
+                  </div>
+                  <p className="text-foreground/80 mb-6 line-clamp-3 text-lg leading-relaxed">
+                    {featuredPost.excerpt || truncateContent(featuredPost.content, 200)}
                   </p>
-
-                  {/* Tags */}
-                  {post.tags.length > 0 && (
-                    <div className="mb-4 flex flex-wrap gap-2">
-                      {post.tags.map(tag => (
+                  {featuredPost.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {featuredPost.tags.slice(0, 3).map(tag => (
                         <span
                           key={tag.id}
-                          className="flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                          className="flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                         >
-                          <TagIcon className="mr-1 h-3 w-3" />
+                          <TagIcon className="mr-1 h-4 w-4" />
                           {tag.name}
                         </span>
                       ))}
+                      {featuredPost.tags.length > 3 && (
+                        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                          +{featuredPost.tags.length - 3}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
-
-                {/* Read More */}
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="inline-flex items-center font-medium text-blue-600 hover:underline dark:text-blue-400"
-                >
-                  Leer artículo completo →
-                </Link>
               </article>
+            </Link>
+          )}
+
+          {/* Right Column - 3 Small Posts */}
+          <div className="flex flex-col gap-6 lg:col-span-3">
+            {rightPosts.map(post => (
+              <Link key={post.id} href={`/blog/${post.slug}`} className="group">
+                <article className="border-foreground/10 bg-background/50 hover:bg-background/80 overflow-hidden rounded-lg border backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+                  {post.coverImage && (
+                    <div className="relative aspect-video overflow-hidden bg-gray-200 dark:bg-gray-800">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <h3 className="mb-2 line-clamp-2 text-sm font-bold leading-tight transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      {post.title}
+                    </h3>
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400">
+                      <CalendarIcon className="mr-1 h-3 w-3" />
+                      {formatDate(post.createdAt)}
+                    </div>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
