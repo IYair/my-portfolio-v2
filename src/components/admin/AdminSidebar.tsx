@@ -8,6 +8,7 @@ import {
   PhotoIcon,
   Cog6ToothIcon,
   UserIcon,
+  ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -17,6 +18,7 @@ const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: HomeIcon, current: false },
   { name: "Posts", href: "/admin/dashboard/posts", icon: DocumentTextIcon, current: false },
   { name: "Proyectos", href: "/admin/dashboard/projects", icon: RocketLaunchIcon, current: false },
+  { name: "Testimonios", href: "/admin/dashboard/testimonials", icon: ChatBubbleLeftRightIcon, current: false },
   { name: "Acerca", href: "/admin/dashboard/about", icon: UserIcon, current: false },
   { name: "Contactos", href: "/admin/dashboard/contacts", icon: EnvelopeIcon, current: false },
   { name: "Media", href: "/admin/dashboard/media", icon: PhotoIcon, current: false },
@@ -33,6 +35,8 @@ interface AdminSidebarProps {
     projects: number;
     contacts: number;
     unreadContacts: number;
+    testimonials?: number;
+    pendingTestimonials?: number;
   };
 }
 
@@ -72,6 +76,8 @@ export default function AdminSidebar({ stats }: AdminSidebarProps) {
                 if (stats) {
                   if (item.name === "Posts") count = stats.posts.toString();
                   else if (item.name === "Proyectos") count = stats.projects.toString();
+                  else if (item.name === "Testimonios" && stats.pendingTestimonials && stats.pendingTestimonials > 0)
+                    count = stats.pendingTestimonials.toString();
                   else if (item.name === "Contactos" && stats.unreadContacts > 0)
                     count = stats.unreadContacts.toString();
                 }
@@ -94,7 +100,8 @@ export default function AdminSidebar({ stats }: AdminSidebarProps) {
                           aria-hidden="true"
                           className={classNames(
                             "ml-auto flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium",
-                            item.name === "Contactos" && stats && stats.unreadContacts > 0
+                            (item.name === "Contactos" && stats && stats.unreadContacts > 0) ||
+                            (item.name === "Testimonios" && stats && stats.pendingTestimonials && stats.pendingTestimonials > 0)
                               ? "bg-red-500 text-white"
                               : "bg-gray-700 text-gray-300 outline outline-1 -outline-offset-1 outline-white/15"
                           )}

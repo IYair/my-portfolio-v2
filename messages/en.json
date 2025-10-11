@@ -3,7 +3,8 @@
     "viewProjects": "View Projects",
     "contactMe": "Contact Me",
     "readMore": "Read more",
-    "allRightsReserved": "All rights reserved"
+    "allRightsReserved": "All rights reserved",
+    "back": "Back"
   },
   "nav": {
     "home": "Home",
@@ -26,7 +27,22 @@
   "projects": {
     "title": "Projects",
     "description": "Explore my latest projects and the technologies I use.",
-    "viewAll": "View all projects →"
+    "viewAll": "View all projects →",
+    "pageDescription": "Explore my collection of projects, from web applications to tools and technical experiments.",
+    "featured": "Featured Projects",
+    "allProjects": "All Projects",
+    "noProjects": "No projects available at the moment.",
+    "technologies": "Technologies Used",
+    "liveDemo": "View Live Demo",
+    "sourceCode": "View Source Code",
+    "aboutProject": "About the Project",
+    "projectInfo": "Project Information",
+    "status": "Status",
+    "inProduction": "In production",
+    "featuredProject": "★ Featured project",
+    "relatedProjects": "Related Projects",
+    "backToProjects": "Back to projects",
+    "noDescription": "No description available."
   },
   "blog": {
     "title": "Blog",
@@ -34,7 +50,8 @@
     "readArticles": "Read articles →",
     "latestPosts": "Latest posts",
     "noPosts": "No posts available at the moment.",
-    "readMore": "Read more →"
+    "readMore": "Read more →",
+    "pageDescription": "Articles about web development, technology and programming"
   },
   "contact": {
     "title": "Contact Me",
@@ -48,6 +65,52 @@
       "success": "Message sent successfully!",
       "error": "Error sending message. Please try again."
     }
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "What people I've worked with say",
+    "items": [
+      {
+        "content": "Working with Yair was an excellent experience. His ability to understand requirements and transform them into elegant technical solutions is impressive.",
+        "author": "María González",
+        "handle": "@mariagonzalez"
+      },
+      {
+        "content": "Excellent professional, with great attention to detail and a modern approach to web technologies.",
+        "author": "Carlos Rodríguez",
+        "handle": "@carlosdev"
+      },
+      {
+        "content": "His code is clean, well-documented and easy to maintain. A true professional.",
+        "author": "Ana Martínez",
+        "handle": "@anamartinez"
+      },
+      {
+        "content": "Delivers on time with exceptional quality. I would definitely recommend working with him.",
+        "author": "Luis Fernández",
+        "handle": "@luisfernandez"
+      },
+      {
+        "content": "Great communicator and problem solver. Always has a creative solution.",
+        "author": "Patricia López",
+        "handle": "@patricialopez"
+      },
+      {
+        "content": "Proactive and takes initiative. Always looking for the best way to implement features.",
+        "author": "Roberto Sánchez",
+        "handle": "@robertosanchez"
+      },
+      {
+        "content": "His experience in React and Next.js is evident in every project he delivers.",
+        "author": "Laura Torres",
+        "handle": "@lauratorres"
+      },
+      {
+        "content": "Very professional and committed to project success. A pleasure to work with.",
+        "author": "Diego Ramírez",
+        "handle": "@diegoramirez"
+      }
+    ]
   },
   "footer": {
     "github": "GitHub",

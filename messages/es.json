@@ -3,7 +3,8 @@
     "viewProjects": "Ver Proyectos",
     "contactMe": "Contáctame",
     "readMore": "Leer más",
-    "allRightsReserved": "Todos los derechos reservados"
+    "allRightsReserved": "Todos los derechos reservados",
+    "back": "Volver"
   },
   "nav": {
     "home": "Inicio",
@@ -26,7 +27,22 @@
   "projects": {
     "title": "Proyectos",
     "description": "Explora mis proyectos más recientes y las tecnologías que utilizo.",
-    "viewAll": "Ver todos los proyectos →"
+    "viewAll": "Ver todos los proyectos →",
+    "pageDescription": "Explora mi colección de proyectos, desde aplicaciones web hasta herramientas y experimentos técnicos.",
+    "featured": "Proyectos Destacados",
+    "allProjects": "Todos los Proyectos",
+    "noProjects": "No hay proyectos disponibles en este momento.",
+    "technologies": "Tecnologías Utilizadas",
+    "liveDemo": "Ver Demo en Vivo",
+    "sourceCode": "Ver Código Fuente",
+    "aboutProject": "Acerca del Proyecto",
+    "projectInfo": "Información del Proyecto",
+    "status": "Estado",
+    "inProduction": "En producción",
+    "featuredProject": "★ Proyecto destacado",
+    "relatedProjects": "Proyectos Relacionados",
+    "backToProjects": "Volver a proyectos",
+    "noDescription": "Sin descripción disponible."
   },
   "blog": {
     "title": "Blog",
@@ -34,7 +50,8 @@
     "readArticles": "Leer artículos →",
     "latestPosts": "Últimas publicaciones",
     "noPosts": "No hay publicaciones disponibles en este momento.",
-    "readMore": "Leer más →"
+    "readMore": "Leer más →",
+    "pageDescription": "Artículos sobre desarrollo web, tecnología y programación"
   },
   "contact": {
     "title": "Contáctame",
@@ -48,6 +65,52 @@
       "success": "¡Mensaje enviado exitosamente!",
       "error": "Error al enviar el mensaje. Por favor, intenta de nuevo."
     }
+  },
+  "testimonials": {
+    "title": "Testimonios",
+    "subtitle": "Lo que dicen las personas con las que he trabajado",
+    "items": [
+      {
+        "content": "Trabajar con Yair fue una experiencia excelente. Su capacidad para entender los requisitos y transformarlos en soluciones técnicas elegantes es impresionante.",
+        "author": "María González",
+        "handle": "@mariagonzalez"
+      },
+      {
+        "content": "Excelente profesional, con gran atención al detalle y un enfoque moderno en las tecnologías web.",
+        "author": "Carlos Rodríguez",
+        "handle": "@carlosdev"
+      },
+      {
+        "content": "Su código es limpio, bien documentado y fácil de mantener. Un verdadero profesional.",
+        "author": "Ana Martínez",
+        "handle": "@anamartinez"
+      },
+      {
+        "content": "Entrega a tiempo y con calidad excepcional. Definitivamente recomendaría trabajar con él.",
+        "author": "Luis Fernández",
+        "handle": "@luisfernandez"
+      },
+      {
+        "content": "Gran comunicador y solucionador de problemas. Siempre tiene una solución creativa.",
+        "author": "Patricia López",
+        "handle": "@patricialopez"
+      },
+      {
+        "content": "Proactivo y con iniciativa. Siempre busca la mejor manera de implementar las funcionalidades.",
+        "author": "Roberto Sánchez",
+        "handle": "@robertosanchez"
+      },
+      {
+        "content": "Su experiencia en React y Next.js es evidente en cada proyecto que entrega.",
+        "author": "Laura Torres",
+        "handle": "@lauratorres"
+      },
+      {
+        "content": "Muy profesional y comprometido con el éxito del proyecto. Un placer trabajar con él.",
+        "author": "Diego Ramírez",
+        "handle": "@diegoramirez"
+      }
+    ]
   },
   "footer": {
     "github": "GitHub",
