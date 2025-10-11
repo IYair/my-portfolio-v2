@@ -157,3 +157,35 @@ model Course {
 
   @@map("courses")
 }
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.Text
+  contentEn String?  @db.Text
+  author    String
+  handle    String
+  image     String
+  published Boolean  @default(false)
+  featured  Boolean  @default(false)
+  order     Int      @default(0)
+  code      String?  @unique // Código de acceso para crear/editar
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model TestimonialInvite {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  email     String
+  name      String?
+  sent      Boolean  @default(false)
+  used      Boolean  @default(false)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@map("testimonial_invites")
+}
+
