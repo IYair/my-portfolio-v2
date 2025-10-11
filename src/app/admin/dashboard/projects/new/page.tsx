@@ -16,6 +16,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import useAdminStore from "@/stores/adminStore";
+import apiClient from "@/lib/api-client";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -177,33 +178,21 @@ export default function NewProjectPage() {
 
     try {
       await promise(
-        (async () => {
-          const response = await fetch("/api/projects", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...formData,
-              description: formData.description || undefined,
-              longDescription: formData.longDescription || undefined,
-              image: formData.image || undefined,
-              demoUrl: formData.demoUrl || undefined,
-              githubUrl: formData.githubUrl || undefined,
-            }),
-          });
-
-          if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || "Error al crear el proyecto");
-          }
-
-          return response.json();
-        })(),
+        apiClient
+          .post("/api/projects", {
+            ...formData,
+            description: formData.description || undefined,
+            longDescription: formData.longDescription || undefined,
+            image: formData.image || undefined,
+            demoUrl: formData.demoUrl || undefined,
+            githubUrl: formData.githubUrl || undefined,
+          })
+          .then(res => res.data),
         {
           loading: "Creando proyecto...",
           success: "¡Proyecto creado exitosamente!",
-          error: err => err.message || "Error al crear el proyecto",
+          error: (err: any) =>
+            err.response?.data?.error || err.message || "Error al crear el proyecto",
         }
       );
 

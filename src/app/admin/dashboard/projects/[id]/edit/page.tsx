@@ -12,6 +12,7 @@ import { RocketLaunchIcon, CheckCircleIcon, ArrowPathIcon } from "@heroicons/rea
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import useAdminStore, { Project } from "@/stores/adminStore";
+import apiClient from "@/lib/api-client";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -212,33 +213,21 @@ export default function EditProjectPage() {
 
     try {
       await promise(
-        (async () => {
-          const response = await fetch(`/api/projects/${projectId}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...formData,
-              description: formData.description || undefined,
-              longDescription: formData.longDescription || undefined,
-              image: formData.image || undefined,
-              demoUrl: formData.demoUrl || undefined,
-              githubUrl: formData.githubUrl || undefined,
-            }),
-          });
-
-          if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || "Error al actualizar el proyecto");
-          }
-
-          return response.json();
-        })(),
+        apiClient
+          .patch(`/api/projects/${projectId}`, {
+            ...formData,
+            description: formData.description || undefined,
+            longDescription: formData.longDescription || undefined,
+            image: formData.image || undefined,
+            demoUrl: formData.demoUrl || undefined,
+            githubUrl: formData.githubUrl || undefined,
+          })
+          .then(res => res.data),
         {
           loading: "Actualizando proyecto...",
           success: "¡Proyecto actualizado exitosamente!",
-          error: err => err.message || "Error al actualizar el proyecto",
+          error: (err: any) =>
+            err.response?.data?.error || err.message || "Error al actualizar el proyecto",
         }
       );
 

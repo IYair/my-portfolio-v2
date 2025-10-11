@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import ImageUpload from "@/components/ui/ImageUpload";
+import apiClient from "@/lib/api-client";
 
 interface TestimonialFormData {
   content: string;
@@ -40,22 +41,18 @@ export default function EditTestimonialPage({ params }: { params: Promise<{ id: 
 
   const fetchTestimonial = async () => {
     try {
-      const response = await fetch(`/api/admin/testimonials/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setFormData({
-          content: data.content || "",
-          contentEn: data.contentEn || "",
-          author: data.author || "",
-          handle: data.handle || "",
-          image: data.image || "",
-          published: data.published || false,
-          featured: data.featured || false,
-          order: data.order || 0,
-        });
-      } else {
-        setError("Error al cargar el testimonio");
-      }
+      const response = await apiClient.get(`/api/admin/testimonials/${id}`);
+      const data = response.data;
+      setFormData({
+        content: data.content || "",
+        contentEn: data.contentEn || "",
+        author: data.author || "",
+        handle: data.handle || "",
+        image: data.image || "",
+        published: data.published || false,
+        featured: data.featured || false,
+        order: data.order || 0,
+      });
     } catch (err) {
       setError("Error al cargar el testimonio");
     } finally {
@@ -69,20 +66,10 @@ export default function EditTestimonialPage({ params }: { params: Promise<{ id: 
     setError("");
 
     try {
-      const response = await fetch(`/api/admin/testimonials/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        router.push("/admin/dashboard/testimonials");
-      } else {
-        const data = await response.json();
-        setError(data.error || "Error al guardar el testimonio");
-      }
-    } catch (err) {
-      setError("Error al guardar el testimonio");
+      await apiClient.put(`/api/admin/testimonials/${id}`, formData);
+      router.push("/admin/dashboard/testimonials");
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Error al guardar el testimonio");
     } finally {
       setSaving(false);
     }
