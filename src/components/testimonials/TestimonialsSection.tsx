@@ -10,7 +10,7 @@ interface Testimonial {
   contentEn: string | null;
   author: string;
   handle: string;
-  image: string;
+  image: string | null;
   published: boolean;
   featured: boolean;
 }

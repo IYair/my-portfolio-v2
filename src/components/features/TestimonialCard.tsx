@@ -1,7 +1,7 @@
 "use client";
 
+import Avatar from "@/components/ui/Avatar";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useState } from "react";
 
 interface TestimonialCardProps {
@@ -9,7 +9,7 @@ interface TestimonialCardProps {
   contentEn?: string | null;
   author: string;
   handle: string;
-  image: string;
+  image?: string | null;
   featured?: boolean;
 }
 
@@ -53,13 +53,7 @@ export default function TestimonialCard({
           )}
         </blockquote>
         <figcaption className="border-foreground/10 mt-6 flex w-full items-center gap-x-4 border-t pt-6">
-          <Image
-            src={image}
-            alt={author}
-            width={56}
-            height={56}
-            className="h-14 w-14 flex-shrink-0 rounded-full bg-gray-50"
-          />
+          <Avatar src={image} alt={author} size={56} />
           <div className="flex-1">
             <div className="text-lg font-semibold">{author}</div>
             <div className="text-foreground/60 text-base">{handle}</div>
@@ -83,13 +77,7 @@ export default function TestimonialCard({
         )}
       </blockquote>
       <figcaption className="mt-4 flex items-center gap-x-4">
-        <Image
-          src={image}
-          alt={author}
-          width={40}
-          height={40}
-          className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-50"
-        />
+        <Avatar src={image} alt={author} size={40} />
         <div className="flex-1">
           <div className="font-semibold">{author}</div>
           <div className="text-foreground/60">{handle}</div>

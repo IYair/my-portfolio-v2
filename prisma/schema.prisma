@@ -164,7 +164,7 @@ model Testimonial {
   contentEn String?  @db.Text
   author    String
   handle    String
-  image     String
+  image     String?
   published Boolean  @default(false)
   featured  Boolean  @default(false)
   order     Int      @default(0)
