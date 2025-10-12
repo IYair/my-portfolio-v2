@@ -51,7 +51,7 @@ export default function Avatar({ src, alt, size, className = "" }: AvatarProps) 
         alt={alt}
         width={size}
         height={size}
-        className={`${baseClasses} bg-gray-50 dark:bg-gray-800`}
+        className={`${baseClasses} bg-gray-50 object-cover dark:bg-gray-800`}
         style={{ width: `${size}px`, height: `${size}px` }}
       />
     );
