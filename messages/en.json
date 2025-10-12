@@ -69,6 +69,8 @@
   "testimonials": {
     "title": "Testimonials",
     "subtitle": "What people I've worked with say",
+    "showMore": "Show more",
+    "showLess": "Show less",
     "items": [
       {
         "content": "Working with Yair was an excellent experience. His ability to understand requirements and transform them into elegant technical solutions is impressive.",

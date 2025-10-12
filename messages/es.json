@@ -69,6 +69,8 @@
   "testimonials": {
     "title": "Testimonios",
     "subtitle": "Lo que dicen las personas con las que he trabajado",
+    "showMore": "Ver más",
+    "showLess": "Ver menos",
     "items": [
       {
         "content": "Trabajar con Yair fue una experiencia excelente. Su capacidad para entender los requisitos y transformarlos en soluciones técnicas elegantes es impresionante.",

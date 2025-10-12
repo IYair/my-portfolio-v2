@@ -1,10 +1,12 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 
 interface TestimonialCardProps {
   content: string;
+  contentEn?: string | null;
   author: string;
   handle: string;
   image: string;
@@ -16,17 +18,25 @@ const CHAR_LIMIT_NORMAL = 150;
 
 export default function TestimonialCard({
   content,
+  contentEn,
   author,
   handle,
   image,
   featured = false,
 }: TestimonialCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const t = useTranslations("testimonials");
+  const locale = useLocale();
+
+  // Seleccionar el contenido según el idioma actual
+  const displayLocaleContent = locale === "en" && contentEn ? contentEn : content;
 
   const charLimit = featured ? CHAR_LIMIT_FEATURED : CHAR_LIMIT_NORMAL;
-  const shouldTruncate = content.length > charLimit;
+  const shouldTruncate = displayLocaleContent.length > charLimit;
   const displayContent =
-    isExpanded || !shouldTruncate ? content : content.slice(0, charLimit) + "...";
+    isExpanded || !shouldTruncate
+      ? displayLocaleContent
+      : displayLocaleContent.slice(0, charLimit) + "...";
 
   if (featured) {
     return (
@@ -38,7 +48,7 @@ export default function TestimonialCard({
               onClick={() => setIsExpanded(!isExpanded)}
               className="mt-4 self-end text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
             >
-              {isExpanded ? "Ver menos" : "Ver más"}
+              {isExpanded ? t("showLess") : t("showMore")}
             </button>
           )}
         </blockquote>
@@ -68,7 +78,7 @@ export default function TestimonialCard({
             onClick={() => setIsExpanded(!isExpanded)}
             className="mt-2 text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
-            {isExpanded ? "Ver menos" : "Ver más"}
+            {isExpanded ? t("showLess") : t("showMore")}
           </button>
         )}
       </blockquote>
