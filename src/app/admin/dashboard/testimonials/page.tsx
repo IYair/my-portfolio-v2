@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import Avatar from "@/components/ui/Avatar";
 import { format } from "@formkit/tempo";
 import {
-  PencilIcon,
-  TrashIcon,
   CheckCircleIcon,
-  XCircleIcon,
+  PencilIcon,
   StarIcon,
+  TrashIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface Testimonial {
   id: number;
@@ -18,7 +19,7 @@ interface Testimonial {
   contentEn: string | null;
   author: string;
   handle: string;
-  image: string;
+  image: string | null;
   published: boolean;
   featured: boolean;
   order: number;
@@ -45,7 +46,7 @@ export default function TestimonialsAdminPage() {
       } else {
         setError("Error al cargar testimonios");
       }
-    } catch (err) {
+    } catch {
       setError("Error al cargar testimonios");
     } finally {
       setLoading(false);
@@ -54,7 +55,7 @@ export default function TestimonialsAdminPage() {
 
   const togglePublished = async (id: number, currentStatus: boolean) => {
     try {
-      const testimonial = testimonials.find((t) => t.id === id);
+      const testimonial = testimonials.find(t => t.id === id);
       if (!testimonial) return;
 
       const response = await fetch(`/api/admin/testimonials/${id}`, {
@@ -76,7 +77,7 @@ export default function TestimonialsAdminPage() {
 
   const toggleFeatured = async (id: number, currentStatus: boolean) => {
     try {
-      const testimonial = testimonials.find((t) => t.id === id);
+      const testimonial = testimonials.find(t => t.id === id);
       if (!testimonial) return;
 
       const response = await fetch(`/api/admin/testimonials/${id}`, {
@@ -127,8 +128,8 @@ export default function TestimonialsAdminPage() {
     );
   }
 
-  const publishedTestimonials = testimonials.filter((t) => t.published);
-  const pendingTestimonials = testimonials.filter((t) => !t.published);
+  const publishedTestimonials = testimonials.filter(t => t.published);
+  const pendingTestimonials = testimonials.filter(t => !t.published);
 
   return (
     <div className="p-8">
@@ -160,7 +161,7 @@ export default function TestimonialsAdminPage() {
             Pendientes de Aprobación ({pendingTestimonials.length})
           </h2>
           <div className="space-y-4">
-            {pendingTestimonials.map((testimonial) => (
+            {pendingTestimonials.map(testimonial => (
               <div
                 key={testimonial.id}
                 className="rounded-lg border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20"
@@ -168,11 +169,7 @@ export default function TestimonialsAdminPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="mb-2 flex items-center gap-3">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.author}
-                        className="h-12 w-12 rounded-full"
-                      />
+                      <Avatar src={testimonial.image} alt={testimonial.author} size={48} />
                       <div>
                         <h3 className="font-semibold">{testimonial.author}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -180,9 +177,7 @@ export default function TestimonialsAdminPage() {
                         </p>
                       </div>
                     </div>
-                    <p className="mb-2 text-gray-700 dark:text-gray-300">
-                      {testimonial.content}
-                    </p>
+                    <p className="mb-2 text-gray-700 dark:text-gray-300">{testimonial.content}</p>
                     <p className="text-sm text-gray-500">
                       Recibido: {format(new Date(testimonial.createdAt), "DD/MM/YYYY HH:mm")}
                     </p>
@@ -219,18 +214,14 @@ export default function TestimonialsAdminPage() {
 
       {/* Testimonios Publicados */}
       <div>
-        <h2 className="mb-4 text-xl font-semibold">
-          Publicados ({publishedTestimonials.length})
-        </h2>
+        <h2 className="mb-4 text-xl font-semibold">Publicados ({publishedTestimonials.length})</h2>
         {publishedTestimonials.length === 0 ? (
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400">
-              No hay testimonios publicados aún
-            </p>
+            <p className="text-gray-600 dark:text-gray-400">No hay testimonios publicados aún</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {publishedTestimonials.map((testimonial) => (
+            {publishedTestimonials.map(testimonial => (
               <div
                 key={testimonial.id}
                 className="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800"
@@ -238,11 +229,7 @@ export default function TestimonialsAdminPage() {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="mb-2 flex items-center gap-3">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.author}
-                        className="h-12 w-12 rounded-full"
-                      />
+                      <Avatar src={testimonial.image} alt={testimonial.author} size={48} />
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-semibold">{testimonial.author}</h3>
@@ -255,11 +242,9 @@ export default function TestimonialsAdminPage() {
                         </p>
                       </div>
                     </div>
-                    <p className="mb-2 text-gray-700 dark:text-gray-300">
-                      {testimonial.content}
-                    </p>
+                    <p className="mb-2 text-gray-700 dark:text-gray-300">{testimonial.content}</p>
                     {testimonial.contentEn && (
-                      <p className="mb-2 text-sm italic text-gray-600 dark:text-gray-400">
+                      <p className="mb-2 text-sm text-gray-600 italic dark:text-gray-400">
                         EN: {testimonial.contentEn}
                       </p>
                     )}
