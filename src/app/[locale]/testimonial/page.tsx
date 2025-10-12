@@ -5,15 +5,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Link } from "@/i18n/routing";
 import ImageUpload from "@/components/ui/ImageUpload";
+import Button from "@/components/ui/Button";
+import apiClient from "@/lib/api-client";
+import { toast } from "sonner";
 
 export default function TestimonialFormPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const codeFromUrl = searchParams.get("code") || "";
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const [formData, setFormData] = useState({
     content: "",
@@ -26,7 +30,7 @@ export default function TestimonialFormPage() {
 
   const submitTestimonial = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.code) {
       setError("Por favor ingresa el código de acceso");
       return;
@@ -37,38 +41,67 @@ export default function TestimonialFormPage() {
 
     try {
       // Primero validar el código
-      const validateResponse = await fetch("/api/testimonials/validate-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: formData.code }),
+      const validateResponse = await apiClient.post("/api/testimonials/validate-code", {
+        code: formData.code,
       });
 
-      const validateData = await validateResponse.json();
-
-      if (!validateData.valid) {
-        setError(validateData.message || "Código inválido");
+      if (!validateResponse.data.valid) {
+        setError(validateResponse.data.message || "Código inválido");
         setLoading(false);
         return;
       }
 
       // Si el código es válido, crear el testimonio
-      const response = await fetch("/api/testimonials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(true);
-      } else {
-        setError(data.error || "Error al enviar testimonio");
-      }
-    } catch (err) {
-      setError("Error al enviar testimonio");
+      await apiClient.post("/api/testimonials", formData);
+      setSuccess(true);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error || err.response?.data?.message || "Error al enviar testimonio"
+      );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTranslate = async () => {
+    if (!formData.content) {
+      toast.error("Por favor escribe tu testimonio en español antes de traducir");
+      return;
+    }
+
+    if (formData.content.length < 50) {
+      toast.warning("Tu testimonio debe tener al menos 50 caracteres antes de traducir", {
+        description: `Actualmente tienes ${formData.content.length} caracteres. Necesitas ${50 - formData.content.length} más.`,
+        duration: 5000,
+      });
+      return;
+    }
+
+    setIsTranslating(true);
+    setError("");
+
+    try {
+      const response = await apiClient.post("/api/translate", {
+        texts: [formData.content],
+        targetLang: "en",
+        sourceLang: "es",
+      });
+
+      setFormData({
+        ...formData,
+        contentEn: response.data.translations[0] || "",
+      });
+
+      toast.success("¡Traducción completada!", {
+        description: "Tu testimonio ha sido traducido al inglés.",
+      });
+    } catch (err: any) {
+      toast.error("Error al traducir", {
+        description:
+          err.response?.data?.error || "No se pudo completar la traducción. Intenta de nuevo.",
+      });
+    } finally {
+      setIsTranslating(false);
     }
   };
 
@@ -112,7 +145,7 @@ export default function TestimonialFormPage() {
       <div className="mx-auto max-w-2xl px-6">
         <Link
           href="/"
-          className="mb-8 inline-flex items-center text-foreground/60 transition-colors hover:text-foreground"
+          className="text-foreground/60 hover:text-foreground mb-8 inline-flex items-center transition-colors"
         >
           <ArrowLeftIcon className="mr-2 h-5 w-5" />
           Volver
@@ -120,13 +153,11 @@ export default function TestimonialFormPage() {
 
         <div className="mb-8">
           <h1 className="mb-4 text-4xl font-bold">Enviar Testimonio</h1>
-          <p className="text-foreground/70 text-lg">
-            Comparte tu experiencia trabajando conmigo
-          </p>
+          <p className="text-foreground/70 text-lg">Comparte tu experiencia trabajando conmigo</p>
         </div>
 
         <form onSubmit={submitTestimonial} className="space-y-6">
-          <div className="rounded-2xl bg-background p-8 shadow-lg ring-1 ring-foreground/5">
+          <div className="bg-background ring-foreground/5 rounded-2xl p-8 shadow-lg ring-1">
             <div className="space-y-6">
               <div>
                 <label htmlFor="author" className="mb-2 block font-semibold">
@@ -136,8 +167,8 @@ export default function TestimonialFormPage() {
                   type="text"
                   id="author"
                   value={formData.author}
-                  onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                  className="w-full rounded-lg border border-foreground/10 bg-background px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  onChange={e => setFormData({ ...formData, author: e.target.value })}
+                  className="border-foreground/10 bg-background w-full rounded-lg border px-4 py-3 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   placeholder="Juan Pérez"
                   required
                 />
@@ -151,8 +182,8 @@ export default function TestimonialFormPage() {
                   type="text"
                   id="handle"
                   value={formData.handle}
-                  onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-                  className="w-full rounded-lg border border-foreground/10 bg-background px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  onChange={e => setFormData({ ...formData, handle: e.target.value })}
+                  className="border-foreground/10 bg-background w-full rounded-lg border px-4 py-3 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   placeholder="@juanperez o CEO en Empresa"
                   required
                 />
@@ -165,15 +196,42 @@ export default function TestimonialFormPage() {
                 <textarea
                   id="content"
                   value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full rounded-lg border border-foreground/10 bg-background px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  onChange={e => setFormData({ ...formData, content: e.target.value })}
+                  className="border-foreground/10 bg-background w-full rounded-lg border px-4 py-3 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   rows={6}
                   placeholder="Escribe tu testimonio aquí..."
                   required
                 />
-                <p className="text-foreground/60 mt-2 text-sm">
-                  Mínimo 50 caracteres
-                </p>
+                <div className="mt-2 flex items-center justify-between text-sm">
+                  <p className="text-foreground/60">Mínimo 50 caracteres</p>
+                  <p
+                    className={`font-medium ${formData.content.length < 50 ? "text-orange-600 dark:text-orange-400" : "text-green-600 dark:text-green-400"}`}
+                  >
+                    {formData.content.length} / 50
+                  </p>
+                </div>
+              </div>
+
+              {/* Translation Button */}
+              <div className="flex items-center gap-4">
+                <div className="via-foreground/10 h-px flex-1 bg-gradient-to-r from-transparent to-transparent"></div>
+                <Button
+                  type="button"
+                  onClick={handleTranslate}
+                  disabled={isTranslating || !formData.content}
+                  variant="secondary"
+                  className="flex items-center gap-2 whitespace-nowrap"
+                >
+                  {isTranslating ? (
+                    <>
+                      <div className="border-foreground/20 h-4 w-4 animate-spin rounded-full border-2 border-t-blue-600"></div>
+                      Traduciendo...
+                    </>
+                  ) : (
+                    <>🌐 Traducir al Inglés</>
+                  )}
+                </Button>
+                <div className="via-foreground/10 h-px flex-1 bg-gradient-to-r from-transparent to-transparent"></div>
               </div>
 
               <div>
@@ -183,11 +241,14 @@ export default function TestimonialFormPage() {
                 <textarea
                   id="contentEn"
                   value={formData.contentEn}
-                  onChange={(e) => setFormData({ ...formData, contentEn: e.target.value })}
-                  className="w-full rounded-lg border border-foreground/10 bg-background px-4 py-3 transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  onChange={e => setFormData({ ...formData, contentEn: e.target.value })}
+                  className="border-foreground/10 bg-background w-full rounded-lg border px-4 py-3 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   rows={6}
                   placeholder="Write your testimonial here..."
                 />
+                <p className="text-foreground/60 mt-2 text-sm">
+                  Usa el botón de traducción o escribe tu propio texto en inglés
+                </p>
               </div>
 
               <div>
@@ -196,7 +257,7 @@ export default function TestimonialFormPage() {
                 </label>
                 <ImageUpload
                   value={formData.image}
-                  onChange={(url) => setFormData({ ...formData, image: url })}
+                  onChange={url => setFormData({ ...formData, image: url })}
                   placeholder="Sube tu foto de perfil"
                   maxSize={5}
                   width={150}
@@ -208,7 +269,7 @@ export default function TestimonialFormPage() {
               </div>
 
               {/* Código al final */}
-              <div className="border-t border-foreground/10 pt-6">
+              <div className="border-foreground/10 border-t pt-6">
                 <label htmlFor="code" className="mb-2 block font-semibold">
                   Código de Acceso <span className="text-red-500">*</span>
                 </label>
@@ -219,17 +280,15 @@ export default function TestimonialFormPage() {
                   type="text"
                   id="code"
                   value={formData.code}
-                  onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                  className="w-full rounded-lg border border-foreground/10 bg-background px-4 py-3 font-mono text-lg transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                  className="border-foreground/10 bg-background w-full rounded-lg border px-4 py-3 font-mono text-lg transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   placeholder="ABC123XYZ"
                   required
                 />
               </div>
             </div>
 
-            {error && (
-              <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>
-            )}
+            {error && <p className="mt-4 text-sm text-red-600 dark:text-red-400">{error}</p>}
           </div>
 
           <button

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import ImageUpload from "@/components/ui/ImageUpload";
+import Button from "@/components/ui/Button";
 import apiClient from "@/lib/api-client";
 
 interface TestimonialFormData {
@@ -23,6 +24,7 @@ export default function EditTestimonialPage({ params }: { params: Promise<{ id: 
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState<TestimonialFormData>({
     content: "",
@@ -72,6 +74,33 @@ export default function EditTestimonialPage({ params }: { params: Promise<{ id: 
       setError(err.response?.data?.error || "Error al guardar el testimonio");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTranslate = async () => {
+    if (!formData.content) {
+      setError("Completa el contenido en español antes de traducir");
+      return;
+    }
+
+    setIsTranslating(true);
+    setError("");
+
+    try {
+      const response = await apiClient.post("/api/translate", {
+        texts: [formData.content],
+        targetLang: "en",
+        sourceLang: "es",
+      });
+
+      setFormData({
+        ...formData,
+        contentEn: response.data.translations[0] || "",
+      });
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Error al traducir el contenido");
+    } finally {
+      setIsTranslating(false);
     }
   };
 
@@ -171,6 +200,27 @@ export default function EditTestimonialPage({ params }: { params: Promise<{ id: 
                 rows={6}
                 required
               />
+            </div>
+
+            {/* Translation Button */}
+            <div className="flex items-center gap-4">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
+              <Button
+                type="button"
+                onClick={handleTranslate}
+                disabled={isTranslating || !formData.content}
+                className="flex items-center gap-2 whitespace-nowrap"
+              >
+                {isTranslating ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
+                    Traduciendo...
+                  </>
+                ) : (
+                  <>🌐 Traducir al Inglés</>
+                )}
+              </Button>
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"></div>
             </div>
 
             <div>
