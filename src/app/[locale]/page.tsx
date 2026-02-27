@@ -10,6 +10,9 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import Image from "next/image";
 
+// Force dynamic rendering to avoid PgBouncer prepared statement conflicts during build
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const hero = await getTranslations("hero");
 

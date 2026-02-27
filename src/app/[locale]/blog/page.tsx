@@ -19,8 +19,8 @@ interface Post {
   tags: { id: number; name: string }[];
 }
 
-// Enable ISR - revalidate every 60 seconds
-export const revalidate = 60;
+// Force dynamic rendering to avoid PgBouncer prepared statement conflicts during build
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("blog");
