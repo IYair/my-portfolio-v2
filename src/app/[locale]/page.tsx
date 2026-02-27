@@ -15,14 +15,24 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const hero = await getTranslations("hero");
+  const name = hero("name");
+  const description = hero("description");
 
   return {
-    title: `${hero("name")} - ${hero("description")}`,
-    description: hero("description"),
+    title: `${name} – Full Stack Developer`,
+    description,
     openGraph: {
-      title: `${hero("name")} - ${hero("description")}`,
-      description: hero("description"),
+      title: `${name} – Full Stack Developer`,
+      description,
       type: "website",
+      images: [{ url: "/images/me.png", width: 440, height: 660, alt: name }],
+    },
+    alternates: {
+      canonical: "/",
+      languages: {
+        es: "/es",
+        en: "/en",
+      },
     },
   };
 }
@@ -884,6 +894,27 @@ export default async function Home() {
           </div>
         </div>
       </footer>
+
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Yair Chan",
+            url: process.env.NEXT_PUBLIC_SITE_URL || "https://yairchancusco.me",
+            image: `${process.env.NEXT_PUBLIC_SITE_URL || "https://yairchancusco.me"}/images/me.png`,
+            sameAs: [
+              "https://github.com/IYair",
+              "https://www.linkedin.com/in/yair-chan/",
+              "https://x.com/EnyaDev",
+            ],
+            jobTitle: "Full Stack Developer",
+            knowsAbout: ["React", "Next.js", "TypeScript", "Node.js", "PostgreSQL", "AWS"],
+          }),
+        }}
+      />
     </div>
   );
 }

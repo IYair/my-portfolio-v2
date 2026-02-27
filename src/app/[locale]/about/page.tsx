@@ -14,20 +14,29 @@ import SkillsSection from "@/components/about/SkillsSection";
 export async function generateMetadata(): Promise<Metadata> {
   const profile = await getAboutProfile();
 
+  const name = profile?.name || "Yair Chan";
+  const description =
+    profile?.bio?.slice(0, 160) ||
+    "Conoce más sobre mi experiencia como desarrollador de software, habilidades técnicas y trayectoria profesional.";
+
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-    title: `Acerca de ${profile?.name || "Yair Chan"} - ${profile?.title || "Software Developer"}`,
-    description:
-      profile?.bio?.slice(0, 160) ||
-      "Conoce más sobre mi experiencia como desarrollador de software, habilidades técnicas y trayectoria profesional.",
-    keywords: `${profile?.name || "Yair Chan"}, desarrollador software, programador, ${profile?.subtitle || "full stack developer"}`,
+    title: `Acerca de ${name}`,
+    description,
+    keywords: [
+      name,
+      "desarrollador software",
+      "programador",
+      profile?.subtitle || "full stack developer",
+    ],
     openGraph: {
-      title: `Acerca de ${profile?.name || "Yair Chan"}`,
-      description:
-        profile?.bio?.slice(0, 160) ||
-        "Desarrollador de software especializado en tecnologías web modernas",
+      title: `Acerca de ${name}`,
+      description,
       images: profile?.profileImage ? [profile.profileImage] : ["/images/me.png"],
       type: "profile",
+    },
+    alternates: {
+      canonical: "/about",
+      languages: { es: "/es/about", en: "/en/about" },
     },
   };
 }
