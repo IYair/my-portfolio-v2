@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
+  provider          = "postgresql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
@@ -13,14 +13,14 @@ model Post {
   id          Int      @id @default(autoincrement())
   title       String
   slug        String   @unique
-  excerpt     String?  @db.Text
-  content     String   @db.LongText
+  excerpt     String?
+  content     String
   published   Boolean  @default(false)
   featured    Boolean  @default(false)
   coverImage  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  contentJson String?  @db.LongText
+  contentJson String?
   contentType String   @default("markdown")
   tags        Tag[]    @relation("PostTags")
 
@@ -39,12 +39,12 @@ model Project {
   id              Int      @id @default(autoincrement())
   title           String
   slug            String   @unique
-  description     String?  @db.Text
-  longDescription String?  @db.LongText
+  description     String?
+  longDescription String?
   image           String?
   demoUrl         String?
   githubUrl       String?
-  technologies    String   @db.Text
+  technologies    String
   featured        Boolean  @default(false)
   order           Int      @default(0)
   createdAt       DateTime @default(now())
@@ -58,7 +58,7 @@ model Contact {
   name      String
   email     String
   subject   String?
-  message   String   @db.Text
+  message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -72,11 +72,11 @@ model AboutProfile {
   titleEn      String?
   subtitle     String
   subtitleEn   String?
-  bio          String   @db.Text
-  bioHtml      String?  @db.LongText
-  bioEn        String?  @db.Text
-  bioHtmlEn    String?  @db.LongText
-  profileImage String?  @db.Text
+  bio          String
+  bioHtml      String?
+  bioEn        String?
+  bioHtmlEn    String?
+  profileImage String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -86,7 +86,7 @@ model AboutProfile {
 model Skill {
   id        Int      @id @default(autoincrement())
   name      String
-  icon      String   @db.Text
+  icon      String
   category  String?
   order     Int      @default(0)
   createdAt DateTime @default(now())
@@ -99,7 +99,7 @@ model ContactInfo {
   id         Int      @id @default(autoincrement())
   type       String
   value      String
-  icon       String?  @db.Text
+  icon       String?
   isHeroicon Boolean  @default(false)
   order      Int      @default(0)
   createdAt  DateTime @default(now())
@@ -109,19 +109,19 @@ model ContactInfo {
 }
 
 model WorkExperience {
-  id              Int      @id @default(autoincrement())
-  position        String
-  positionEn      String?
-  company         String
-  description     String   @db.Text
-  descriptionEn   String?  @db.Text
-  startDate       String?
-  endDate         String?
-  order           Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  descriptionHtml String?  @db.LongText
-  descriptionHtmlEn String? @db.LongText
+  id                Int      @id @default(autoincrement())
+  position          String
+  positionEn        String?
+  company           String
+  description       String
+  descriptionEn     String?
+  startDate         String?
+  endDate           String?
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  descriptionHtml   String?
+  descriptionHtmlEn String?
 
   @@map("work_experience")
 }
@@ -147,8 +147,8 @@ model Course {
   title        String
   titleEn      String?
   provider     String
-  providerIcon String?  @db.Text
-  icon         String?  @db.Text
+  providerIcon String?
+  icon         String?
   category     String?
   categoryEn   String?
   order        Int      @default(0)
@@ -160,15 +160,15 @@ model Course {
 
 model Testimonial {
   id        Int      @id @default(autoincrement())
-  content   String   @db.Text
-  contentEn String?  @db.Text
+  content   String
+  contentEn String?
   author    String
   handle    String
   image     String?
   published Boolean  @default(false)
   featured  Boolean  @default(false)
   order     Int      @default(0)
-  code      String?  @unique // Código de acceso para crear/editar
+  code      String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -176,16 +176,15 @@ model Testimonial {
 }
 
 model TestimonialInvite {
-  id        Int      @id @default(autoincrement())
-  code      String   @unique
+  id        Int       @id @default(autoincrement())
+  code      String    @unique
   email     String
   name      String?
-  sent      Boolean  @default(false)
-  used      Boolean  @default(false)
+  sent      Boolean   @default(false)
+  used      Boolean   @default(false)
   usedAt    DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   expiresAt DateTime?
 
   @@map("testimonial_invites")
 }
-
