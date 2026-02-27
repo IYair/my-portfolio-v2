@@ -1,4 +1,5 @@
 import Navigation from "@/components/layout/Navigation";
+import { MotionProvider } from "@/components/providers/MotionProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { routing } from "@/i18n/routing";
 import { Analytics } from "@vercel/analytics/next";
@@ -39,11 +40,13 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
       <SessionProvider>
-        <Navigation />
-        {children}
-        <Analytics />
-        <SpeedInsights />
-        <Toaster position="top-right" expand={false} richColors closeButton theme="system" />
+        <MotionProvider>
+          <Navigation />
+          {children}
+          <Analytics />
+          <SpeedInsights />
+          <Toaster position="top-right" expand={false} richColors closeButton theme="system" />
+        </MotionProvider>
       </SessionProvider>
     </NextIntlClientProvider>
   );
