@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -24,7 +25,7 @@ function cleanS3Url(url: string | null): string | null {
   }
 }
 
-export async function getAboutProfile(locale: "es" | "en" = "es") {
+export const getAboutProfile = cache(async function getAboutProfile(locale: "es" | "en" = "es") {
   try {
     const profile = await prisma.aboutProfile.findFirst({
       orderBy: { updatedAt: "desc" },
@@ -47,9 +48,9 @@ export async function getAboutProfile(locale: "es" | "en" = "es") {
     console.error("Error fetching about profile:", error);
     return null;
   }
-}
+});
 
-export async function getSkills() {
+export const getSkills = cache(async function getSkills() {
   try {
     const skills = await prisma.skill.findMany({
       orderBy: { order: "asc" },
@@ -64,9 +65,9 @@ export async function getSkills() {
     console.error("Error fetching skills:", error);
     return [];
   }
-}
+});
 
-export async function getContactInfo() {
+export const getContactInfo = cache(async function getContactInfo() {
   try {
     const contactInfo = await prisma.contactInfo.findMany({
       orderBy: { order: "asc" },
@@ -81,9 +82,11 @@ export async function getContactInfo() {
     console.error("Error fetching contact info:", error);
     return [];
   }
-}
+});
 
-export async function getWorkExperience(locale: "es" | "en" = "es") {
+export const getWorkExperience = cache(async function getWorkExperience(
+  locale: "es" | "en" = "es"
+) {
   try {
     const experience = await prisma.workExperience.findMany({
       orderBy: { order: "asc" },
@@ -101,9 +104,9 @@ export async function getWorkExperience(locale: "es" | "en" = "es") {
     console.error("Error fetching work experience:", error);
     return [];
   }
-}
+});
 
-export async function getEducation(locale: "es" | "en" = "es") {
+export const getEducation = cache(async function getEducation(locale: "es" | "en" = "es") {
   try {
     const education = await prisma.education.findMany({
       orderBy: { order: "asc" },
@@ -119,9 +122,9 @@ export async function getEducation(locale: "es" | "en" = "es") {
     console.error("Error fetching education:", error);
     return [];
   }
-}
+});
 
-export async function getCourses(locale: "es" | "en" = "es") {
+export const getCourses = cache(async function getCourses(locale: "es" | "en" = "es") {
   try {
     const courses = await prisma.course.findMany({
       orderBy: [{ provider: "asc" }, { order: "asc" }],
@@ -153,4 +156,4 @@ export async function getCourses(locale: "es" | "en" = "es") {
     console.error("Error fetching courses:", error);
     return {};
   }
-}
+});

@@ -1,6 +1,6 @@
 import { getAboutProfile } from "@/services/aboutService";
-import { getPreserveWhitespaceStyle } from "@/utils/textFormatting";
-import { UserIcon } from "@heroicons/react/24/outline";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
+import { Slide } from "@/components/animate-ui/primitives/effects/slide";
 import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function AboutMeSection() {
@@ -8,53 +8,118 @@ export default async function AboutMeSection() {
   const t = await getTranslations("aboutPage");
   const profile = await getAboutProfile(locale);
 
-  if (!profile) {
-    // Fallback content
-    return (
-      <div>
-        <h2 className="m-2 flex items-center text-lg font-bold text-blue-300 sm:m-3 sm:text-xl lg:text-2xl xl:text-3xl">
-          <UserIcon className="mr-2 h-auto w-7 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:mr-3 sm:w-8 lg:mr-4 lg:w-10" />
-          SOBRE MI
-        </h2>
-        <h3 className="m-2 text-sm text-blue-400 sm:m-3 sm:text-base lg:text-lg xl:text-xl">
-          Software Developer | Web Developer | Full Stack Developer
-        </h3>
-        <p
-          className="m-2 pr-2 text-justify text-sm text-gray-200 sm:m-3 sm:pr-4 sm:text-base lg:pr-10"
-          style={getPreserveWhitespaceStyle()}
-        >
-          Como profesional en tecnologías web y desarrollo de software, me destaco por mi pasión por
-          la innovación y el aprendizaje constante.
-        </p>
-      </div>
-    );
-  }
+  if (!profile) return null;
 
-  // Check if we have rich content (HTML)
   const hasRichContent = profile.bioHtml && profile.bioHtml.trim() !== "";
 
   return (
-    <div>
-      <h2 className="m-2 flex items-center text-lg font-bold text-blue-300 sm:m-3 sm:text-xl lg:text-2xl xl:text-3xl">
-        <UserIcon className="mr-2 h-auto w-7 drop-shadow-[2px_8px_4px_rgba(0,0,0,0.4)] sm:mr-3 sm:w-8 lg:mr-4 lg:w-10" />
-        {t("aboutMe").toUpperCase()}
-      </h2>
-      <h3 className="m-2 text-sm text-blue-400 sm:m-3 sm:text-base lg:text-lg xl:text-xl">
-        {profile.subtitle}
-      </h3>
-      {hasRichContent ? (
-        <div
-          className="prose prose-sm prose-invert prose-p:my-2 prose-p:text-justify prose-p:text-gray-200 prose-strong:text-gray-100 prose-a:text-blue-400 prose-headings:text-blue-300 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 prose-code:text-blue-300 prose-code:bg-blue-500/10 sm:prose-base m-2 max-w-none pr-2 sm:m-3 sm:pr-4 lg:pr-10"
-          dangerouslySetInnerHTML={{ __html: profile.bioHtml || "" }}
-        />
-      ) : (
-        <p
-          className="m-2 pr-2 text-justify text-sm text-gray-200 sm:m-3 sm:pr-4 sm:text-base lg:pr-10"
-          style={getPreserveWhitespaceStyle()}
-        >
-          {profile.bio}
-        </p>
-      )}
-    </div>
+    <section style={{ backgroundColor: "#f5f5f7", padding: "8rem 0" }}>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <Fade inView inViewOnce>
+          <p
+            style={{
+              color: "#0066cc",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              marginBottom: "1.5rem",
+            }}
+          >
+            {t("aboutMe")}
+          </p>
+        </Fade>
+
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
+          {/* Left: headline */}
+          <div>
+            <Slide direction="up" inView inViewOnce delay={100}>
+              <h2
+                style={{
+                  fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.025em",
+                  color: "#1d1d1f",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                {profile.title}
+              </h2>
+            </Slide>
+
+            <Fade inView inViewOnce delay={200}>
+              <p
+                style={{
+                  fontSize: "1rem",
+                  color: "#0066cc",
+                  fontWeight: 500,
+                  marginBottom: "2rem",
+                }}
+              >
+                {profile.subtitle}
+              </p>
+            </Fade>
+
+            {/* Key highlights */}
+            <Fade inView inViewOnce delay={300}>
+              <div className="space-y-4">
+                {[
+                  {
+                    label: locale === "en" ? "Location" : "Ubicación",
+                    value: "Campeche, México",
+                  },
+                  {
+                    label: locale === "en" ? "Availability" : "Disponibilidad",
+                    value: locale === "en" ? "Open to opportunities" : "Abierto a oportunidades",
+                  },
+                  {
+                    label: locale === "en" ? "Focus" : "Enfoque",
+                    value: locale === "en" ? "Web & Mobile" : "Web y Mobile",
+                  },
+                ].map(item => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between"
+                    style={{
+                      borderBottom: "1px solid rgba(0,0,0,0.06)",
+                      paddingBottom: "1rem",
+                    }}
+                  >
+                    <span style={{ fontSize: "0.8rem", color: "#aeaeb2" }}>{item.label}</span>
+                    <span style={{ fontSize: "0.875rem", color: "#1d1d1f", fontWeight: 500 }}>
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </Fade>
+          </div>
+
+          {/* Right: bio text */}
+          <Fade inView inViewOnce delay={200}>
+            <div>
+              {hasRichContent ? (
+                <div
+                  className="prose prose-sm prose-p:text-[#6e6e73] prose-p:leading-relaxed prose-p:text-justify prose-strong:text-[#1d1d1f] prose-a:text-[#0066cc] prose-headings:text-[#1d1d1f] prose-ul:text-[#6e6e73] prose-li:text-[#6e6e73] max-w-none"
+                  dangerouslySetInnerHTML={{ __html: profile.bioHtml || "" }}
+                />
+              ) : (
+                <p
+                  style={{
+                    fontSize: "1.05rem",
+                    lineHeight: 1.85,
+                    color: "#6e6e73",
+                    textAlign: "justify",
+                  }}
+                >
+                  {profile.bio}
+                </p>
+              )}
+            </div>
+          </Fade>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -1,5 +1,7 @@
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { getEducation } from "@/services/aboutService";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
+import { Slide } from "@/components/animate-ui/primitives/effects/slide";
 import { getLocale, getTranslations } from "next-intl/server";
 
 export default async function EducationSection() {
@@ -7,41 +9,96 @@ export default async function EducationSection() {
   const t = await getTranslations("aboutPage");
   const educations = await getEducation(locale);
 
-  if (educations.length === 0) {
-    return null;
-  }
+  if (educations.length === 0) return null;
 
   return (
-    <section className="flex w-full flex-row flex-nowrap">
-      <div className="flex w-fit flex-col">
-        <div className="mb-2 flex flex-row items-center">
-          <AcademicCapIcon className="ml-2 h-auto w-6 text-red-400 sm:ml-4 sm:w-8 lg:ml-8 lg:w-10" />
-          <h2 className="mx-2 flex text-base font-light text-red-400 sm:mx-3 sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
+    <section style={{ backgroundColor: "#000", padding: "8rem 0 4rem" }}>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <Fade inView inViewOnce>
+          <p
+            style={{
+              color: "rgba(100,170,255,0.9)",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              marginBottom: "1.5rem",
+            }}
+          >
             {t("education")}
+          </p>
+        </Fade>
+
+        <Slide direction="up" inView inViewOnce delay={100}>
+          <h2
+            style={{
+              fontSize: "clamp(2rem, 4vw, 3.5rem)",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              letterSpacing: "-0.025em",
+              color: "#fff",
+              marginBottom: "4rem",
+            }}
+          >
+            {locale === "en" ? "Academic background" : "Formación académica"}
           </h2>
-        </div>
-        <div className="flex flex-row">
-          <div className="gradient-dashed-line-fade ml-[1.2rem] h-full w-[0.15rem] sm:ml-[2rem] sm:w-[0.18rem] lg:ml-[3.2rem] lg:w-0.5"></div>
-          <div className="flex flex-col">
-            {educations.map(education => (
-              <div key={education.id} className="my-2 sm:my-3 lg:my-4">
-                <h3 className="mx-2 text-sm font-medium tracking-wide text-blue-300 sm:mx-3 sm:text-base sm:tracking-wider lg:text-lg xl:text-xl 2xl:text-2xl">
+        </Slide>
+
+        <div className="grid gap-6 sm:grid-cols-2">
+          {educations.map((education, i) => (
+            <Fade key={education.id} inView inViewOnce delay={150 + i * 100}>
+              <div
+                className="flex flex-col rounded-2xl p-8"
+                style={{
+                  backgroundColor: "#111",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                }}
+              >
+                <AcademicCapIcon
+                  className="mb-5 h-8 w-8"
+                  style={{ color: "rgba(100,170,255,0.65)" }}
+                />
+                <h3
+                  style={{
+                    fontSize: "1.15rem",
+                    fontWeight: 700,
+                    color: "#fff",
+                    letterSpacing: "-0.01em",
+                    marginBottom: "0.5rem",
+                  }}
+                >
                   {education.institution}
                 </h3>
-                <p className="mx-2 text-justify text-xs text-red-400 sm:mx-3 sm:text-sm lg:text-base xl:text-lg">
+                <p
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "rgba(255,255,255,0.5)",
+                    marginBottom: "0.75rem",
+                    flexGrow: 1,
+                  }}
+                >
                   {education.degree}
                   {education.field && ` en ${education.field}`}
                 </p>
                 {(education.startDate || education.endDate) && (
-                  <p className="mx-2 text-justify text-xs text-gray-400 sm:mx-3 sm:text-sm">
+                  <p
+                    style={{
+                      fontSize: "0.72rem",
+                      color: "rgba(255,255,255,0.28)",
+                      fontFamily: "var(--font-geist-mono)",
+                      marginTop: "auto",
+                      paddingTop: "1rem",
+                      borderTop: "1px solid rgba(255,255,255,0.07)",
+                    }}
+                  >
                     {education.startDate}
-                    {education.startDate && education.endDate && " - "}
+                    {education.startDate && education.endDate && " — "}
                     {education.endDate}
                   </p>
                 )}
               </div>
-            ))}
-          </div>
+            </Fade>
+          ))}
         </div>
       </div>
     </section>

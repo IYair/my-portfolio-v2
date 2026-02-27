@@ -1,10 +1,7 @@
-import { PrismaClient } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-
-// Create a fresh Prisma instance for this route
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {

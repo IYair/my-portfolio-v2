@@ -2,11 +2,9 @@ import { CalendarIcon, TagIcon, ArrowLeftIcon } from "@heroicons/react/24/outlin
 import { Link } from "@/i18n/routing";
 import { getTranslations, getLocale } from "next-intl/server";
 import Image from "next/image";
-import { PrismaClient } from "@/generated/prisma";
+import { prisma } from "@/lib/prisma";
 import { format } from "@formkit/tempo";
 import type { Metadata } from "next";
-
-const prisma = new PrismaClient();
 
 interface Post {
   id: number;

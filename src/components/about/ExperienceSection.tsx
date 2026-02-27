@@ -1,5 +1,6 @@
 import { getWorkExperience } from "@/services/aboutService";
-import { parseTextWithLists } from "@/utils/textFormatting";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
+import { Slide } from "@/components/animate-ui/primitives/effects/slide";
 import { BriefcaseIcon } from "@heroicons/react/24/outline";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -8,93 +9,148 @@ export default async function ExperienceSection() {
   const t = await getTranslations("aboutPage");
   const experiences = await getWorkExperience(locale);
 
-  if (experiences.length === 0) {
-    return null;
-  }
+  if (experiences.length === 0) return null;
 
   return (
-    <section className="flex w-full flex-row flex-nowrap">
-      <div className="flex w-fit flex-col">
-        <div className="mb-2 flex flex-row items-center">
-          <BriefcaseIcon className="ml-2 h-auto w-6 text-blue-300 sm:ml-4 sm:w-8 lg:ml-8 lg:w-10" />
-          <h2 className="mx-2 flex text-base font-light text-blue-300 sm:mx-3 sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
+    <section style={{ backgroundColor: "#f5f5f7", padding: "8rem 0" }}>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <Fade inView inViewOnce>
+          <p
+            style={{
+              color: "#0066cc",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              marginBottom: "1.5rem",
+            }}
+          >
             {t("experience")}
+          </p>
+        </Fade>
+
+        <Slide direction="up" inView inViewOnce delay={100}>
+          <h2
+            style={{
+              fontSize: "clamp(2rem, 4vw, 3.5rem)",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              letterSpacing: "-0.025em",
+              color: "#1d1d1f",
+              marginBottom: "4rem",
+            }}
+          >
+            {locale === "en" ? "Professional journey" : "Trayectoria profesional"}
           </h2>
-        </div>
-        <div className="flex flex-row">
-          <div className="gradient-dashed-line ml-[1.2rem] h-full w-[0.15rem] sm:ml-[2rem] sm:w-[0.18rem] lg:ml-[3.2rem] lg:w-[0.2rem]"></div>
-          <div className="flex flex-col">
-            {experiences.map(experience => {
-              // Use descriptionHtml if available, otherwise fall back to parsing plain text
+        </Slide>
+
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical line */}
+          <div
+            className="absolute top-0 bottom-0"
+            style={{
+              left: "0.6rem",
+              width: "1px",
+              background:
+                "linear-gradient(to bottom, transparent, #d2d2d7 8%, #d2d2d7 92%, transparent)",
+            }}
+          />
+
+          <div className="space-y-14">
+            {experiences.map((experience, i) => {
               const hasRichContent =
                 experience.descriptionHtml && experience.descriptionHtml.trim() !== "";
 
               return (
-                <div key={experience.id} className="my-2 sm:my-3 lg:my-4">
-                  <h3 className="mx-2 text-sm font-medium tracking-wide text-blue-300 sm:mx-3 sm:text-base sm:tracking-wider lg:text-lg xl:text-xl 2xl:text-2xl">
-                    {experience.position}
-                  </h3>
-                  <div className="mx-2 flex flex-row items-center justify-between sm:mx-3">
-                    <p className="text-justify text-xs text-red-400 sm:text-sm lg:text-base xl:text-lg">
-                      {experience.company}
-                    </p>
-                    <p className="ml-4 text-xs text-nowrap text-gray-400 capitalize sm:text-sm lg:text-base">
-                      {experience.startDate?.toLowerCase()}
-                      {experience.endDate &&
-                        ` - ${experience.endDate.toLowerCase() === "presente" || experience.endDate.toLowerCase() === "present" ? t("present") : experience.endDate.toLowerCase()}`}
-                    </p>
-                  </div>
-
-                  {hasRichContent ? (
+                <Fade key={experience.id} inView inViewOnce delay={150 + i * 100}>
+                  <div className="relative pl-10 lg:pl-0">
+                    {/* Timeline dot */}
                     <div
-                      className="prose prose-sm prose-invert prose-p:my-2 prose-p:text-justify prose-p:text-gray-200 prose-ul:mx-0 prose-strong:text-gray-100 prose-a:text-blue-400 prose-headings:text-blue-300 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-li:my-0 prose-code:text-blue-300 prose-code:bg-blue-500/10 sm:prose-base mx-2 mr-2 max-w-none sm:mx-3 sm:mr-4 lg:mr-8 xl:mr-16"
-                      dangerouslySetInnerHTML={{ __html: experience.descriptionHtml || "" }}
+                      className="absolute"
+                      style={{
+                        left: "0.225rem",
+                        top: "0.35rem",
+                        width: "0.75rem",
+                        height: "0.75rem",
+                        borderRadius: "9999px",
+                        backgroundColor: "#0066cc",
+                        boxShadow: "0 0 0 3px rgba(0,102,204,0.15)",
+                      }}
                     />
-                  ) : (
-                    <div className="mr-2 ml-2 sm:mr-4 sm:ml-3 lg:mr-8 lg:ml-4 xl:mr-16">
-                      {parseTextWithLists(experience.description).map((item, idx) => {
-                        if (item.type === "text") {
-                          return (
-                            <p
-                              key={idx}
-                              className="mb-2 text-justify text-xs text-gray-200 sm:text-sm lg:text-base"
-                            >
-                              {item.content}
-                            </p>
-                          );
-                        } else {
-                          const prevItem = parseTextWithLists(experience.description)[idx - 1];
 
-                          if (!prevItem || prevItem.type !== "list") {
-                            const parsedContent = parseTextWithLists(experience.description);
-                            const consecutiveListItems = [];
-                            for (
-                              let i = idx;
-                              i < parsedContent.length && parsedContent[i].type === "list";
-                              i++
-                            ) {
-                              consecutiveListItems.push(parsedContent[i]);
-                            }
+                    <div className="grid gap-6 lg:grid-cols-3 lg:gap-12 lg:pl-0">
+                      {/* Meta — left column on desktop */}
+                      <div className="lg:col-span-1 lg:pl-10" style={{ paddingTop: "0.1rem" }}>
+                        <p
+                          style={{
+                            fontSize: "0.72rem",
+                            color: "#aeaeb2",
+                            fontFamily: "var(--font-geist-mono)",
+                            marginBottom: "0.5rem",
+                            textTransform: "lowercase",
+                          }}
+                        >
+                          {experience.startDate}
+                          {experience.endDate &&
+                            ` — ${
+                              experience.endDate.toLowerCase() === "presente" ||
+                              experience.endDate.toLowerCase() === "present"
+                                ? t("present")
+                                : experience.endDate
+                            }`}
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "0.9rem",
+                            color: "#0066cc",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {experience.company}
+                        </p>
+                      </div>
 
-                            return (
-                              <ul
-                                key={idx}
-                                className="mb-2 list-outside list-disc space-y-1 pl-4 text-xs text-gray-200 sm:text-sm lg:text-base"
-                              >
-                                {consecutiveListItems.map((listItem, listIdx) => (
-                                  <li key={listIdx} className="text-justify">
-                                    {listItem.content}
-                                  </li>
-                                ))}
-                              </ul>
-                            );
-                          }
-                          return null;
-                        }
-                      })}
+                      {/* Content — right column on desktop */}
+                      <div className="lg:col-span-2">
+                        <div className="mb-3 flex items-start gap-3">
+                          <BriefcaseIcon
+                            className="mt-0.5 h-5 w-5 flex-shrink-0"
+                            style={{ color: "#1d1d1f", opacity: 0.5 }}
+                          />
+                          <h3
+                            style={{
+                              fontSize: "1.2rem",
+                              fontWeight: 700,
+                              color: "#1d1d1f",
+                              letterSpacing: "-0.01em",
+                            }}
+                          >
+                            {experience.position}
+                          </h3>
+                        </div>
+
+                        {hasRichContent ? (
+                          <div
+                            className="prose prose-sm prose-p:text-[#6e6e73] prose-p:leading-relaxed prose-p:text-justify prose-ul:text-[#6e6e73] prose-li:text-[#6e6e73] prose-strong:text-[#1d1d1f] prose-a:text-[#0066cc] max-w-none"
+                            dangerouslySetInnerHTML={{ __html: experience.descriptionHtml || "" }}
+                          />
+                        ) : (
+                          <p
+                            style={{
+                              fontSize: "0.9rem",
+                              lineHeight: 1.8,
+                              color: "#6e6e73",
+                              textAlign: "justify",
+                            }}
+                          >
+                            {experience.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                </Fade>
               );
             })}
           </div>

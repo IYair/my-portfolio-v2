@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@/generated/prisma";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
@@ -9,10 +7,7 @@ export async function POST(request: Request) {
     const { code } = body;
 
     if (!code) {
-      return NextResponse.json(
-        { error: "El código es requerido", valid: false },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "El código es requerido", valid: false }, { status: 400 });
     }
 
     // Verificar si el código ya existe en testimonios (ya fue usado)
@@ -61,9 +56,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Error validating code:", error);
-    return NextResponse.json(
-      { error: "Error al validar código", valid: false },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error al validar código", valid: false }, { status: 500 });
   }
 }

@@ -1,4 +1,5 @@
 import Navigation from "@/components/layout/Navigation";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 import { MotionProvider } from "@/components/providers/MotionProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { routing } from "@/i18n/routing";
@@ -41,6 +42,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages} locale={locale}>
       <SessionProvider>
         <MotionProvider>
+          <ScrollToTop />
           <Navigation />
           {children}
           <Analytics />

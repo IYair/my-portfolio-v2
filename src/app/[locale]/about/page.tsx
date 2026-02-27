@@ -4,9 +4,7 @@ import { Metadata } from "next";
 // Revalidate every 60 seconds
 export const revalidate = 60;
 
-// Dynamic components
 import AboutMeSection from "@/components/about/AboutMeSection";
-import ContactSection from "@/components/about/ContactSection";
 import CoursesSection from "@/components/about/CoursesSection";
 import EducationSection from "@/components/about/EducationSection";
 import ExperienceSection from "@/components/about/ExperienceSection";
@@ -17,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const profile = await getAboutProfile();
 
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
     title: `Acerca de ${profile?.name || "Yair Chan"} - ${profile?.title || "Software Developer"}`,
     description:
       profile?.bio?.slice(0, 160) ||
@@ -35,38 +34,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function About() {
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        backgroundImage: "url(/images/NoiseTexture-optimized.webp)",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="grid h-screen w-full grid-cols-1 gap-6 overflow-y-scroll rounded-2xl px-4 py-16 sm:gap-10 sm:px-8 sm:py-20 lg:grid-cols-3 lg:gap-14 lg:px-40 lg:py-24">
-        {/* Left Section */}
-        <section id="sideLeft" className="col-span-1 flex flex-col lg:col-span-1">
-          <ProfileSection />
-          <SkillsSection />
-          <ContactSection />
-        </section>
-
-        {/* Right Section */}
-        <section className="col-span-1 flex flex-col flex-nowrap rounded-2xl bg-slate-800 p-3 sm:p-4 lg:col-span-2">
-          <AboutMeSection />
-
-          <div className="mt-3 h-px w-full bg-gradient-to-r from-blue-400 to-transparent sm:mt-4"></div>
-
-          <div className="mt-4 sm:mt-6 lg:mt-10">
-            <ExperienceSection />
-            <EducationSection />
-
-            <div className="mt-3 h-px w-full bg-gradient-to-r from-blue-400 to-transparent sm:mt-4"></div>
-
-            <CoursesSection />
-          </div>
-        </section>
-      </div>
+    <div className="min-h-screen" style={{ backgroundColor: "#000" }}>
+      <ProfileSection />
+      <div style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }} />
+      <AboutMeSection />
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+      <SkillsSection />
+      <div style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }} />
+      <ExperienceSection />
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }} />
+      <EducationSection />
+      <CoursesSection />
     </div>
   );
 }

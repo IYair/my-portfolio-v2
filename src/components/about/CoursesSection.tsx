@@ -1,4 +1,6 @@
 import { getCourses } from "@/services/aboutService";
+import { Fade } from "@/components/animate-ui/primitives/effects/fade";
+import { Slide } from "@/components/animate-ui/primitives/effects/slide";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 
@@ -7,61 +9,136 @@ export default async function CoursesSection() {
   const t = await getTranslations("aboutPage");
   const coursesByProvider = await getCourses(locale);
 
-  if (Object.keys(coursesByProvider).length === 0) {
-    return null;
-  }
+  if (Object.keys(coursesByProvider).length === 0) return null;
 
   return (
-    <section className="ml-2 sm:ml-4 lg:ml-10">
-      <h2 className="m-2 flex text-base font-extralight text-blue-300 sm:m-3 sm:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl">
-        {t("courses").toUpperCase()}
-      </h2>
+    <section style={{ backgroundColor: "#000", padding: "4rem 0 8rem" }}>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.07)",
+            paddingTop: "6rem",
+          }}
+        >
+          <Fade inView inViewOnce>
+            <p
+              style={{
+                color: "rgba(100,170,255,0.9)",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                marginBottom: "1.5rem",
+              }}
+            >
+              {t("courses")}
+            </p>
+          </Fade>
 
-      <div className="flex flex-col">
-        {Object.entries(coursesByProvider).map(([provider, courses]) => {
-          const firstCourse = courses[0];
-          return (
-            <div key={provider} className="mb-4 sm:mb-6 lg:mb-8">
-              {/* Provider Header */}
-              <div className="flex w-full flex-row items-center">
-                {firstCourse.providerIcon && (
-                  <div className="flex items-center justify-center rounded-lg bg-gray-700 p-1 shadow-sm sm:p-1.5 lg:p-2">
-                    <Image
-                      src={firstCourse.providerIcon}
-                      alt={provider}
-                      width={32}
-                      height={32}
-                      className="h-10 w-10 object-contain sm:h-12 sm:w-12 lg:h-16 lg:w-16"
-                    />
-                  </div>
-                )}
-                <p className="ml-2 text-justify text-xs tracking-wide text-blue-300 sm:ml-3 sm:text-sm sm:tracking-widest lg:text-base xl:text-lg 2xl:text-xl">
-                  {provider.toWellFormed()}
-                </p>
-              </div>
+          <Slide direction="up" inView inViewOnce delay={100}>
+            <h2
+              style={{
+                fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                fontWeight: 700,
+                lineHeight: 1.1,
+                letterSpacing: "-0.025em",
+                color: "#fff",
+                marginBottom: "4rem",
+              }}
+            >
+              {locale === "en" ? "Certifications & courses" : "Certificaciones y cursos"}
+            </h2>
+          </Slide>
 
-              {/* Courses List */}
-              <div className="mt-3 ml-4 space-y-2 sm:mt-4 sm:ml-8 sm:space-y-3 lg:mt-6 lg:ml-16 lg:space-y-4">
-                {courses.map(course => (
-                  <div key={course.id} className="flex items-center">
-                    {course.icon && (
-                      <Image
-                        src={course.icon}
-                        alt={course.title}
-                        width={44}
-                        height={44}
-                        className="h-6 w-6 drop-shadow-[1px_2px_1px_rgba(0,0,0,0.4)] sm:h-8 sm:w-8 lg:h-11 lg:w-11"
-                      />
-                    )}
-                    <p className="ml-2 text-justify text-xs tracking-wide text-blue-300 sm:ml-3 sm:text-sm sm:tracking-widest lg:text-base">
-                      {course.title}
-                    </p>
+          <div className="space-y-14">
+            {Object.entries(coursesByProvider).map(([provider, courses], groupIdx) => {
+              const firstCourse = courses[0];
+              return (
+                <Fade key={provider} inView inViewOnce delay={150 + groupIdx * 100}>
+                  <div>
+                    {/* Provider header */}
+                    <div
+                      className="mb-6 flex items-center gap-4"
+                      style={{
+                        borderBottom: "1px solid rgba(255,255,255,0.07)",
+                        paddingBottom: "1.25rem",
+                      }}
+                    >
+                      {firstCourse.providerIcon && (
+                        <div
+                          className="flex items-center justify-center rounded-xl"
+                          style={{
+                            width: "3rem",
+                            height: "3rem",
+                            backgroundColor: "rgba(255,255,255,0.06)",
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Image
+                            src={firstCourse.providerIcon}
+                            alt={provider}
+                            width={28}
+                            height={28}
+                            className="h-7 w-7 object-contain"
+                          />
+                        </div>
+                      )}
+                      <h3
+                        style={{
+                          fontSize: "1.1rem",
+                          fontWeight: 600,
+                          color: "#fff",
+                          letterSpacing: "-0.01em",
+                        }}
+                      >
+                        {provider}
+                      </h3>
+                    </div>
+
+                    {/* Courses grid */}
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {courses.map((course, courseIdx) => (
+                        <Fade
+                          key={course.id}
+                          inView
+                          inViewOnce
+                          delay={200 + groupIdx * 80 + courseIdx * 40}
+                        >
+                          <div
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 transition-colors duration-200"
+                            style={{
+                              backgroundColor: "rgba(255,255,255,0.03)",
+                              border: "1px solid rgba(255,255,255,0.06)",
+                            }}
+                          >
+                            {course.icon && (
+                              <Image
+                                src={course.icon}
+                                alt={course.title}
+                                width={28}
+                                height={28}
+                                className="h-7 w-7 flex-shrink-0 object-contain"
+                              />
+                            )}
+                            <p
+                              style={{
+                                fontSize: "0.8rem",
+                                color: "rgba(255,255,255,0.6)",
+                                lineHeight: 1.4,
+                              }}
+                            >
+                              {course.title}
+                            </p>
+                          </div>
+                        </Fade>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+                </Fade>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );
