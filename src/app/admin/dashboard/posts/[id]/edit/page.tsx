@@ -11,7 +11,9 @@ import ImageUpload from "@/components/ui/ImageUpload";
 import FormEditor, { FormEditorRef } from "@/components/editor/FormEditor";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import PostPreview from "@/components/blog/PostPreview";
+import AIAssistant from "@/components/admin/AIAssistant";
 import { useToast } from "@/hooks/useToast";
+import apiClient from "@/lib/api-client";
 import {
   BookOpenIcon,
   CheckCircleIcon,
@@ -88,28 +90,26 @@ export default function EditPostPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`/api/admin/posts/${postId}`);
-        if (response.ok) {
-          const post: Post = await response.json();
-          setFormData({
-            title: post.title,
-            slug: post.slug,
-            excerpt: post.excerpt || "",
-            content: post.content,
-            coverImage: post.coverImage || "",
-            published: post.published,
-            featured: post.featured,
-            tags: post.tags.map(tag => tag.name),
-          });
-        } else if (response.status === 404) {
+        const response = await apiClient.get<Post>(`/api/admin/posts/${postId}`);
+        const post = response.data;
+        setFormData({
+          title: post.title,
+          slug: post.slug,
+          excerpt: post.excerpt || "",
+          content: post.content,
+          coverImage: post.coverImage || "",
+          published: post.published,
+          featured: post.featured,
+          tags: post.tags.map(tag => tag.name),
+        });
+      } catch (err: unknown) {
+        const status = (err as { response?: { status?: number } })?.response?.status;
+        if (status === 404) {
           error("Post no encontrado", "El post que intentas editar no existe");
           setTimeout(() => router.push("/admin/dashboard/posts"), 2000);
         } else {
           error("Error al cargar", "No se pudo cargar el post");
         }
-      } catch (err) {
-        console.error("Error fetching post:", err);
-        error("Error inesperado", "Hubo un problema al cargar el post");
       } finally {
         setIsLoading(false);
       }
@@ -147,17 +147,10 @@ export default function EditPostPage() {
   );
 
   const handleContentChange = useCallback((content: string) => {
-    console.log("📝 Content changed, length:", content.length);
-    console.log("📄 New content preview:", content.substring(0, 200));
-    setFormData(prev => {
-      const newData = { ...prev, content };
-      console.log("💾 Updating formData with new content");
-      return newData;
-    });
-    // Clear content error when user starts typing
+    setFormData(prev => ({ ...prev, content }));
     setErrors(prev => {
       if (prev.content) {
-        const { content, ...rest } = prev;
+        const { content: _, ...rest } = prev;
         return rest;
       }
       return prev;
@@ -186,64 +179,32 @@ export default function EditPostPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("🔍 Form submission started");
-    console.log("📝 Form data:", formData);
-    console.log("📏 Content length in formData:", formData.content.length);
-    console.log("📄 Content first 500 chars:", formData.content.substring(0, 500));
-
     if (!validateForm()) {
-      console.log("❌ Validation failed");
       error("Formulario incompleto", "Por favor completa todos los campos requeridos");
       return;
     }
 
-    console.log("✅ Validation passed");
     setIsSubmitting(true);
 
     try {
-      const submitData = {
-        ...formData,
-        contentType: "tiptap" as const,
-      };
+      const submitData = { ...formData, contentType: "tiptap" as const };
 
-      console.log("📤 Sending data to API");
-      console.log("📤 Content preview being sent:", submitData.content.substring(0, 500));
+      await promise(
+        apiClient.put(`/api/admin/posts/${postId}`, submitData).then(res => res.data),
+        {
+          loading: "Actualizando post...",
+          success: "Post actualizado exitosamente",
+          error: (err: unknown) =>
+            (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+            "Error al actualizar el post",
+        }
+      );
 
-      const submitPromise = fetch(`/api/admin/posts/${postId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
-      });
-
-      promise(submitPromise, {
-        loading: "Actualizando post...",
-        success: "Post actualizado exitosamente",
-        error: "Error al actualizar el post",
-      });
-
-      const response = await submitPromise;
-      console.log("📥 Response status:", response.status);
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("✅ Post updated successfully:", data);
-
-        // Invalidar caché para que se muestren los cambios
-        invalidatePostsCache();
-        invalidateAllCache();
-
-        success("¡Éxito!", "Tu post ha sido actualizado correctamente");
-        setTimeout(() => router.push("/admin/dashboard/posts"), 1500);
-      } else {
-        const errorData = await response.json();
-        console.error("❌ Update failed:", errorData);
-        error("Error al actualizar", errorData.error || "Error desconocido");
-      }
-    } catch (err) {
-      console.error("❌ Error updating post:", err);
-      error("Error inesperado", "Hubo un problema al actualizar el post");
+      invalidatePostsCache();
+      invalidateAllCache();
+      router.push("/admin/dashboard/posts");
+    } catch {
+      // El toast de error ya fue mostrado por promise()
     } finally {
       setIsSubmitting(false);
     }
@@ -264,22 +225,18 @@ export default function EditPostPage() {
 
   const handlePublishToggle = async (value: boolean) => {
     setFormData(prev => ({ ...prev, published: value }));
-    // Auto-save cuando se cambia el estado de publicación
     if (formData.title.trim()) {
       setTimeout(async () => {
-        const updatedData = { ...formData, published: value, contentType: "tiptap" as const };
         try {
-          const response = await fetch(`/api/admin/posts/${postId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData),
+          await apiClient.put(`/api/admin/posts/${postId}`, {
+            ...formData,
+            published: value,
+            contentType: "tiptap" as const,
           });
-          if (response.ok) {
-            invalidatePostsCache();
-            invalidateAllCache();
-            success("Configuración actualizada", "El estado de publicación se ha guardado");
-          }
-        } catch (err) {
+          invalidatePostsCache();
+          invalidateAllCache();
+          success("Configuración actualizada", "El estado de publicación se ha guardado");
+        } catch {
           error("Error al guardar", "No se pudo actualizar la configuración");
         }
       }, 500);
@@ -288,22 +245,18 @@ export default function EditPostPage() {
 
   const handleFeaturedToggle = async (value: boolean) => {
     setFormData(prev => ({ ...prev, featured: value }));
-    // Auto-save cuando se cambia el estado de destacado
     if (formData.title.trim()) {
       setTimeout(async () => {
-        const updatedData = { ...formData, featured: value, contentType: "tiptap" as const };
         try {
-          const response = await fetch(`/api/admin/posts/${postId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedData),
+          await apiClient.put(`/api/admin/posts/${postId}`, {
+            ...formData,
+            featured: value,
+            contentType: "tiptap" as const,
           });
-          if (response.ok) {
-            invalidatePostsCache();
-            invalidateAllCache();
-            success("Configuración actualizada", "El estado de destacado se ha guardado");
-          }
-        } catch (err) {
+          invalidatePostsCache();
+          invalidateAllCache();
+          success("Configuración actualizada", "El estado de destacado se ha guardado");
+        } catch {
           error("Error al guardar", "No se pudo actualizar la configuración");
         }
       }, 500);
@@ -553,6 +506,25 @@ export default function EditPostPage() {
           onClose={() => setShowPreview(false)}
         />
       )}
+
+      {/* Asistente de IA */}
+      <AIAssistant
+        title={formData.title}
+        content={formData.content}
+        availableTags={availableTags}
+        onApplyContent={content => {
+          setFormData(prev => ({ ...prev, content }));
+          editorRef.current?.setContent(content);
+        }}
+        onApplyExcerpt={excerpt =>
+          setFormData(prev => ({ ...prev, excerpt: excerpt.substring(0, 500) }))
+        }
+        onApplyTags={tags => setFormData(prev => ({ ...prev, tags }))}
+        onApplyTitle={newTitle =>
+          setFormData(prev => ({ ...prev, title: newTitle, slug: generateSlug(newTitle) }))
+        }
+        onApplyCoverImage={url => setFormData(prev => ({ ...prev, coverImage: url }))}
+      />
     </div>
   );
 }

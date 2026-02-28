@@ -8,6 +8,7 @@ import Input from "@/components/ui/Input";
 import TagSelector from "@/components/ui/TagSelector";
 import Toggle from "@/components/ui/Toggle";
 import ImageUpload from "@/components/ui/ImageUpload";
+import AIAssistant from "@/components/admin/AIAssistant";
 import { useToast } from "@/hooks/useToast";
 import apiClient from "@/lib/api-client";
 import {
@@ -420,6 +421,25 @@ export default function NewPostPage() {
           onClose={() => setShowPreview(false)}
         />
       )}
+
+      {/* Asistente de IA */}
+      <AIAssistant
+        title={formData.title}
+        content={formData.content}
+        availableTags={availableTags}
+        onApplyContent={content => {
+          setFormData(prev => ({ ...prev, content }));
+          editorRef.current?.setContent(content);
+        }}
+        onApplyExcerpt={excerpt =>
+          setFormData(prev => ({ ...prev, excerpt: excerpt.substring(0, 500) }))
+        }
+        onApplyTags={tags => setFormData(prev => ({ ...prev, tags }))}
+        onApplyTitle={newTitle =>
+          setFormData(prev => ({ ...prev, title: newTitle, slug: generateSlug(newTitle) }))
+        }
+        onApplyCoverImage={url => setFormData(prev => ({ ...prev, coverImage: url }))}
+      />
     </div>
   );
 }

@@ -128,6 +128,7 @@ export default function ImageUpload({
               src={value}
               alt="Imagen seleccionada"
               fill
+              unoptimized
               className="object-cover"
               sizes={`${width}px`}
               loading="eager"
