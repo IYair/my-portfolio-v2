@@ -63,8 +63,14 @@ export default async function Home() {
   });
 
   const formatDate = (date: Date) => {
-    const localeFormat = locale === "en" ? "MMMM D, YYYY" : "D de MMMM de YYYY";
-    return format(date, localeFormat, locale);
+    if (locale === "en") {
+      return format(date, "MMMM D, YYYY", locale);
+    }
+    // "d" is a Tempo token (day name), so avoid it inside literal text
+    const day = format(date, "D");
+    const month = format(date, "MMMM", "es");
+    const year = format(date, "YYYY");
+    return `${day} de ${month} de ${year}`;
   };
 
   return (
