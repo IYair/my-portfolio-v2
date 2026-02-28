@@ -63,7 +63,7 @@ export default async function Home() {
   });
 
   const formatDate = (date: Date) => {
-    const localeFormat = locale === "en" ? "MMMM D, YYYY" : "D [de] MMMM [de] YYYY";
+    const localeFormat = locale === "en" ? "MMMM D, YYYY" : "D de MMMM de YYYY";
     return format(date, localeFormat, locale);
   };
 
