@@ -60,9 +60,14 @@ export default async function BlogPage() {
   const posts = await getPosts();
 
   const formatDate = (date: Date) => {
-    // Use @formkit/tempo as per project rules
-    const localeFormat = locale === "en" ? "MMMM D, YYYY" : "D [de] MMMM [de] YYYY";
-    return format(date, localeFormat, locale);
+    if (locale === "en") {
+      return format(date, "MMMM D, YYYY", locale);
+    }
+    // "d" is a Tempo token (day name), so avoid it inside literal text
+    const day = format(date, "D");
+    const month = format(date, "MMMM", "es");
+    const year = format(date, "YYYY");
+    return `${day} de ${month} de ${year}`;
   };
 
   const truncateContent = (content: string, maxLength: number = 120) => {
