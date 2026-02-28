@@ -13,6 +13,7 @@ import { SkeletonTable } from "@/components/ui/Skeleton";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { Alert } from "@/components/ui/Alert";
 import { useToast } from "@/hooks/useToast";
+import apiClient from "@/lib/api-client";
 import {
   PlusIcon,
   PencilIcon,
@@ -48,25 +49,18 @@ export default function PostsPage() {
     if (!deleteModal.post) return;
 
     setIsDeleting(true);
+    const postTitle = deleteModal.post.title;
+    const postId = deleteModal.post.id;
     try {
-      const response = await fetch(`/api/admin/posts/${deleteModal.post.id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        // Refetch posts after deletion
-        fetchPosts();
-        setDeleteModal({ open: false, post: null });
-        success(
-          "Post eliminado",
-          `El post "${deleteModal.post.title}" ha sido eliminado exitosamente`
-        );
-      } else {
-        error("Error al eliminar", "No se pudo eliminar el post. Inténtalo de nuevo.");
-      }
-    } catch (err) {
-      console.error("Error deleting post:", err);
-      error("Error inesperado", "Ocurrió un error inesperado al eliminar el post");
+      await apiClient.delete(`/api/admin/posts/${postId}`);
+      fetchPosts();
+      setDeleteModal({ open: false, post: null });
+      success("Post eliminado", `El post "${postTitle}" ha sido eliminado exitosamente`);
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+        "No se pudo eliminar el post. Inténtalo de nuevo.";
+      error("Error al eliminar", message);
     } finally {
       setIsDeleting(false);
     }
@@ -190,17 +184,6 @@ export default function PostsPage() {
     <div className="space-y-6">
       {/* Breadcrumbs */}
       <Breadcrumbs pages={breadcrumbs} homeHref="/admin/dashboard" />
-
-      {/* Success Alert - Shown when posts are loaded */}
-      {!isLoading && posts.length > 0 && (
-        <Alert
-          variant="success"
-          title="Posts loaded successfully"
-          description={`Found ${posts.length} posts in your database.`}
-          dismissible
-          onDismiss={() => {}}
-        />
-      )}
 
       {/* Loading State */}
       {isLoading ? (

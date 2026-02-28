@@ -17,18 +17,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      // AWS S3
+      // Supabase Storage
       {
         protocol: "https",
-        hostname: "portfolio-blog-prod.s3.mx-central-1.amazonaws.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.s3.*.amazonaws.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.s3.amazonaws.com",
+        hostname: "vxkzpjfhnkfwatlfrewt.supabase.co",
+        pathname: "/storage/v1/object/**",
       },
       // Common image hosting services
       {
@@ -81,7 +74,6 @@ const nextConfig: NextConfig = {
     formats: ["image/webp", "image/avif"],
     // Handle broken images gracefully
     unoptimized: false,
-    // Increase loader timeout for slow S3 responses
     minimumCacheTTL: 60,
   },
 };

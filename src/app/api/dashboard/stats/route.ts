@@ -1,60 +1,68 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
-    console.log("📊 Starting dashboard stats fetch...");
+    // Run all count queries in parallel to minimize total response time
+    const [
+      postsCount,
+      publishedPostsCount,
+      projectsCount,
+      featuredProjectsCount,
+      contactsCount,
+      unreadContactsCount,
+      recentPosts,
+      recentProjects,
+      recentContacts,
+    ] = await Promise.all([
+      prisma.post.count().catch(() => 0),
+      prisma.post.count({ where: { published: true } }).catch(() => 0),
+      prisma.project.count().catch(() => 0),
+      prisma.project.count({ where: { featured: true } }).catch(() => 0),
+      prisma.contact.count().catch(() => 0),
+      prisma.contact.count({ where: { read: false } }).catch(() => 0),
+      prisma.post
+        .findMany({
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, title: true, published: true, createdAt: true },
+        })
+        .catch(() => []),
+      prisma.project
+        .findMany({
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, title: true, featured: true, createdAt: true },
+        })
+        .catch(() => []),
+      prisma.contact
+        .findMany({
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, name: true, read: true, createdAt: true },
+        })
+        .catch(() => []),
+    ]);
 
-    // Set a much shorter timeout and only get essential stats
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Stats timeout after 8 seconds")), 8000)
-    );
-
-    const statsPromise = async () => {
-      // Execute queries sequentially to reduce database load
-      console.log("📝 Fetching posts stats...");
-      const postsCount = await prisma.post.count().catch(() => 0);
-      const publishedPostsCount = await prisma.post
-        .count({ where: { published: true } })
-        .catch(() => 0);
-
-      console.log("🎨 Fetching projects stats...");
-      const projectsCount = await prisma.project.count().catch(() => 0);
-      const featuredProjectsCount = await prisma.project
-        .count({ where: { featured: true } })
-        .catch(() => 0);
-
-      console.log("📧 Fetching contacts stats...");
-      const contactsCount = await prisma.contact.count().catch(() => 0);
-      const unreadContactsCount = await prisma.contact
-        .count({ where: { read: false } })
-        .catch(() => 0);
-
-      return {
+    return NextResponse.json({
+      stats: {
         posts: postsCount,
         publishedPosts: publishedPostsCount,
         projects: projectsCount,
         featuredProjects: featuredProjectsCount,
         contacts: contactsCount,
         unreadContacts: unreadContactsCount,
-      };
-    };
-
-    const stats = (await Promise.race([statsPromise(), timeoutPromise])) as any;
-
-    console.log("✅ Dashboard stats fetched successfully");
-
-    return NextResponse.json({
-      stats,
-      // Remove recent activity for now to improve performance
+      },
       recentActivity: {
-        posts: [],
-        projects: [],
-        contacts: [],
+        posts: recentPosts,
+        projects: recentProjects,
+        contacts: recentContacts,
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching dashboard stats:", error);
+    console.error("Error fetching dashboard stats:", error);
     return NextResponse.json({ error: "Failed to fetch dashboard stats" }, { status: 500 });
   }
 }

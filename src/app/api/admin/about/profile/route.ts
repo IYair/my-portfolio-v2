@@ -62,8 +62,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Revalidate the about page cache
-    revalidatePath("/about");
+    // Revalidate the about page cache for all locales
+    revalidatePath("/es/about");
+    revalidatePath("/en/about");
 
     return NextResponse.json(profile);
   } catch (error) {

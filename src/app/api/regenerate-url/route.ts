@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
 
     // Generar nueva URL pre-firmada
     const getObjectCommand = new GetObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME!,
+      Bucket: process.env.SUPABASE_S3_BUCKET_NAME!,
       Key: key,
     });
 

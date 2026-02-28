@@ -9,6 +9,7 @@ import TagSelector from "@/components/ui/TagSelector";
 import Toggle from "@/components/ui/Toggle";
 import ImageUpload from "@/components/ui/ImageUpload";
 import { useToast } from "@/hooks/useToast";
+import apiClient from "@/lib/api-client";
 import {
   BookOpenIcon,
   CheckCircleIcon,
@@ -138,28 +139,20 @@ export default function NewPostPage() {
         contentType: "tiptap" as const,
       };
 
-      const submitPromise = fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
-      });
+      await promise(
+        apiClient.post("/api/posts", submitData).then(res => res.data),
+        {
+          loading: "Creando post...",
+          success: "¡Post creado exitosamente!",
+          error: (err: unknown) =>
+            (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+            "Error al crear el post",
+        }
+      );
 
-      promise(submitPromise, {
-        loading: "Creando post...",
-        success: "Post creado exitosamente",
-        error: "Error al crear el post",
-      });
-
-      const response = await submitPromise;
-      if (response.ok) {
-        success("¡Éxito!", "Tu post ha sido creado correctamente");
-        setTimeout(() => router.push("/admin/dashboard/posts"), 1500);
-      }
-    } catch (err) {
-      console.error("Error creating post:", err);
-      error("Error inesperado", "Hubo un problema al crear el post");
+      router.push("/admin/dashboard/posts");
+    } catch {
+      // El toast de error ya fue mostrado por promise()
     } finally {
       setIsSubmitting(false);
     }
@@ -171,11 +164,33 @@ export default function NewPostPage() {
       return;
     }
 
-    setFormData(prev => ({ ...prev, published: false }));
-    setTimeout(() => {
-      const formEvent = { preventDefault: () => {} } as React.FormEvent;
-      handleSubmit(formEvent);
-    }, 100);
+    setIsSubmitting(true);
+    try {
+      const content = editorRef.current?.getHTML() || formData.content;
+      const submitData = {
+        ...formData,
+        content,
+        published: false,
+        contentType: "tiptap" as const,
+      };
+
+      await promise(
+        apiClient.post("/api/posts", submitData).then(res => res.data),
+        {
+          loading: "Guardando borrador...",
+          success: "¡Borrador guardado!",
+          error: (err: unknown) =>
+            (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
+            "Error al guardar el borrador",
+        }
+      );
+
+      router.push("/admin/dashboard/posts");
+    } catch {
+      // El toast de error ya fue mostrado por promise()
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const breadcrumbs = [

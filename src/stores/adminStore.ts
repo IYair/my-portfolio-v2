@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import axios from "axios";
+import apiClient from "@/lib/api-client";
 
 // Types
 interface DashboardStats {
@@ -141,17 +141,13 @@ const useAdminStore = create<AdminStore>()(
 
         // Skip if recently fetched
         if (now - lastFetch < CACHE_DURATION && get().dashboardData) {
-          console.log("🎯 Dashboard data from cache");
           return;
         }
 
         set({ dashboardLoading: true, dashboardError: null });
 
         try {
-          console.log("🎯 Fetching dashboard data...");
-          const response = await axios.get("/api/dashboard/stats", {
-            timeout: 8000,
-          });
+          const response = await apiClient.get("/api/dashboard/stats");
 
           set({
             dashboardData: response.data,
@@ -176,17 +172,13 @@ const useAdminStore = create<AdminStore>()(
 
         // Skip if recently fetched
         if (now - lastFetch < CACHE_DURATION && get().posts.length > 0) {
-          console.log("📝 Posts data from cache");
           return;
         }
 
         set({ postsLoading: true, postsError: null });
 
         try {
-          console.log("📝 Fetching posts data...");
-          const response = await axios.get("/api/posts", {
-            timeout: 8000,
-          });
+          const response = await apiClient.get("/api/posts");
 
           set({
             posts: response.data,
@@ -210,17 +202,13 @@ const useAdminStore = create<AdminStore>()(
 
         // Skip if recently fetched
         if (now - lastFetch < CACHE_DURATION && get().projects.length > 0) {
-          console.log("🚀 Projects data from cache");
           return;
         }
 
         set({ projectsLoading: true, projectsError: null });
 
         try {
-          console.log("🚀 Fetching projects data...");
-          const response = await axios.get("/api/projects", {
-            timeout: 8000,
-          });
+          const response = await apiClient.get("/api/projects");
 
           set({
             projects: response.data,
@@ -244,17 +232,13 @@ const useAdminStore = create<AdminStore>()(
 
         // Skip if recently fetched
         if (now - lastFetch < CACHE_DURATION && get().contacts.length > 0) {
-          console.log("📧 Contacts data from cache");
           return;
         }
 
         set({ contactsLoading: true, contactsError: null });
 
         try {
-          console.log("📧 Fetching contacts data...");
-          const response = await axios.get("/api/contacts", {
-            timeout: 8000,
-          });
+          const response = await apiClient.get("/api/contacts");
 
           set({
             contacts: response.data,
@@ -294,12 +278,10 @@ const useAdminStore = create<AdminStore>()(
 
       // Cache invalidation functions
       invalidatePostsCache: () => {
-        console.log("🔄 Invalidating posts cache");
         cacheTimestamps.posts = 0;
       },
 
       invalidateAllCache: () => {
-        console.log("🔄 Invalidating all cache");
         cacheTimestamps.dashboard = 0;
         cacheTimestamps.posts = 0;
         cacheTimestamps.projects = 0;

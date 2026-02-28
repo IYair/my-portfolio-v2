@@ -2,28 +2,29 @@ import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 
 /**
- * Removes AWS S3 pre-signed URL query parameters
- * Converts pre-signed URLs to public URLs for better caching
+ * Elimina parámetros de query de URLs firmadas de almacenamiento
+ * (compatibilidad con URLs antiguas de S3 o Supabase signed URLs)
  */
-function cleanS3Url(url: string | null): string | null {
+function cleanStorageUrl(url: string | null): string | null {
   if (!url) return null;
 
   try {
     const urlObj = new URL(url);
 
-    // Check if it's an S3 URL
-    if (urlObj.hostname.includes("amazonaws.com")) {
-      // Remove all query parameters from S3 URLs
+    // Limpiar query params de URLs de AWS S3 o Supabase Storage firmadas
+    if (urlObj.hostname.includes("amazonaws.com") || urlObj.hostname.includes("supabase.co")) {
       urlObj.search = "";
       return urlObj.toString();
     }
 
     return url;
   } catch {
-    // If URL parsing fails, return original
     return url;
   }
 }
+
+// Alias para compatibilidad interna
+const cleanS3Url = cleanStorageUrl;
 
 export const getAboutProfile = cache(async function getAboutProfile(locale: "es" | "en" = "es") {
   try {

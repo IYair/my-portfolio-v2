@@ -5,16 +5,26 @@ import { Card } from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import IconSelector from "@/components/ui/IconSelector";
-import { PencilIcon, PlusIcon, RocketLaunchIcon, TrashIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
+import {
+  PencilIcon,
+  PlusIcon,
+  RocketLaunchIcon,
+  TrashIcon,
+  EnvelopeIcon,
+  DevicePhoneMobileIcon,
+  MapPinIcon,
+  GlobeAltIcon,
+} from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import apiClient from "@/lib/api-client";
 
 interface ContactInfo {
   id: number;
   type: string;
   value: string;
   icon?: string;
+  isHeroicon?: boolean;
   order: number;
 }
 
@@ -53,11 +63,8 @@ export default function ContactInfoSection() {
   const loadContactInfos = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/admin/about/contact-info");
-      if (response.ok) {
-        const data = await response.json();
-        setContactInfos(data);
-      }
+      const response = await apiClient.get<ContactInfo[]>("/api/admin/about/contact-info");
+      setContactInfos(response.data);
     } catch (error) {
       console.error("Error loading contact info:", error);
       toast.error("Error al cargar la información de contacto");
@@ -70,35 +77,21 @@ export default function ContactInfoSection() {
     e.preventDefault();
 
     try {
-      const url = editingContact
-        ? `/api/admin/about/contact-info/${editingContact.id}`
-        : "/api/admin/about/contact-info";
-
-      const method = editingContact ? "PUT" : "POST";
-
-      // Preparar datos para envío - determinar si es heroicon automáticamente
       const submitData = {
         ...formData,
         isHeroicon: formData.icon.startsWith("heroicon-"),
-        // Si es heroicon, limpiar el icono para la base de datos
         icon: formData.icon.startsWith("heroicon-") ? "" : formData.icon,
       };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(submitData),
-      });
-
-      if (response.ok) {
-        toast.success(editingContact ? "Contacto actualizado" : "Contacto creado");
-        loadContactInfos();
-        resetForm();
+      if (editingContact) {
+        await apiClient.put(`/api/admin/about/contact-info/${editingContact.id}`, submitData);
       } else {
-        toast.error("Error al guardar el contacto");
+        await apiClient.post("/api/admin/about/contact-info", submitData);
       }
+
+      toast.success(editingContact ? "Contacto actualizado" : "Contacto creado");
+      loadContactInfos();
+      resetForm();
     } catch (error) {
       console.error("Error saving contact:", error);
       toast.error("Error al guardar el contacto");
@@ -140,16 +133,9 @@ export default function ContactInfoSection() {
     }
 
     try {
-      const response = await fetch(`/api/admin/about/contact-info/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        toast.success("Contacto eliminado");
-        loadContactInfos();
-      } else {
-        toast.error("Error al eliminar el contacto");
-      }
+      await apiClient.delete(`/api/admin/about/contact-info/${id}`);
+      toast.success("Contacto eliminado");
+      loadContactInfos();
     } catch (error) {
       console.error("Error deleting contact:", error);
       toast.error("Error al eliminar el contacto");
@@ -165,6 +151,23 @@ export default function ContactInfoSection() {
     });
     setEditingContact(null);
     setShowForm(false);
+  };
+
+  const renderContactIcon = (contact: ContactInfo) => {
+    if (contact.isHeroicon) {
+      const heroicons: Record<string, React.ReactNode> = {
+        email: <EnvelopeIcon className="h-6 w-6" />,
+        phone: <DevicePhoneMobileIcon className="h-6 w-6" />,
+        location: <MapPinIcon className="h-6 w-6" />,
+        website: <GlobeAltIcon className="h-6 w-6" />,
+      };
+      return heroicons[contact.type] ?? null;
+    }
+    if (contact.icon?.startsWith("/")) {
+      // eslint-disable-next-line @next/next/no-img-element
+      return <img src={contact.icon} alt={contact.type} className="h-6 w-6" />;
+    }
+    return null;
   };
 
   if (loading) {
@@ -259,19 +262,7 @@ export default function ContactInfoSection() {
           <Card key={contact.id} className="p-4">
             <div className="mb-2 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                {contact.icon && (
-                  <Image
-                    src={contact.icon}
-                    alt={contact.type}
-                    width={24}
-                    height={24}
-                    className="h-6 w-6"
-                    onError={e => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                    }}
-                  />
-                )}
+                {renderContactIcon(contact)}
                 <div>
                   <h3 className="font-medium text-[var(--foreground)] capitalize">
                     {contact.type}
