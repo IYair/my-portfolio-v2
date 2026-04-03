@@ -4,7 +4,6 @@ import { MotionProvider } from "@/components/providers/MotionProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { routing } from "@/i18n/routing";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -40,7 +39,6 @@ export default async function LocaleLayout({
           <Navigation />
           {children}
           <Analytics />
-          <SpeedInsights />
           <Toaster position="top-right" expand={false} richColors closeButton theme="system" />
         </MotionProvider>
       </SessionProvider>
